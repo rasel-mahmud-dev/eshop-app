@@ -4,15 +4,17 @@ import { View, TouchableOpacity, StyleSheet, Text } from "react-native";
 import Icon from "react-native-vector-icons/MaterialIcons";
 import colors from "../styles/colors";
 import { LinearGradient } from "react-native-linear-gradient";
+import { useNavigation } from "@react-navigation/native";
 
 const BottomNav = () => {
 
+  const navigation = useNavigation();
   const navItems = [
-    { name: "Home", icon: "home", route: "/" },
-    { name: "Profile", icon: "person", route: "/profile" },
-    { name: "Settings", icon: "settings", route: "/settings" },
-    { name: "Meals", icon: "meals", route: "/meals" },
-    { name: "Dashboard", icon: "meals", route: "/dashboard" },
+    { name: "Home", icon: "home", path: "/" },
+    { name: "Profile", icon: "person", path: "/profile" },
+    { name: "Settings", icon: "settings", path: "/settings" },
+    { name: "Meals", icon: "meals", path: "/meals" },
+    { name: "Dashboard", icon: "meals", path: "AdminDashboard" },
   ];
 
   const location = {};
@@ -30,7 +32,7 @@ const BottomNav = () => {
             <TouchableOpacity
               key={item.name}
               style={styles.navItem}
-              // onPress={() => navigate(item.route)}
+              onPress={() => navigation.navigate(item.path)}
             >
               <Icon
                 name={item.icon}

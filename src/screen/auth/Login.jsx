@@ -2,7 +2,7 @@ import React from "react";
 import { View, TextInput, Button, StyleSheet, Image, TouchableOpacity, Text } from "react-native";
 import Form from "./Form";
 import { LinearGradient } from "react-native-linear-gradient";
-import Icon from "react-native-vector-icons/Ionicons";
+
 import { useNavigation } from "@react-navigation/native";
 
 const LoginPage = () => {
