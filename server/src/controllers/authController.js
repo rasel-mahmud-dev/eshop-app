@@ -77,7 +77,7 @@ class AuthController {
 
         const token = authHeader.split(' ')[1];
         try {
-            const decoded = jwt.verify(token, SECRET_KEY);
+            const decoded = jwtService.verify(token);
             req.user = decoded;
             next();
         } catch (err) {

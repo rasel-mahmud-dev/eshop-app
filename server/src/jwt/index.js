@@ -4,6 +4,10 @@ import envConfig from "../config/envConfig";
 
 const jwtService = {
 
+  verify(token) {
+        return jwt.verify(token, envConfig.SECRET_KEY);
+    },
+
     createToken(data) {
         return jwt.sign(
             data,

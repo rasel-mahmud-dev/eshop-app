@@ -1,6 +1,6 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
-const LocalStorage = {
+const localStorage = {
     async get(key) {
         try {
             const content = await AsyncStorage.getItem(key);
@@ -14,7 +14,8 @@ const LocalStorage = {
         try {
             await AsyncStorage.setItem(key, JSON.stringify(value));
             return true;
-        } catch {
+        } catch(e) {
+            console.log(e);
             return null;
         }
     },
@@ -28,4 +29,4 @@ const LocalStorage = {
     },
 };
 
-export default LocalStorage;
+export default localStorage;

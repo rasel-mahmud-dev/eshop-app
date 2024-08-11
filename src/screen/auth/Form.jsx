@@ -1,56 +1,76 @@
 import React, { useState } from "react";
-import { View, TextInput, TouchableOpacity, Text, StyleSheet } from "react-native";
+import { View, TextInput, TouchableOpacity, Text, StyleSheet, Alert } from "react-native";
 import Icon from "react-native-vector-icons/Ionicons";
 import { LinearGradient } from "react-native-linear-gradient";
+import InputField from "../../components/InputField";
+import authAction from "../../store/actions/authAction";
+import catchAxiosError from "../../utils/catchAxiosError";
+import localStorage from "../../services/LocalStorage";
+import RsButton from "../../components/RsButton/RsButton";
 
 export default function Form() {
-  const [username, setUsername] = useState("");
-  const [password, setPassword] = useState("");
-  const [rememberMe, setRememberMe] = useState(false);
+
+  const [state, setState] = useState({
+    email: "rasel.mahmud.dev@gmail.com",
+    password: "123",
+    rememberMe: false,
+  });
+
+  async function handleSubmit() {
+    try {
+      const data = await authAction.login(state.email, state.password);
+      if (!data) throw new Error("Please try again later");
+      await localStorage.set("token", data.token);
+      Alert.alert("Success", JSON.stringify(data));
+    } catch (ex) {
+      console.log(catchAxiosError(ex));
+      Alert.alert(catchAxiosError(ex));
+    }
+  }
+
+  function handleChange(e) {
+    const { name, value } = e;
+    setState(prevState => ({
+      ...prevState,
+      [name]: value,
+    }));
+  }
 
   return (
     <View style={styles.container}>
-      <View style={styles.inputContainer}>
-        <Icon name="person-outline" size={20} color="#555" style={styles.icon} />
-        <TextInput
-          style={styles.input}
-          placeholder="Username"
-          value={username}
-          onChangeText={setUsername}
-        />
-      </View>
-      <View style={styles.inputContainer}>
+      <InputField
+        name="email"
+        icon={<Icon name="person-outline" size={20} color="#555" style={styles.icon} />}
+        label="Email"
+        placeholder="Enter email"
+        value={state.email}
+        onChangeText={handleChange}
+      />
 
-        <Icon name="lock-closed-outline" size={20} color="#555" style={styles.icon} />
-        <TextInput
-          style={styles.input}
-          placeholder="Password"
-          value={password}
-          onChangeText={setPassword}
-          secureTextEntry
-        />
-      </View>
+      <InputField
+        name="password"
+        icon={<Icon name="lock-closed-outline" size={20} color="#555" style={styles.icon} />}
+        label="Password"
+        placeholder="Password"
+        value={state.password}
+        onChangeText={handleChange}
+        secureTextEntry
+      />
+
       <View style={styles.rememberMeContainer}>
-        <TouchableOpacity onPress={() => setRememberMe(!rememberMe)}>
+        <TouchableOpacity onPress={() => setState(prevState => ({
+          ...prevState,
+          rememberMe: !prevState.rememberMe,
+        }))}>
           <Icon
-            name={rememberMe ? "checkbox-outline" : "square-outline"}
+            name={state.rememberMe ? "checkbox-outline" : "square-outline"}
             size={20}
             color="#1E90FF"
           />
         </TouchableOpacity>
         <Text style={styles.rememberMeText}>Remember me</Text>
       </View>
-      <LinearGradient
-        start={{ x: 0, y: 0 }}
-        end={{ x: 1, y: 2 }}
-        colors={["#5851DB", "#E1306C"]}
-        style={styles.loginButton}
-      >
-        <TouchableOpacity>
-
-          <Text style={styles.loginButtonText}>Login</Text>
-        </TouchableOpacity>
-      </LinearGradient>
+      <RsButton onPress={handleSubmit}>Login</RsButton>
     </View>
   );
 }
@@ -68,17 +88,16 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: "#E0E0E0",
     borderRadius: 25,
-    paddingHorizontal: 10,
+    // paddingHorizontal: 10,
     marginVertical: 10,
     backgroundColor: "#FFFFFF",
 
   },
-  icon: {
-    marginRight: 10,
-  },
+  icon: {},
   input: {
-    flex: 1,
-    height: 40,
+    // flex: 1,
+    // height: 40,
+    border: "none",
   },
   rememberMeContainer: {
     flexDirection: "row",
@@ -89,17 +108,5 @@ const styles = StyleSheet.create({
     marginLeft: 5,
     color: "#1E90FF",
   },
-  loginButton: {
-    borderRadius: 25,
-    paddingVertical: 10,
-    paddingHorizontal: 100,
-    marginTop: 20,
-    elevation: 3,
-    shadowColor: "#2a2a2a",
 
-  },
-  loginButtonText: {
-    color: "#FFFFFF",
-    fontSize: 16,
-  },
 });
