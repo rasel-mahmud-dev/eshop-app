@@ -17,18 +17,16 @@ export const useAuthStore = create(
     ),
 );
 
-export const useMessStore = create(
+export const useCategoryStore = create(
     persist(
         (set, get) => ({
-            auth: null,
-            members: [],
-            setAuth: (val) => set((state) => ({ ...state, auth: val, authLoaded: true })),
-            setMembers: (val) => set((state) => ({ ...state, members: val })),
-            authLoaded: false,
-            updateAuth: (val) => set((state) => ({ ...state, auth: { ...state.auth, ...val } })),
+            categories: null,
+            parentCategories: null,
+            setParentCategories: (val) => set((state) => ({ ...state, parentCategories: val })),
+            setCategories: (val) => set((state) => ({ ...state, categories: val })),
         }),
         {
-            name: "mess-store-storage",
+            name: "categories-store-storage",
             storage: createJSONStorage(() => AsyncStorage),
         },
     ),

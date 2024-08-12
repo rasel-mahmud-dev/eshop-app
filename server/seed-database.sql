@@ -15,3 +15,24 @@ CREATE TABLE users
     created_at   TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     deleted_at   TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
+
+CREATE TABLE categories
+(
+    id        SERIAL PRIMARY KEY,
+    name      VARCHAR(255) NOT NULL UNIQUE,
+    slug      VARCHAR(255) NOT NULL UNIQUE,
+    logo      VARCHAR(1024),
+    parent_id INT,
+    CONSTRAINT fk_parent
+        FOREIGN KEY (parent_id)
+            REFERENCES categories (id)
+            ON DELETE SET NULL
+);
+
+select name,
+       id,
+       slug,
+       logo
+from categories
+where parent_id IS NULL
+

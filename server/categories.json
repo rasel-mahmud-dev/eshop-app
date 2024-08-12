@@ -1,0 +1,1002 @@
+[
+  {
+    "name": "Footwear",
+    "logo": "footwear-logo.png",
+    "parent": "null"
+  },
+  {
+    "name": "Sports Shoes",
+    "logo": "sports-shoes-logo.png",
+    "parent": "Footwear"
+  },
+  {
+    "name": "Casual Shoes",
+    "logo": "casual-shoes-logo.png",
+    "parent": "Footwear"
+  },
+  {
+    "name": "Formal Shoes",
+    "logo": "formal-shoes-logo.png",
+    "parent": "Footwear"
+  },
+  {
+    "name": "Sandals & Floaters",
+    "logo": "sandals-floaters-logo.png",
+    "parent": "Footwear"
+  },
+  {
+    "name": "Boots",
+    "logo": "boots-logo.png",
+    "parent": "Footwear"
+  },
+  {
+    "name": "Running Shoes",
+    "logo": "running-shoes-logo.png",
+    "parent": "Footwear"
+  },
+  {
+    "name": "Sneakers",
+    "logo": "sneakers-logo.png",
+    "parent": "Footwear"
+  },
+  {
+    "name": "Men's Grooming",
+    "logo": "mens-grooming-logo.png",
+    "parent": "null"
+  },
+  {
+    "name": "Deodorants",
+    "logo": "deodorants-logo.png",
+    "parent": "Men's Grooming"
+  },
+  {
+    "name": "Perfumes",
+    "logo": "perfumes-logo.png",
+    "parent": "Men's Grooming"
+  },
+  {
+    "name": "Beard Care & Grooming",
+    "logo": "beard-care-grooming-logo.png",
+    "parent": "Men's Grooming"
+  },
+  {
+    "name": "Shaving & Aftershave",
+    "logo": "shaving-aftershave-logo.png",
+    "parent": "Men's Grooming"
+  },
+  {
+    "name": "Clothes",
+    "logo": "clothes-logo.png",
+    "parent": "null"
+  },
+  {
+    "name": "Top Wear",
+    "logo": "top-wear-logo.png",
+    "parent": "Clothes"
+  },
+  {
+    "name": "T-Shirts",
+    "logo": "t-shirts-logo.png",
+    "parent": "Top Wear"
+  },
+  {
+    "name": "Formal Shirts",
+    "logo": "formal-shirts-logo.png",
+    "parent": "Top Wear"
+  },
+  {
+    "name": "Casual Shirts",
+    "logo": "casual-shirts-logo.png",
+    "parent": "Top Wear"
+  },
+  {
+    "name": "Bottom Wear",
+    "logo": "bottom-wear-logo.png",
+    "parent": "Clothes"
+  },
+  {
+    "name": "Jeans",
+    "logo": "jeans-logo.png",
+    "parent": "Bottom Wear"
+  },
+  {
+    "name": "Casual Trousers",
+    "logo": "casual-trousers-logo.png",
+    "parent": "Bottom Wear"
+  },
+  {
+    "name": "Formal Trousers",
+    "logo": "formal-trousers-logo.png",
+    "parent": "Bottom Wear"
+  },
+  {
+    "name": "Track Pants",
+    "logo": "track-pants-logo.png",
+    "parent": "Bottom Wear"
+  },
+  {
+    "name": "Shorts",
+    "logo": "shorts-logo.png",
+    "parent": "Bottom Wear"
+  },
+  {
+    "name": "Cargos",
+    "logo": "cargos-logo.png",
+    "parent": "Bottom Wear"
+  },
+  {
+    "name": "Three Fourths",
+    "logo": "three-fourths-logo.png",
+    "parent": "Bottom Wear"
+  },
+  {
+    "name": "Suits, Blazers & Waistcoats",
+    "logo": "suits-blazers-waistcoats-logo.png",
+    "parent": "Clothes"
+  },
+  {
+    "name": "Ties, Socks, Caps & More",
+    "logo": "ties-socks-caps-logo.png",
+    "parent": "Clothes"
+  },
+  {
+    "name": "Fabrics",
+    "logo": "fabrics-logo.png",
+    "parent": "Clothes"
+  },
+  {
+    "name": "Winter Wear",
+    "logo": "winter-wear-logo.png",
+    "parent": "null"
+  },
+  {
+    "name": "Sweatshirts",
+    "logo": "sweatshirts-logo.png",
+    "parent": "Winter Wear"
+  },
+  {
+    "name": "Jackets",
+    "logo": "jackets-logo.png",
+    "parent": "Winter Wear"
+  },
+  {
+    "name": "Sweater",
+    "logo": "sweater-logo.png",
+    "parent": "Winter Wear"
+  },
+  {
+    "name": "Track Suits",
+    "logo": "track-suits-logo.png",
+    "parent": "Winter Wear"
+  },
+  {
+    "name": "Ethnic Wear",
+    "logo": "ethnic-wear-logo.png",
+    "parent": "Winter Wear"
+  },
+  {
+    "name": "Kurtas",
+    "logo": "kurtas-logo.png",
+    "parent": "Ethnic Wear"
+  },
+  {
+    "name": "Ethnic Sets",
+    "logo": "ethnic-sets-logo.png",
+    "parent": "Ethnic Wear"
+  },
+  {
+    "name": "Sherwanis",
+    "logo": "sherwanis-logo.png",
+    "parent": "Ethnic Wear"
+  },
+  {
+    "name": "Ethnic Pyjama",
+    "logo": "ethnic-pyjama-logo.png",
+    "parent": "Ethnic Wear"
+  },
+  {
+    "name": "Dhoti",
+    "logo": "dhoti-logo.png",
+    "parent": "Ethnic Wear"
+  },
+  {
+    "name": "Palazzos",
+    "logo": "palazzos-logo.png",
+    "parent": "Ethnic Wear"
+  },
+  {
+    "name": "Panjabi",
+    "logo": "panjabi-logo.png",
+    "parent": "Ethnic Wear"
+  },
+  {
+    "name": "Lungi",
+    "logo": "lungi-logo.png",
+    "parent": "Ethnic Wear"
+  },
+  {
+    "name": "Innerwear & Loungewear",
+    "logo": "innerwear-loungewear-logo.png",
+    "parent": "Winter Wear"
+  },
+  {
+    "name": "Vests",
+    "logo": "vests-logo.png",
+    "parent": "Innerwear & Loungewear"
+  },
+  {
+    "name": "Boxers",
+    "logo": "boxers-logo.png",
+    "parent": "Innerwear & Loungewear"
+  },
+  {
+    "name": "Thermals",
+    "logo": "thermals-logo.png",
+    "parent": "Innerwear & Loungewear"
+  },
+  {
+    "name": "Night Suits",
+    "logo": "night-suits-logo.png",
+    "parent": "Innerwear & Loungewear"
+  },
+  {
+    "name": "Watches",
+    "logo": "watches-logo.png",
+    "parent": "null"
+  },
+  {
+    "name": "Fastrack",
+    "logo": "fastrack-logo.png",
+    "parent": "Watches"
+  },
+  {
+    "name": "Casio",
+    "logo": "casio-logo.png",
+    "parent": "Watches"
+  },
+  {
+    "name": "Titan",
+    "logo": "titan-logo.png",
+    "parent": "Watches"
+  },
+  {
+    "name": "Fossil",
+    "logo": "fossil-logo.png",
+    "parent": "Watches"
+  },
+  {
+    "name": "Sonata",
+    "logo": "sonata-logo.png",
+    "parent": "Watches"
+  },
+  {
+    "name": "Accessories",
+    "logo": "accessories-logo.png",
+    "parent": "null"
+  },
+  {
+    "name": "Backpacks",
+    "logo": "backpacks-logo.png",
+    "parent": "Accessories"
+  },
+  {
+    "name": "Wallets",
+    "logo": "wallets-logo.png",
+    "parent": "Accessories"
+  },
+  {
+    "name": "Belts",
+    "logo": "belts-logo.png",
+    "parent": "Accessories"
+  },
+  {
+    "name": "Sunglasses",
+    "logo": "sunglasses-logo.png",
+    "parent": "Accessories"
+  },
+  {
+    "name": "Luggage & Travel",
+    "logo": "luggage-travel-logo.png",
+    "parent": "Accessories"
+  },
+  {
+    "name": "Frames",
+    "logo": "frames-logo.png",
+    "parent": "Accessories"
+  },
+  {
+    "name": "Jewellery",
+    "logo": "jewellery-logo.png",
+    "parent": "Accessories"
+  },
+  {
+    "name": "Sports & Fitness Store",
+    "logo": "sports-fitness-logo.png",
+    "parent": "null"
+  },
+  {
+    "name": "Smart Watches",
+    "logo": "smart-watches-logo.png",
+    "parent": "Sports & Fitness Store"
+  },
+  {
+    "name": "Smart Bands",
+    "logo": "smart-bands-logo.png",
+    "parent": "Sports & Fitness Store"
+  },
+  {
+    "name": "Personal Care Appliances",
+    "logo": "personal-care-appliances-logo.png",
+    "parent": "Sports & Fitness Store"
+  },
+  {
+    "name": "Trimmers",
+    "logo": "trimmers-logo.png",
+    "parent": "Personal Care Appliances"
+  },
+  {
+    "name": "Shavers",
+    "logo": "shavers-logo.png",
+    "parent": "Personal Care Appliances"
+  },
+  {
+    "name": "Grooming Kits",
+    "logo": "grooming-kits-logo.png",
+    "parent": "Personal Care Appliances"
+  },
+  {
+    "name": "Featured",
+    "logo": "featured-logo.png",
+    "parent": "null"
+  },
+  {
+    "name": "Watches Store",
+    "logo": "watches-store-logo.png",
+    "parent": "Featured"
+  },
+  {
+    "name": "Footwear Club",
+    "logo": "footwear-club-logo.png",
+    "parent": "Featured"
+  },
+  {
+    "name": "Bags & Wallet",
+    "logo": "bags-wallet-logo.png",
+    "parent": "Featured"
+  },
+  {
+    "name": "T-Shirt Store",
+    "logo": "t-shirt-store-logo.png",
+    "parent": "Featured"
+  },
+  {
+    "name": "Adidas",
+    "logo": "adidas-logo.png",
+    "parent": "Featured"
+  },
+  {
+    "name": "Beardo",
+    "logo": "beardo-logo.png",
+    "parent": "Featured"
+  },
+  {
+    "name": "Reebok",
+    "logo": "reebok-logo.png",
+    "parent": "Featured"
+  },
+  {
+    "name": "Skechers",
+    "logo": "skechers-logo.png",
+    "parent": "Featured"
+  },
+  {
+    "name": "Nike",
+    "logo": "nike-logo.png",
+    "parent": "Featured"
+  },
+  {
+    "name": "Electronics",
+    "logo": "electronics-logo.png",
+    "parent": "null"
+  },
+  {
+    "name": "Mobile Phones",
+    "logo": "mobile-phones-logo.png",
+    "parent": "Electronics"
+  },
+  {
+    "name": "Laptops & Computers",
+    "logo": "laptops-computers-logo.png",
+    "parent": "Electronics"
+  },
+  {
+    "name": "Tablets & Accessories",
+    "logo": "tablets-accessories-logo.png",
+    "parent": "Electronics"
+  },
+  {
+    "name": "Cameras & Photography",
+    "logo": "cameras-photography-logo.png",
+    "parent": "Electronics"
+  },
+  {
+    "name": "Audio & Headphones",
+    "logo": "audio-headphones-logo.png",
+    "parent": "Electronics"
+  },
+  {
+    "name": "Wearable Technology",
+    "logo": "wearable-technology-logo.png",
+    "parent": "Electronics"
+  },
+  {
+    "name": "Smart Home Devices",
+    "logo": "smart-home-devices-logo.png",
+    "parent": "Electronics"
+  },
+  {
+    "name": "Gaming Consoles & Accessories",
+    "logo": "gaming-consoles-accessories-logo.png",
+    "parent": "Electronics"
+  },
+  {
+    "name": "Televisions & Home Entertainment",
+    "logo": "televisions-home-entertainment-logo.png",
+    "parent": "Electronics"
+  },
+  {
+    "name": "Drones & Aerial Imaging",
+    "logo": "drones-aerial-imaging-logo.png",
+    "parent": "Electronics"
+  },
+  {
+    "name": "Fashion",
+    "logo": "fashion-logo.png",
+    "parent": "null"
+  },
+  {
+    "name": "Men's Clothing",
+    "logo": "mens-clothing-logo.png",
+    "parent": "Fashion"
+  },
+  {
+    "name": "Women's Clothing",
+    "logo": "womens-clothing-logo.png",
+    "parent": "Fashion"
+  },
+  {
+    "name": "Kid's Clothing",
+    "logo": "kids-clothing-logo.png",
+    "parent": "Fashion"
+  },
+  {
+    "name": "Shoes & Footwear",
+    "logo": "shoes-footwear-logo.png",
+    "parent": "Fashion"
+  },
+  {
+    "name": "Bags & Accessories",
+    "logo": "bags-accessories-logo.png",
+    "parent": "Fashion"
+  },
+  {
+    "name": "Watches",
+    "logo": "watches-logo.png",
+    "parent": "Fashion"
+  },
+  {
+    "name": "Jewelry",
+    "logo": "jewelry-logo.png",
+    "parent": "Fashion"
+  },
+  {
+    "name": "Eyewear & Sunglasses",
+    "logo": "eyewear-sunglasses-logo.png",
+    "parent": "Fashion"
+  },
+  {
+    "name": "Sportswear",
+    "logo": "sportswear-logo.png",
+    "parent": "Fashion"
+  },
+  {
+    "name": "Lingerie & Sleepwear",
+    "logo": "lingerie-sleepwear-logo.png",
+    "parent": "Fashion"
+  },
+  {
+    "name": "Home & Furniture",
+    "logo": "home-furniture-logo.png",
+    "parent": "null"
+  },
+  {
+    "name": "Furniture",
+    "logo": "furniture-logo.png",
+    "parent": "Home & Furniture"
+  },
+  {
+    "name": "Home Décor",
+    "logo": "home-decor-logo.png",
+    "parent": "Home & Furniture"
+  },
+  {
+    "name": "Kitchen & Dining",
+    "logo": "kitchen-dining-logo.png",
+    "parent": "Home & Furniture"
+  },
+  {
+    "name": "Bedding & Bath",
+    "logo": "bedding-bath-logo.png",
+    "parent": "Home & Furniture"
+  },
+  {
+    "name": "Lighting & Fans",
+    "logo": "lighting-fans-logo.png",
+    "parent": "Home & Furniture"
+  },
+  {
+    "name": "Storage & Organization",
+    "logo": "storage-organization-logo.png",
+    "parent": "Home & Furniture"
+  },
+  {
+    "name": "Rugs, Carpets & Mats",
+    "logo": "rugs-carpets-mats-logo.png",
+    "parent": "Home & Furniture"
+  },
+  {
+    "name": "Curtains & Blinds",
+    "logo": "curtains-blinds-logo.png",
+    "parent": "Home & Furniture"
+  },
+  {
+    "name": "Home Improvement Tools",
+    "logo": "home-improvement-tools-logo.png",
+    "parent": "Home & Furniture"
+  },
+  {
+    "name": "Smart Home Essentials",
+    "logo": "smart-home-essentials-logo.png",
+    "parent": "Home & Furniture"
+  },
+  {
+    "name": "Beauty & Personal Care",
+    "logo": "beauty-personal-care-logo.png",
+    "parent": "null"
+  },
+  {
+    "name": "Skincare",
+    "logo": "skincare-logo.png",
+    "parent": "Beauty & Personal Care"
+  },
+  {
+    "name": "Hair Care",
+    "logo": "hair-care-logo.png",
+    "parent": "Beauty & Personal Care"
+  },
+  {
+    "name": "Makeup & Cosmetics",
+    "logo": "makeup-cosmetics-logo.png",
+    "parent": "Beauty & Personal Care"
+  },
+  {
+    "name": "Fragrances",
+    "logo": "fragrances-logo.png",
+    "parent": "Beauty & Personal Care"
+  },
+  {
+    "name": "Grooming & Shaving",
+    "logo": "grooming-shaving-logo.png",
+    "parent": "Beauty & Personal Care"
+  },
+  {
+    "name": "Oral Care",
+    "logo": "oral-care-logo.png",
+    "parent": "Beauty & Personal Care"
+  },
+  {
+    "name": "Bath & Body",
+    "logo": "bath-body-logo.png",
+    "parent": "Beauty & Personal Care"
+  },
+  {
+    "name": "Personal Hygiene",
+    "logo": "personal-hygiene-logo.png",
+    "parent": "Beauty & Personal Care"
+  },
+  {
+    "name": "Wellness & Supplements",
+    "logo": "wellness-supplements-logo.png",
+    "parent": "Beauty & Personal Care"
+  },
+  {
+    "name": "Beauty Tools & Accessories",
+    "logo": "beauty-tools-accessories-logo.png",
+    "parent": "Beauty & Personal Care"
+  },
+  {
+    "name": "Health & Wellness",
+    "logo": "health-wellness-logo.png",
+    "parent": "null"
+  },
+  {
+    "name": "Vitamins & Supplements",
+    "logo": "vitamins-supplements-logo.png",
+    "parent": "Health & Wellness"
+  },
+  {
+    "name": "Fitness Equipment",
+    "logo": "fitness-equipment-logo.png",
+    "parent": "Health & Wellness"
+  },
+  {
+    "name": "Health Devices",
+    "logo": "health-devices-logo.png",
+    "parent": "Health & Wellness"
+  },
+  {
+    "name": "Personal Care Appliances",
+    "logo": "personal-care-appliances-logo.png",
+    "parent": "Health & Wellness"
+  },
+  {
+    "name": "Sexual Wellness",
+    "logo": "sexual-wellness-logo.png",
+    "parent": "Health & Wellness"
+  },
+  {
+    "name": "First Aid & Medical Supplies",
+    "logo": "first-aid-medical-supplies-logo.png",
+    "parent": "Health & Wellness"
+  },
+  {
+    "name": "Weight Management",
+    "logo": "weight-management-logo.png",
+    "parent": "Health & Wellness"
+  },
+  {
+    "name": "Yoga & Meditation",
+    "logo": "yoga-meditation-logo.png",
+    "parent": "Health & Wellness"
+  },
+  {
+    "name": "Health Foods",
+    "logo": "health-foods-logo.png",
+    "parent": "Health & Wellness"
+  },
+  {
+    "name": "Natural & Organic Products",
+    "logo": "natural-organic-products-logo.png",
+    "parent": "Health & Wellness"
+  },
+  {
+    "name": "Sports & Outdoors",
+    "logo": "sports-outdoors-logo.png",
+    "parent": "null"
+  },
+  {
+    "name": "Sports Equipment",
+    "logo": "sports-equipment-logo.png",
+    "parent": "Sports & Outdoors"
+  },
+  {
+    "name": "Outdoor Gear",
+    "logo": "outdoor-gear-logo.png",
+    "parent": "Sports & Outdoors"
+  },
+  {
+    "name": "Fitness & Exercise",
+    "logo": "fitness-exercise-logo.png",
+    "parent": "Sports & Outdoors"
+  },
+  {
+    "name": "Sportswear",
+    "logo": "sportswear-logo.png",
+    "parent": "Sports & Outdoors"
+  },
+  {
+    "name": "Camping & Hiking",
+    "logo": "camping-hiking-logo.png",
+    "parent": "Sports & Outdoors"
+  },
+  {
+    "name": "Cycling",
+    "logo": "cycling-logo.png",
+    "parent": "Sports & Outdoors"
+  },
+  {
+    "name": "Water Sports",
+    "logo": "water-sports-logo.png",
+    "parent": "Sports & Outdoors"
+  },
+  {
+    "name": "Winter Sports",
+    "logo": "winter-sports-logo.png",
+    "parent": "Sports & Outdoors"
+  },
+  {
+    "name": "Team Sports",
+    "logo": "team-sports-logo.png",
+    "parent": "Sports & Outdoors"
+  },
+  {
+    "name": "Hunting & Fishing",
+    "logo": "hunting-fishing-logo.png",
+    "parent": "Sports & Outdoors"
+  },
+  {
+    "name": "Books & Media",
+    "logo": "books-media-logo.png",
+    "parent": "null"
+  },
+  {
+    "name": "Fiction",
+    "logo": "fiction-logo.png",
+    "parent": "Books & Media"
+  },
+  {
+    "name": "Non-Fiction",
+    "logo": "non-fiction-logo.png",
+    "parent": "Books & Media"
+  },
+  {
+    "name": "Children's Books",
+    "logo": "childrens-books-logo.png",
+    "parent": "Books & Media"
+  },
+  {
+    "name": "Comics & Graphic Novels",
+    "logo": "comics-graphic-novels-logo.png",
+    "parent": "Books & Media"
+  },
+  {
+    "name": "Magazines",
+    "logo": "magazines-logo.png",
+    "parent": "Books & Media"
+  },
+  {
+    "name": "Music & Vinyl",
+    "logo": "music-vinyl-logo.png",
+    "parent": "Books & Media"
+  },
+  {
+    "name": "Movies & TV Shows",
+    "logo": "movies-tv-shows-logo.png",
+    "parent": "Books & Media"
+  },
+  {
+    "name": "Video Games",
+    "logo": "video-games-logo.png",
+    "parent": "Books & Media"
+  },
+  {
+    "name": "E-Books & Audiobooks",
+    "logo": "e-books-audiobooks-logo.png",
+    "parent": "Books & Media"
+  },
+  {
+    "name": "Stationery",
+    "logo": "stationery-logo.png",
+    "parent": "Books & Media"
+  },
+  {
+    "name": "Toys & Baby Products",
+    "logo": "toys-baby-products-logo.png",
+    "parent": "null"
+  },
+  {
+    "name": "Toys",
+    "logo": "toys-logo.png",
+    "parent": "Toys & Baby Products"
+  },
+  {
+    "name": "Games & Puzzles",
+    "logo": "games-puzzles-logo.png",
+    "parent": "Toys & Baby Products"
+  },
+  {
+    "name": "Baby Clothing",
+    "logo": "baby-clothing-logo.png",
+    "parent": "Toys & Baby Products"
+  },
+  {
+    "name": "Baby Gear",
+    "logo": "baby-gear-logo.png",
+    "parent": "Toys & Baby Products"
+  },
+  {
+    "name": "Diapering & Potty Training",
+    "logo": "diapering-potty-training-logo.png",
+    "parent": "Toys & Baby Products"
+  },
+  {
+    "name": "Feeding & Nursing",
+    "logo": "feeding-nursing-logo.png",
+    "parent": "Toys & Baby Products"
+  },
+  {
+    "name": "Strollers & Car Seats",
+    "logo": "strollers-car-seats-logo.png",
+    "parent": "Toys & Baby Products"
+  },
+  {
+    "name": "Baby Bath & Skincare",
+    "logo": "baby-bath-skincare-logo.png",
+    "parent": "Toys & Baby Products"
+  },
+  {
+    "name": "Baby Health & Safety",
+    "logo": "baby-health-safety-logo.png",
+    "parent": "Toys & Baby Products"
+  },
+  {
+    "name": "Nursery Furniture",
+    "logo": "nursery-furniture-logo.png",
+    "parent": "Toys & Baby Products"
+  },
+  {
+    "name": "Groceries & Gourmet Food",
+    "logo": "groceries-gourmet-food-logo.png",
+    "parent": "null"
+  },
+  {
+    "name": "Beverages",
+    "logo": "beverages-logo.png",
+    "parent": "Groceries & Gourmet Food"
+  },
+  {
+    "name": "Snacks & Sweets",
+    "logo": "snacks-sweets-logo.png",
+    "parent": "Groceries & Gourmet Food"
+  },
+  {
+    "name": "Breakfast Foods",
+    "logo": "breakfast-foods-logo.png",
+    "parent": "Groceries & Gourmet Food"
+  },
+  {
+    "name": "Pantry Staples",
+    "logo": "pantry-staples-logo.png",
+    "parent": "Groceries & Gourmet Food"
+  },
+  {
+    "name": "Organic & Natural",
+    "logo": "organic-natural-logo.png",
+    "parent": "Groceries & Gourmet Food"
+  },
+  {
+    "name": "Specialty Foods",
+    "logo": "specialty-foods-logo.png",
+    "parent": "Groceries & Gourmet Food"
+  },
+  {
+    "name": "Baking & Cooking Supplies",
+    "logo": "baking-cooking-supplies-logo.png",
+    "parent": "Groceries & Gourmet Food"
+  },
+  {
+    "name": "Pet Food & Supplies",
+    "logo": "pet-food-supplies-logo.png",
+    "parent": "Groceries & Gourmet Food"
+  },
+  {
+    "name": "Household Essentials",
+    "logo": "household-essentials-logo.png",
+    "parent": "Groceries & Gourmet Food"
+  },
+  {
+    "name": "Dairy & Eggs",
+    "logo": "dairy-eggs-logo.png",
+    "parent": "Groceries & Gourmet Food"
+  },
+  {
+    "name": "Frozen Foods",
+    "logo": "frozen-foods-logo.png",
+    "parent": "Groceries & Gourmet Food"
+  },
+  {
+    "name": "Automotive & Industrial",
+    "logo": "automotive-industrial-logo.png",
+    "parent": "null"
+  },
+  {
+    "name": "Car Accessories",
+    "logo": "car-accessories-logo.png",
+    "parent": "Automotive & Industrial"
+  },
+  {
+    "name": "Car Electronics",
+    "logo": "car-electronics-logo.png",
+    "parent": "Automotive & Industrial"
+  },
+  {
+    "name": "Car Parts & Tires",
+    "logo": "car-parts-tires-logo.png",
+    "parent": "Automotive & Industrial"
+  },
+  {
+    "name": "Motorcycles & Accessories",
+    "logo": "motorcycles-accessories-logo.png",
+    "parent": "Automotive & Industrial"
+  },
+  {
+    "name": "Tools & Equipment",
+    "logo": "tools-equipment-logo.png",
+    "parent": "Automotive & Industrial"
+  },
+  {
+    "name": "Power Tools",
+    "logo": "power-tools-logo.png",
+    "parent": "Automotive & Industrial"
+  },
+  {
+    "name": "Safety & Security",
+    "logo": "safety-security-logo.png",
+    "parent": "Automotive & Industrial"
+  },
+  {
+    "name": "Industrial Supplies",
+    "logo": "industrial-supplies-logo.png",
+    "parent": "Automotive & Industrial"
+  },
+  {
+    "name": "Motor Oil & Fluids",
+    "logo": "motor-oil-fluids-logo.png",
+    "parent": "Automotive & Industrial"
+  },
+  {
+    "name": "Car Care & Cleaning",
+    "logo": "car-care-cleaning-logo.png",
+    "parent": "Automotive & Industrial"
+  },
+  {
+    "name": "Pets & Pet Supplies",
+    "logo": "pets-pet-supplies-logo.png",
+    "parent": "null"
+  },
+  {
+    "name": "Dog Supplies",
+    "logo": "dog-supplies-logo.png",
+    "parent": "Pets & Pet Supplies"
+  },
+  {
+    "name": "Cat Supplies",
+    "logo": "cat-supplies-logo.png",
+    "parent": "Pets & Pet Supplies"
+  },
+  {
+    "name": "Fish & Aquatic Pets",
+    "logo": "fish-aquatic-pets-logo.png",
+    "parent": "Pets & Pet Supplies"
+  },
+  {
+    "name": "Bird Supplies",
+    "logo": "bird-supplies-logo.png",
+    "parent": "Pets & Pet Supplies"
+  },
+  {
+    "name": "Small Pet Supplies",
+    "logo": "small-pet-supplies-logo.png",
+    "parent": "Pets & Pet Supplies"
+  },
+  {
+    "name": "Pet Food & Treats",
+    "logo": "pet-food-treats-logo.png",
+    "parent": "Pets & Pet Supplies"
+  },
+  {
+    "name": "Pet Health & Wellness",
+    "logo": "pet-health-wellness-logo.png",
+    "parent": "Pets & Pet Supplies"
+  },
+  {
+    "name": "Pet Grooming",
+    "logo": "pet-grooming-logo.png",
+    "parent": "Pets & Pet Supplies"
+  },
+  {
+    "name": "Pet Toys & Training",
+    "logo": "pet-toys-training-logo.png",
+    "parent": "Pets & Pet Supplies"
+  }
+]

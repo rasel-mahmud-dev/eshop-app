@@ -10,8 +10,8 @@ import {
 
 } from "react-native/Libraries/NewAppScreen";
 import MyStack from "./MyStack";
+// import "../global.css"
 
- 
 function App() {
   const isDarkMode = useColorScheme() === "dark";
 
