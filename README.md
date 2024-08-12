@@ -46,8 +46,12 @@ yarn ios
 
 ```shell
 cd android
-./gradlew clean
+
 ./gradlew assembleRelease
+#./gradlew clean
+#./gradlew assembleRelease
+
+adb install -r ./android/app/build/outputs/apk/debug/app-debug.apk
 
 ```
 
@@ -82,3 +86,18 @@ cd android
 gradlew clean
 npx react-native start --reset-cache
 ```
+
+
+./gradlew assembleRelease
+
+sudo apt-get install android-tools-adb
+
+cd TurboModuleDemo/DeviceName/android
+
+adb install ./android/app/build/outputs/apk/release/app-release.apk
+
+adb install -r ./android/app/build/outputs/apk/release/app-release.apk
+
+If you get an error saying the APK is already installed, you can add the -r flag to replace the existing installation:
+
+adb shell am start -n com.devicename/.MainActivity

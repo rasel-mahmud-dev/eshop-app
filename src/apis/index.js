@@ -1,8 +1,8 @@
 import axios from "axios";
 import localStorage from "../services/LocalStorage";
 
-export const BACKEND = "http://192.168.20.201:3000/api/v1";
-// export const BACKEND = "https://portfolio-server-two-roan.vercel.app/api/v1";
+// export const BACKEND = "http://192.168.20.201:3000/api/v1";
+export const BACKEND = "https://eshop-pi-seven.vercel.app/api/v1";
 
 export const apis = axios.create({
   baseURL: `${BACKEND}`,

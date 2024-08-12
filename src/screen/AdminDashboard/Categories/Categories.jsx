@@ -1,5 +1,15 @@
 import React, { useCallback, useEffect, useRef, useState } from "react";
-import { View, Text, FlatList, TouchableOpacity, StyleSheet, Image, ScrollView, Alert } from "react-native";
+import {
+  View,
+  Text,
+  FlatList,
+  TouchableOpacity,
+  StyleSheet,
+  Image,
+  ScrollView,
+  Alert,
+  ToastAndroid,
+} from "react-native";
 import Icon from "react-native-vector-icons/Ionicons";
 import { useCategoryStore, usePromptStore } from "../../../store";
 import { apis, setAuthorization } from "../../../apis";
@@ -47,7 +57,11 @@ function CategoryListScreen({ navigation }) {
       await setAuthorization();
       const { data } = await apis.get("/categories/parent");
       setParentCategories(data.data);
-
+      if(data?.data?.length){
+        setSelectedCategory(data?.data[0]);
+        await fetchSubCategories(data?.data[0])
+      }
+      ToastAndroid.show("call /categories/parent", 1000);
     }());
   }, []);
 
@@ -73,7 +87,7 @@ function CategoryListScreen({ navigation }) {
 
   async function handleDeleteParentItem() {
     try {
-      const parentId = selectedCategory?.id
+      const parentId = selectedCategory?.id;
       if (!parentId) return throwError(400, "First select a category");
       // const isOk = await setOpen("delete");
       const { data } = await apis.delete(`/categories/parent/${parentId}`);
