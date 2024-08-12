@@ -1,30 +1,39 @@
-import React, { useRef, useState } from "react";
+import React, { useEffect, useRef } from "react";
 import {
   View,
   Text,
   StyleSheet,
   Animated,
   PanResponder,
-  TouchableOpacity,
-  Dimensions,
+  Dimensions, TouchableWithoutFeedback,
 } from "react-native";
 
-const height = 1000;
-
-export default function BottomSheet() {
-  const bottomSheetHeight = height; // Height of the bottom sheet (50% of screen height)
-  const startPosition = height; // Starting position of the bottom sheet (off-screen)
+export default function BottomSheet({
+                                      isOpen,
+                                      onClose,
+                                      style = {},
+                                      height = 100,
+                                      backdropStyle = {},
+  children
+                                    }) {
+  const bottomSheetHeight = height;
+  const startPosition = height;
 
   // Position of the bottom sheet
   const position = useRef(new Animated.Value(startPosition)).current;
 
+  // Interpolating the opacity of the backdrop based on the position of the bottom sheet
+  const backdropOpacity = position.interpolate({
+    inputRange: [height - bottomSheetHeight, startPosition],
+    outputRange: [0.5, 0], // Adjust these values to control the opacity range
+    extrapolate: "clamp",
+  });
+
   // Open or close the bottom sheet
   const toggleBottomSheet = (open) => {
-
-    let a = open ? height - bottomSheetHeight : startPosition;
-    console.log(a);
+    const targetPosition = open ? height - bottomSheetHeight : startPosition;
     Animated.timing(position, {
-      toValue: a,
+      toValue: targetPosition,
       duration: 300,
       useNativeDriver: true,
     }).start();
@@ -35,58 +44,75 @@ export default function BottomSheet() {
     PanResponder.create({
       onMoveShouldSetPanResponder: () => true,
       onPanResponderMove: (evt, gestureState) => {
-        // Calculate new position
         const newPosition = height - bottomSheetHeight + gestureState.dy;
         if (newPosition > height - bottomSheetHeight && newPosition < height) {
           position.setValue(newPosition);
         }
       },
       onPanResponderRelease: (evt, gestureState) => {
-        // Determine whether to open or close the bottom sheet based on the gesture
         if (gestureState.dy > 50) {
+          onClose(false);
           toggleBottomSheet(false);
         } else {
+          onClose(true);
           toggleBottomSheet(true);
         }
       },
     }),
   ).current;
 
-  return (
-    <View style={styles.container}>
-      <TouchableOpacity onPress={() => toggleBottomSheet(true)}>
-        <Text style={styles.openButtonText}>Open Bottom Sheet</Text>
-      </TouchableOpacity>
+  useEffect(() => {
+    toggleBottomSheet(isOpen);
+  }, [isOpen]);
 
+  return (
+    <>
+      <TouchableWithoutFeedback
+        onPress={() => {
+          onClose(false);
+          toggleBottomSheet(false);
+        }}
+      >
+        <Animated.View
+          style={[
+            styles.backdrop,
+            { opacity: backdropOpacity },
+            backdropStyle,
+          ]}
+          pointerEvents={isOpen ? "auto" : "none"}
+        />
+      </TouchableWithoutFeedback>
       <Animated.View
-        style={[styles.bottomSheet, { transform: [{ translateY: position }] }]}
+        style={[
+          styles.bottomSheet(height),
+          { transform: [{ translateY: position }] },
+          style,
+        ]}
         {...panResponder.panHandlers}
       >
         <View style={styles.handle} />
-        <Text style={styles.sheetTitle}>Custom Bottom Sheet</Text>
-        <Text style={styles.sheetContent}>Here is some content...</Text>
+        {children}
       </Animated.View>
-    </View>
+    </>
   );
 }
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    justifyContent: "center",
-    alignItems: "center",
-    backgroundColor: "#f2f2f2",
+  backdrop: {
+    position: "absolute",
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0,
+    backgroundColor: "black",
   },
-  openButtonText: {
-    fontSize: 18,
-    color: "#007BFF",
-  },
-  bottomSheet: {
+  bottomSheet: (height) => ({
     position: "absolute",
     width: "100%",
     left: 0,
     right: 0,
-    height: height * 0.5,
+    height: height,
+    bottom: 0,
     backgroundColor: "white",
     borderTopLeftRadius: 20,
     borderTopRightRadius: 20,
@@ -98,7 +124,7 @@ const styles = StyleSheet.create({
     paddingTop: 10,
     paddingHorizontal: 20,
     paddingBottom: 20,
-  },
+  }),
   handle: {
     width: 40,
     height: 5,

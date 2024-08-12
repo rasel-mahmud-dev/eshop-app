@@ -1,18 +1,41 @@
 import React, { useCallback, useEffect, useRef, useState } from "react";
-import { View, Text, FlatList, TouchableOpacity, StyleSheet, Image } from "react-native";
+import { View, Text, FlatList, TouchableOpacity, StyleSheet, Image, ScrollView, Alert } from "react-native";
 import Icon from "react-native-vector-icons/Ionicons";
-import BottomSheet from "../../../components/BottomSheet/BottomSheet";
-import categoryAction from "../../../store/actions/categoryAction";
-import { useCategoryStore } from "../../../store";
+import { useCategoryStore, usePromptStore } from "../../../store";
 import { apis, setAuthorization } from "../../../apis";
 import AntDesign from "react-native-vector-icons/AntDesign";
+import BottomSheet from "../../../components/BottomSheet/BottomSheet";
+import RsButton from "../../../components/RsButton/RsButton";
+import AddCategory from "./AddCategory";
+import Ionicons from "react-native-vector-icons/Ionicons";
+import CenteredPrompt from "../../../components/CenteredPrompt";
+import catchAxiosError from "../../../utils/catchAxiosError";
+import throwError from "../../../utils/throwError";
 
 
 function CategoryListScreen({ navigation }) {
 
-  const { categories, parentCategories, setParentCategories } = useCategoryStore();
+  const [promptVisible, setPromptVisible] = useState(false);
+
+  const handleOpenPrompt = () => {
+    setPromptVisible(true);
+  };
+
+  const handleClosePrompt = () => {
+    setPromptVisible(false);
+  };
+
+  const handleConfirm = () => {
+    Alert.alert("Confirmed");
+    setPromptVisible(false);
+  };
+
+  const { subCategories, setSubCategories, parentCategories, setParentCategories } = useCategoryStore();
+  const { setOpen } = usePromptStore();
 
   const [selectedCategory, setSelectedCategory] = useState();
+
+  const [isOpenBottomSheet, setOpenBottomSheet] = useState(false);
 
   const bottomSheetRef = useRef(null);
   const handleSheetChanges = useCallback((index) => {
@@ -28,6 +51,38 @@ function CategoryListScreen({ navigation }) {
     }());
   }, []);
 
+
+  async function fetchSubCategories(item) {
+    setSelectedCategory(item);
+    if (!subCategories[item.id]?.length) {
+      await setAuthorization();
+      const { data } = await apis.get(`/categories/sub-categories/${item.id}`);
+      setSubCategories(item.id, data.data);
+    }
+  }
+
+  async function handleDeleteItem(id) {
+    try {
+      // const isOk = await setOpen("delete");
+      const { data } = await apis.delete(`/categories/${item.id}`);
+      Alert.alert("Delete!", "Deleted..");
+    } catch (ex) {
+      Alert.alert("Delete!", catchAxiosError(ex));
+    }
+  }
+
+  async function handleDeleteParentItem() {
+    try {
+      const parentId = selectedCategory?.id
+      if (!parentId) return throwError(400, "First select a category");
+      // const isOk = await setOpen("delete");
+      const { data } = await apis.delete(`/categories/parent/${parentId}`);
+      Alert.alert("Delete!", "Deleted..");
+    } catch (ex) {
+      Alert.alert("Delete!", catchAxiosError(ex));
+    }
+  }
+
   return (
     <>
       <View style={styles.container}>
@@ -39,13 +94,14 @@ function CategoryListScreen({ navigation }) {
           </View>
         </View>
 
+
         <View style={{ paddingStart: 10 }}>
           <FlatList
             horizontal={true}
             data={parentCategories}
             keyExtractor={(item) => item.id.toString()}
             renderItem={({ item }) => (
-              <TouchableOpacity onPress={() => setSelectedCategory(item)}
+              <TouchableOpacity onPress={() => fetchSubCategories(item)}
                                 style={[
                                   styles.card,
                                   selectedCategory?.id === item?.id
@@ -62,17 +118,31 @@ function CategoryListScreen({ navigation }) {
         </View>
 
         <View style={{ flex: 1, paddingVertical: 20, paddingHorizontal: 10 }}>
-          <Text style={{ fontSize: 20, fontWeight: "bold", color: "#1c1c1c", paddingBottom: 16 }}>Sub-Categories</Text>
+          <View style={{ flexDirection: "row", justifyContent: "space-between", alignItems: "center" }}>
+            <Text style={{ fontSize: 20, fontWeight: "bold", color: "#1c1c1c" }}>Sub-Categories</Text>
+            <RsButton onPress={handleDeleteParentItem} loginButton={{
+              paddingHorizontal: 30,
+              columnGap: 5,
+              flexDirection: "row",
+              justifyContent: "center",
+              alignItems: "center",
+            }}>
+              <Ionicons style={styles.trashIcon} name="trash-outline" size={20} color={"white"} />
+              <Text style={{ fontSize: 10, fontWeight: "bold", color: "#ffffff" }}>Delete All</Text>
+            </RsButton>
+          </View>
           <FlatList
-
             numColumns={2}
-            data={parentCategories}
+            data={subCategories[selectedCategory?.id]}
             keyExtractor={(item) => item.id.toString()}
             renderItem={({ item }) => (
-              <TouchableOpacity onPress={() => setSelectedCategory(item)}
-                                style={[
-                                  styles.card,
-                                ]}>
+              <TouchableOpacity
+                style={[
+                  styles.card,
+                ]}>
+                <TouchableOpacity style={styles.trashIconWrapper} onPress={() => handleDeleteItem(item.id)}>
+                  <Ionicons style={styles.trashIcon} name="trash-outline" size={20} color={"red"} />
+                </TouchableOpacity>
                 <Image
                   source={{ uri: "https://5.imimg.com/data5/SELLER/Default/2023/3/292019880/YM/MK/PO/104903331/apple-iphone-14-pro-max-250x250.jpg" }}
                   style={styles.icon} />
@@ -84,25 +154,29 @@ function CategoryListScreen({ navigation }) {
 
         <TouchableOpacity
           style={styles.addButton}
-          onPress={() => navigation.navigate("CreateCategory")}
+          onPress={() => setOpenBottomSheet(prevState => !prevState)}
         >
           <Icon name="add-circle-outline" size={50} color="#1E90FF" />
         </TouchableOpacity>
 
-
-        {/*<BottomSheet*/}
-        {/*  ref={bottomSheetRef}*/}
-        {/*  onChange={handleSheetChanges}*/}
-        {/*>*/}
-        {/*  <BottomSheetView style={styles.contentContainer}>*/}
-        {/*    <Text>Awesome 🎉</Text>*/}
-        {/*  </BottomSheetView>*/}
-        {/*</BottomSheet>*/}
-
       </View>
-      {/*<BottomSheet>*/}
-      {/*  <Text>sdf</Text>*/}
-      {/*</BottomSheet>*/}
+
+      <CenteredPrompt
+        id={"delete"}
+        onClose={handleClosePrompt}
+        onConfirm={handleConfirm}
+        message="Are you sure you want to proceed?"
+      />
+
+      <BottomSheet
+        height={400}
+        backdrop={{ backgroundColor: "rgba(31,31,31,0.75)" }}
+        style={{ backgroundColor: "#ffffff", overflow: "scroll" }}
+        isOpen={isOpenBottomSheet} onClose={setOpenBottomSheet}>
+        <ScrollView>
+          <AddCategory onClose={setOpenBottomSheet} />
+        </ScrollView>
+      </BottomSheet>
     </>
   );
 }
@@ -150,6 +224,23 @@ const styles = StyleSheet.create({
     position: "absolute",
     bottom: 20,
     right: 20,
+  },
+  trashIconWrapper: {
+    zIndex: 1000,
+    position: "absolute",
+    top: 10,
+    right: 10,
+    padding: 5,
+    shadowColor: "#ff0505",
+    shadowOpacity: 1,
+    elevation: 4,
+    borderRadius: 6,
+    backgroundColor: "rgb(255,203,203)",
+  },
+  trashIcon: {
+
+    fontSize: 14,
+
   },
 });
 

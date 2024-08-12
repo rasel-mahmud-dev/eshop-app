@@ -2,7 +2,7 @@ import React from "react";
 import { TouchableOpacity, Text, StyleSheet } from "react-native";
 import { LinearGradient } from "react-native-linear-gradient";
 
-const RsButton = ({ onPress, style, textStyle, children, variant }) => {
+const RsButton = ({ onPress, loginButton={}, style, textStyle, children, variant }) => {
   return (
     <LinearGradient
       start={{ x: 0, y: 0 }}
@@ -10,7 +10,7 @@ const RsButton = ({ onPress, style, textStyle, children, variant }) => {
       colors={["#5851DB", "#E1306C"]}
       style={[styles.loginButtonGradient, style]}
     >
-      <TouchableOpacity style={styles.loginButton} onPress={onPress}>
+      <TouchableOpacity style={[styles.loginButton, loginButton]} onPress={onPress}>
         {typeof children === "string" ? <Text style={[styles.loginButtonText, textStyle]}>{children}</Text> : children}
       </TouchableOpacity>
     </LinearGradient>
