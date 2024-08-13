@@ -1,14 +1,14 @@
 import React from "react";
 import { View, Text, Image, StyleSheet } from "react-native";
 
-const Product = ({ name, price, image }) => {
+const Product = ({ title, price, description, image }) => {
   return (
     <View style={styles.product}>
       <View style={styles.imageWrapper}>
 
         <Image source={{ uri: image }} style={styles.image} />
       </View>
-      <Text style={styles.name}>{name}</Text>
+      <Text style={styles.name}>{title}</Text>
       <Text style={styles.price}>{price}</Text>
     </View>
   );
@@ -34,6 +34,7 @@ const styles = StyleSheet.create({
     aspectRatio: 1,
   },
   name: {
+    color: "#1c1c1c",
     padding: 5,
     fontSize: 14,
     fontWeight: "bold",

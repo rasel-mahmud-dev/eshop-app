@@ -11,10 +11,10 @@ class ProductController {
       await client.query("BEGIN");
 
       for (let product of products) {
-        const { title, description, price, category, brand } = product;
+        const { title, description, price, category, brand, image} = product;
         const slug = slugify(title, { lower: true });
 
-        let brandIdToUse = null
+        let brandIdToUse = null;
         const brandSlug = slugify(brand, { lower: true });
         if (brandSlug) {
           let brandResult = await client.query("SELECT id FROM brands WHERE slug = $1", [brandSlug]);
@@ -45,16 +45,17 @@ class ProductController {
 
         // Insert or update the product
         await client.query(
-          `INSERT INTO products(title, slug, description, price, brand_id, category_id)
-           VALUES ($1, $2, $3, $4, $5, $6)
+          `INSERT INTO products(title, slug, description, price, brand_id, category_id, image)
+           VALUES ($1, $2, $3, $4, $5, $6, $7)
            ON CONFLICT (slug) DO UPDATE
                SET title       = excluded.title,
                    description = excluded.description,
                    price       = excluded.price,
                    brand_id    = excluded.brand_id,
-                   category_id = excluded.category_id
+                   category_id = excluded.category_id,
+                   image       = excluded.image
            RETURNING id`,
-          [title, slug, description, price, brandIdToUse, categoryIdToUse],
+          [title, slug, description, price, brandIdToUse, categoryIdToUse, image],
         );
       }
 
@@ -82,23 +83,24 @@ class ProductController {
   create = async (req, res) => {
     try {
 
-      const { title, description, price, brandId, categoryId } = req.body;
+      const { title, description, price, image, brandId, categoryId } = req.body;
 
       if (!title) throw Error(`title is required`);
 
       const slug = slugify(title, { lower: true });
 
       const ress = await pool.query(
-        `INSERT INTO products(title, slug, description, price, brand_id, category_id)
-         VALUES ($1, $2, $3, $4, $5, $6)
+        `INSERT INTO products(title, slug, description, price, brand_id, category_id, image)
+         VALUES ($1, $2, $3, $4, $5, $6, $7)
          ON CONFLICT (slug) DO UPDATE
              SET title       = excluded.title,
                  description = excluded.description,
                  price       = excluded.price,
                  brand_id    = excluded.brand_id,
-                 category_id = excluded.category_id
+                 category_id = excluded.category_id,
+                 image       = excluded.image
          RETURNING *`,
-        [title, slug, description, price, brandId, categoryId],
+        [title, slug, description, price, brandId, categoryId, image],
       );
 
       res.status(201).json({ data: ress.rows?.[0] });
@@ -172,7 +174,7 @@ class ProductController {
     const client = await pool.connect();
     try {
       const { id } = req.params;
-      const { title, description, price, brandId } = req.body;
+      const { title, description, price, brandId, categoryId, image } = req.body;
 
       if (!id) {
         return res.status(400).json({ error: "ID is required" });
@@ -196,6 +198,14 @@ class ProductController {
       if (brandId !== undefined) {
         updateQuery += ` brand_id = $${values.length + 1},`;
         values.push(brandId);
+      }
+      if (categoryId !== undefined) {
+        updateQuery += ` category_id = $${values.length + 1},`;
+        values.push(categoryId);
+      }
+      if (image !== undefined) {
+        updateQuery += ` image = $${values.length + 1},`;
+        values.push(image);
       }
 
       if (values.length === 0) {

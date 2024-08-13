@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { View, StyleSheet, Text, TouchableOpacity, FlatList, Image } from "react-native";
+import { View, StyleSheet, Text, TouchableOpacity, FlatList, Image, Alert, RefreshControl } from "react-native";
 import Icon from "react-native-vector-icons/Ionicons";
 import { useToast } from "../../../lib/ToastService";
 import { apis } from "../../../apis";
@@ -17,18 +17,20 @@ const ProductList = () => {
 
   const navigation = useNavigation();
 
-  useEffect(() => {
-    async function fetchProducts() {
-      try {
-        const res = await apis.get("/products");
-        setProducts(res?.data?.data || []);
-      } catch (ex) {
-        error(catchAxiosError(ex));
-      } finally {
-        setLoading(false);
-      }
+  async function fetchProducts() {
+    try {
+      setLoading(true);
+      const res = await apis.get("/products");
+      setProducts(res?.data?.data || []);
+    } catch (ex) {
+      error(catchAxiosError(ex));
+    } finally {
+      setLoading(false);
     }
+  }
 
+
+  useEffect(() => {
     fetchProducts();
   }, []);
 
@@ -53,7 +55,9 @@ const ProductList = () => {
         <Text style={styles.productDescription}>{item.description}</Text>
       </View>
       <View style={styles.actions}>
-        <RsButton loginButton={styles.loginButton} onPress={() => onEdit(item)} style={styles.actionButton}>
+        <RsButton loginButton={styles.loginButton}
+                  onPress={() => navigation.navigate("AdminDashboard::UpdateProduct", { productId: item.id })}
+                  style={styles.actionButton}>
           <Icon name="pencil-outline" size={14} color="#fff" />
           <Text style={styles.actionText}>Edit</Text>
         </RsButton>
@@ -65,6 +69,18 @@ const ProductList = () => {
     </View>
   );
 
+  const [refreshing, setRefreshing] = useState(false);
+
+  const onRefresh = async () => {
+    try {
+      setRefreshing(true);
+      fetchProducts();
+    } catch (ex) {
+      Alert.alert(catchAxiosError(ex));
+    } finally {
+      setRefreshing(false);
+    }
+  };
   return (
     <View style={styles.container}>
 
@@ -91,6 +107,15 @@ const ProductList = () => {
       ) : (
         <View style={styles.listContainer}>
           <FlatList
+            refreshControl={
+              <RefreshControl
+                progressBackgroundColor={"rgba(111,169,218,0.98)"}
+                progressColor={"green"}
+                colors={["#5851DB", "#C13584"]}
+                refreshing={refreshing}
+                onRefresh={onRefresh}
+              />
+            }
             data={products}
             renderItem={renderItem}
             keyExtractor={(item) => item.id.toString()}

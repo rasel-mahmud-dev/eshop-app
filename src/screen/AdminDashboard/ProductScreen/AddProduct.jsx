@@ -30,9 +30,12 @@ const pickImage = (callback) => {
   });
 };
 
-const AddProduct = ({ route, navigate }) => {
+const AddProduct = ({ route }) => {
 
-  const { productId } = route.params;
+  const navigation = useNavigation();
+
+  const productId = route?.params?.productId;
+
 
   const { onClose, onSuccess, editItem = null } = {};
 
@@ -72,14 +75,23 @@ const AddProduct = ({ route, navigate }) => {
 
   useEffect(() => {
     if (!productId) return;
-    apis.get(`/products/${productId}`).then(res=>{
-      const data = res?.data?.data
-      if(!data) return;
+    apis.get(`/products/${productId}`).then(res => {
 
+      const data = res?.data?.data;
+      if (!data) return;
+      setState({
+        title: data?.title,
+        category: data?.category_id ? { label: "", value: data.category_id } : "",
+        brand: data?.brand_id ? { label: "", value: data.brand_id } : "",
+        price: data?.price,
+        description: data?.description,
+        uploadedUrl: data?.image,
+      });
+    }).catch(ex => {
+      error(catchAxiosError(ex));
+    });
 
-    })
-
-  }, [productId])
+  }, [productId]);
 
 
   async function uploadImage(uri) {
@@ -107,9 +119,8 @@ const AddProduct = ({ route, navigate }) => {
     try {
       state.image && await uploadImage(state.image);
 
-      if (editItem?.id) {
-        const data = await apis.patch("/products", {
-          id: editItem.id,
+      if (productId) {
+        const data = await apis.patch(`/products/${productId}`, {
           title: state.title,
           image: state.uploadedUrl,
           category: state.category?.value,
@@ -132,9 +143,7 @@ const AddProduct = ({ route, navigate }) => {
         if (!data) throw new Error("Please try again later");
         success("Product added successfully");
       }
-
-      onClose(false);
-      onSuccess();
+      navigation.navigate("AdminDashboard::Products");
     } catch (ex) {
       error(catchAxiosError(ex));
     }
@@ -149,7 +158,6 @@ const AddProduct = ({ route, navigate }) => {
 
   return (
     <View>
-
       <View style={{ padding: 15, flexDirection: "row", justifyContent: "space-between", alignItems: "center" }}>
         <View style={{
           padding: 0,
@@ -160,10 +168,13 @@ const AddProduct = ({ route, navigate }) => {
           <TouchableOpacity onPress={() => navigation.goBack()}>
             <Entypo name="chevron-small-left" style={{ color: "#1c1c1c", justifyContent: "center", fontSize: 25 }} />
           </TouchableOpacity>
-          <Text style={{ fontSize: 20, fontWeight: "bold", color: "#1c1c1c" }}>{ !rproductId ? "Update" : "Add " } Products</Text>
+          <Text style={{
+            fontSize: 20,
+            fontWeight: "bold",
+            color: "#1c1c1c",
+          }}>{productId ? "Update" : "Add "} Products</Text>
         </View>
         <View>
-          <AntDesign style={{ color: "#4f4f4f" }} name="search1" size={20} />
         </View>
       </View>
 
@@ -179,7 +190,6 @@ const AddProduct = ({ route, navigate }) => {
       )}
 
       <View style={styles.container}>
-        <Text style={styles.title}>{editItem ? "Update Product" : "Add Product"}</Text>
 
         <SelectInput
           label="Category"
