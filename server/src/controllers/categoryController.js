@@ -58,7 +58,7 @@ class CategoryController {
     try {
       const { name, logo, parent } = req.body;
       if (!name) throw Error(`Name is required`);
-
+      console.log(req.body);
       const slug = slugify(name, { lower: true });
 
       const ress = await pool.query(
@@ -132,6 +132,28 @@ class CategoryController {
     }
   };
 
+  deleteItem = async (req, res) => {
+    const client = await pool.connect();
+    try {
+      const { id } = req.params;
+      let result = await pool.query(`DELETE
+                                     FROM categories
+                                     where id = $1
+                                     returning id`, [id]);
+
+      if (!result.rowCount) {
+        return res.status(400).json({
+          message: "Category already deleted or not found.",
+          data: {},
+        });
+      }
+      res.status(200).json({ message: "Success", data: result });
+
+    } catch (error) {
+      res.status(500).send({ error: "An error occurred while importing categories" });
+    }
+  };
+
   getParentCategories = async (req, res) => {
     try {
       const { rows } = await pool.query(`select name,
@@ -157,6 +179,23 @@ class CategoryController {
                                          from categories
                                          where categories.parent_id = $1
       `, [parentId]);
+      res.status(200).json({ data: rows });
+    } catch (error) {
+
+      res.status(500).send({ error: "An error occurred while importing categories" });
+    }
+  };
+
+  getAllCategories = async (req, res) => {
+    try {
+      const { parentId } = req.params;
+      const { rows } = await pool.query(`select name,
+                                                id,
+                                                parent_id,
+                                                slug,
+                                                logo
+                                         from categories
+      `);
       res.status(200).json({ data: rows });
     } catch (error) {
 

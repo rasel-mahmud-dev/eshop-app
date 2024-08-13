@@ -16,7 +16,7 @@ class AuthController {
             fieldName: fieldName,
           });
           await rmFile(fieldFile.filePath);
-          uploaded.push(file.secure_url);
+          uploaded.push({ url: file.secure_url, fieldName: fieldName });
         }
       }
 

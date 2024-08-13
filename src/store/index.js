@@ -23,6 +23,8 @@ export const useCategoryStore = create(
       subCategories: {},
       categories: null,
       parentCategories: null,
+      allDbCategories: [],
+      setAllDbCategories: (val) => set((state) => ({ ...state, allDbCategories: val })),
       setParentCategories: (val) => set((state) => ({ ...state, parentCategories: val })),
       setSubCategories: (parentId, val) => set((state) => ({
         ...state, subCategories: {

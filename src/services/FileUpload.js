@@ -13,7 +13,7 @@ const FileUpload = {
             const fileName = url.substring(lastIdx);
             const ext = url.substring(url.lastIndexOf("."));
             formData.append("folder", folder);
-            formData.append("avatar", {
+            formData.append("file", {
                 uri: url,
                 name: fileName,
                 type: "image/" + ext,

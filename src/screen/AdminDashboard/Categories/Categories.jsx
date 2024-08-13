@@ -31,7 +31,7 @@ function CategoryListScreen({ navigation }) {
   const handleOpenPrompt = () => {
     setPromptVisible(true);
   };
-  console.log("s", navigation.getState());
+
   const handleClosePrompt = () => {
     setPromptVisible(false);
   };
@@ -45,31 +45,28 @@ function CategoryListScreen({ navigation }) {
   const { setOpen } = usePromptStore();
 
   const [selectedCategory, setSelectedCategory] = useState();
-
   const [isOpenBottomSheet, setOpenBottomSheet] = useState(false);
 
-  const bottomSheetRef = useRef(null);
-  const handleSheetChanges = useCallback((index) => {
-    console.log("handleSheetChanges", index);
-  }, []);
 
   useEffect(() => {
-    (async function() {
-      await setAuthorization();
-      const { data } = await apis.get("/categories/parent");
-      setParentCategories(data.data);
-      if (data?.data?.length) {
-        setSelectedCategory(data?.data[0]);
-        await fetchSubCategories(data?.data[0]);
-      }
-      ToastAndroid.show("call /categories/parent", 1000);
-    }());
+    fetchCategories();
   }, []);
 
+  async function fetchCategories() {
+    await setAuthorization();
+    const { data } = await apis.get("/categories/parent");
+    setParentCategories(data.data);
+    if (data?.data?.length) {
+      setSelectedCategory(data?.data[0]);
+      await fetchSubCategories(data?.data[0]);
+    }
+    ToastAndroid.show("call /categories/parent", 1000);
+  }
 
-  async function fetchSubCategories(item) {
+
+  async function fetchSubCategories(item, force = false) {
     setSelectedCategory(item);
-    if (!subCategories[item.id]?.length) {
+    if (!subCategories[item.id]?.length || force) {
       await setAuthorization();
       const { data } = await apis.get(`/categories/sub-categories/${item.id}`);
       setSubCategories(item.id, data.data);
@@ -78,9 +75,10 @@ function CategoryListScreen({ navigation }) {
 
   async function handleDeleteItem(id) {
     try {
-      // const isOk = await setOpen("delete");
-      const { data } = await apis.delete(`/categories/${item.id}`);
+      const { data } = await apis.delete(`/categories/${id}`);
       Alert.alert("Delete!", "Deleted..");
+      fetchSubCategories(selectedCategory, true);
+      console.log(data);
     } catch (ex) {
       Alert.alert("Delete!", catchAxiosError(ex));
     }
@@ -97,6 +95,17 @@ function CategoryListScreen({ navigation }) {
       Alert.alert("Delete!", catchAxiosError(ex));
     }
   }
+
+  function refreshCategory(type, value) {
+    if (type === "REFRESH_SUB_CATEGORY") {
+      fetchSubCategories({ id: value, name: "" }, true);
+    } else {
+      fetchCategories();
+    }
+
+  }
+
+  const logo = "https://5.imimg.com/data5/SELLER/Default/2023/3/292019880/YM/MK/PO/104903331/apple-iphone-14-pro-max-250x250.jpg";
 
   return (
     <>
@@ -174,7 +183,7 @@ function CategoryListScreen({ navigation }) {
                   <Ionicons style={styles.trashIcon} name="trash-outline" size={20} color={"red"} />
                 </TouchableOpacity>
                 <Image
-                  source={{ uri: "https://5.imimg.com/data5/SELLER/Default/2023/3/292019880/YM/MK/PO/104903331/apple-iphone-14-pro-max-250x250.jpg" }}
+                  source={{ uri: item?.logo || logo }}
                   style={styles.icon} />
                 <Text style={styles.cardText}>{item.name}</Text>
               </TouchableOpacity>
@@ -210,7 +219,10 @@ function CategoryListScreen({ navigation }) {
         }}
         isOpen={isOpenBottomSheet} onClose={setOpenBottomSheet}>
         <ScrollView>
-          <AddCategory onClose={setOpenBottomSheet} />
+          <AddCategory
+            onClose={setOpenBottomSheet}
+            onSuccess={refreshCategory}
+          />
         </ScrollView>
       </BottomSheet>
     </>
