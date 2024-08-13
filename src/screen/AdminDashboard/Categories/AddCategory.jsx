@@ -1,5 +1,5 @@
-import React, { useEffect, useState } from "react";
-import { View, Alert, StyleSheet, TouchableOpacity, Text, Image } from "react-native";
+import React, { useEffect } from "react";
+import { View, StyleSheet, TouchableOpacity, Text, Image } from "react-native";
 import Icon from "react-native-vector-icons/Ionicons";
 import ImagePicker from "react-native-image-crop-picker"; // Import the image picker
 import categoryAction from "../../../store/actions/categoryAction";
@@ -12,6 +12,8 @@ import FileUpload from "../../../services/FileUpload";
 import SelectInput from "../../../components/SelectInput";
 import { useCategoryStore } from "../../../store";
 import { apis } from "../../../apis";
+import { useToast } from "../../../lib/ToastService";
+import catchAxiosError from "../../../utils/catchAxiosError";
 
 const pickImage = (callback) => {
   ImagePicker.openPicker({
@@ -29,6 +31,7 @@ const pickImage = (callback) => {
 const AddCategory = ({ onClose, onSuccess }) => {
 
   const { allDbCategories, setAllDbCategories } = useCategoryStore();
+  const { error, success } = useToast();
 
   const [state, setState] = useReducer({
     name: "Test",
@@ -42,25 +45,25 @@ const AddCategory = ({ onClose, onSuccess }) => {
     if (allDbCategories.length) return;
     apis.get("/categories/all").then((res) => {
       const data = res?.data?.data;
-      console.log(data);
       if (data) {
         setAllDbCategories(data);
       }
     });
   }, []);
 
-  async function uploadLogo() {
+  async function uploadLogo(uri) {
     try {
       setState({ isUploadingLogo: true });
-      const result = await FileUpload.uploadImage(state.logo?.uri, "category");
+      const result = await FileUpload.uploadImage(uri, "category");
       const fileUrl = result.data?.[0]?.url;
       setState({
         isUploadingLogo: false,
         uploadedUrl: fileUrl,
       });
+      success("Logo has uploaded.");
       return true;
-    } catch (error) {
-      Alert.alert("Image upload fail..", error.message);
+    } catch (ex) {
+      error(catchAxiosError(ex));
       return false;
     } finally {
       setState({
@@ -71,15 +74,15 @@ const AddCategory = ({ onClose, onSuccess }) => {
 
   async function handleSubmit() {
     try {
-      await uploadLogo();
+      state.logo?.uri && await uploadLogo(state.logo.uri);
       const data = await categoryAction.addCategory(state.name, state.uploadedUrl, state.parent?.value);
       if (!data) throw new Error("Please try again later");
-      Alert.alert("Success", "Category added successfully");
+      success("Category added successfully");
       onClose(false);
       const type = state.parent?.value ? "REFRESH_SUB_CATEGORY" : "REFRESH_PARENT_CATEGORY";
       onSuccess(type, state.parent?.value);
-    } catch (error) {
-      Alert.alert("Error", error.message);
+    } catch (ex) {
+      error(catchAxiosError(ex));
     }
   }
 

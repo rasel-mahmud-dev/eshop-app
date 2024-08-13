@@ -8,7 +8,7 @@ import {
   Image,
   ScrollView,
   Alert,
-  ToastAndroid,
+  ToastAndroid, Button,
 } from "react-native";
 import Icon from "react-native-vector-icons/Ionicons";
 import { useCategoryStore, usePromptStore } from "../../../store";
@@ -22,10 +22,13 @@ import CenteredPrompt from "../../../components/CenteredPrompt";
 import catchAxiosError from "../../../utils/catchAxiosError";
 import throwError from "../../../utils/throwError";
 import Entypo from "react-native-vector-icons/Entypo";
+import Toast from "../../../components/Toast";
+import { useToast } from "../../../lib/ToastService";
 
 
 function CategoryListScreen({ navigation }) {
 
+  const toast = useToast();
   const [promptVisible, setPromptVisible] = useState(false);
 
   const handleOpenPrompt = () => {
@@ -76,11 +79,10 @@ function CategoryListScreen({ navigation }) {
   async function handleDeleteItem(id) {
     try {
       const { data } = await apis.delete(`/categories/${id}`);
-      Alert.alert("Delete!", "Deleted..");
+      toast.success( "Deleted..");
       fetchSubCategories(selectedCategory, true);
-      console.log(data);
     } catch (ex) {
-      Alert.alert("Delete!", catchAxiosError(ex));
+      toast.error(catchAxiosError(ex));
     }
   }
 
@@ -90,9 +92,9 @@ function CategoryListScreen({ navigation }) {
       if (!parentId) return throwError(400, "First select a category");
       // const isOk = await setOpen("delete");
       const { data } = await apis.delete(`/categories/parent/${parentId}`);
-      Alert.alert("Delete!", "Deleted..");
+      toast.success("Deleted..");
     } catch (ex) {
-      Alert.alert("Delete!", catchAxiosError(ex));
+      toast.error(catchAxiosError(ex));
     }
   }
 
@@ -110,7 +112,6 @@ function CategoryListScreen({ navigation }) {
   return (
     <>
       <View style={styles.container}>
-
         <View style={{ padding: 15, flexDirection: "row", justifyContent: "space-between", alignItems: "center" }}>
           <View style={{
             padding: 0,

@@ -10,6 +10,7 @@ import {
 
 } from "react-native/Libraries/NewAppScreen";
 import MyStack from "./MyStack";
+import { ToastProvider } from "./lib/ToastService";
 // import "../global.css"
 
 function App() {
@@ -20,14 +21,14 @@ function App() {
   };
 
   return (
-    <  >
+    <ToastProvider>
       <StatusBar
         // translucent={true}
         barStyle={isDarkMode ? "light-content" : "dark-content"}
         backgroundColor={backgroundStyle.backgroundColor}
       />
       <MyStack />
-    </>
+    </ToastProvider>
   );
 }
 

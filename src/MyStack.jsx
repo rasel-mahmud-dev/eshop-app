@@ -50,7 +50,7 @@ const MyStack = () => {
   return (
     <NavigationContainer>
       <ProfileScreen2 />
-      <Stack.Navigator initialRouteName="Home">
+      <Stack.Navigator initialRouteName="AdminDashboard::Categories">
         <Stack.Screen
           name="Home"
           component={HomeScreen}
