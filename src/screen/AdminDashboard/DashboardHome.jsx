@@ -45,68 +45,6 @@ const DashboardHome = () => {
       iconUrl: "https://5.imimg.com/data5/SELLER/Default/2023/3/292019880/YM/MK/PO/104903331/apple-iphone-14-pro-max-250x250.jpg",
       itemCount: 10,
     },
-
-    {
-      name: "Categories",
-      backgroundColor: "#FF6347",
-      iconUrl: "https://ikall.in/wp-content/uploads/2023/06/51sJmHfw92L._SL1000_-300x300.jpg",
-      itemCount: 120,
-    },
-    {
-      name: "Brands",
-      backgroundColor: "#4682B4",
-      iconUrl: "https://ikall.in/wp-content/uploads/2023/06/51sJmHfw92L._SL1000_-300x300.jpg",
-      itemCount: 50,
-    },
-    {
-      name: "Best Sellers",
-      backgroundColor: "rgba(38,227,67,0.62)",
-      iconUrl: "https://5.imimg.com/data5/SELLER/Default/2023/3/292019880/YM/MK/PO/104903331/apple-iphone-14-pro-max-250x250.jpg",
-      itemCount: 30,
-    },
-    {
-      name: "New Arrivals",
-      backgroundColor: "rgba(252,218,52,0.6)",
-      iconUrl: "https://5.imimg.com/data5/SELLER/Default/2023/3/292019880/YM/MK/PO/104903331/apple-iphone-14-pro-max-250x250.jpg",
-      itemCount: 75,
-    },
-    {
-      name: "Offers",
-      backgroundColor: "#FF4500",
-      iconUrl: "https://5.imimg.com/data5/SELLER/Default/2023/3/292019880/YM/MK/PO/104903331/apple-iphone-14-pro-max-250x250.jpg",
-      itemCount: 10,
-    },
-
-    {
-      name: "Categories",
-      backgroundColor: "#FF6347",
-      iconUrl: "https://ikall.in/wp-content/uploads/2023/06/51sJmHfw92L._SL1000_-300x300.jpg",
-      itemCount: 120,
-    },
-    {
-      name: "Brands",
-      backgroundColor: "#4682B4",
-      iconUrl: "https://ikall.in/wp-content/uploads/2023/06/51sJmHfw92L._SL1000_-300x300.jpg",
-      itemCount: 50,
-    },
-    {
-      name: "Best Sellers",
-      backgroundColor: "rgba(38,227,67,0.62)",
-      iconUrl: "https://5.imimg.com/data5/SELLER/Default/2023/3/292019880/YM/MK/PO/104903331/apple-iphone-14-pro-max-250x250.jpg",
-      itemCount: 30,
-    },
-    {
-      name: "New Arrivals",
-      backgroundColor: "rgba(252,218,52,0.6)",
-      iconUrl: "https://5.imimg.com/data5/SELLER/Default/2023/3/292019880/YM/MK/PO/104903331/apple-iphone-14-pro-max-250x250.jpg",
-      itemCount: 75,
-    },
-    {
-      name: "Offers",
-      backgroundColor: "#FF4500",
-      iconUrl: "https://5.imimg.com/data5/SELLER/Default/2023/3/292019880/YM/MK/PO/104903331/apple-iphone-14-pro-max-250x250.jpg",
-      itemCount: 10,
-    },
   ];
 
   function jumpScreen(item) {
@@ -123,6 +61,7 @@ const DashboardHome = () => {
       const updateDashboardSlats = { ...dashboardSlats };
       const { data } = await apis.get("/admin/slats");
       updateDashboardSlats.categories = data?.data?.categories || 0;
+      updateDashboardSlats.brands = data?.data?.brands || 0;
       setDashboardSlats(updateDashboardSlats);
     } catch (ex) {
       Alert.alert(catchAxiosError(ex));

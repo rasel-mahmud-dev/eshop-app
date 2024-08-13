@@ -5,7 +5,6 @@ import {
   TouchableOpacity,
   FlatList,
   StyleSheet,
-  Dimensions,
 } from "react-native";
 import Icon from "react-native-vector-icons/Ionicons";
 
@@ -24,6 +23,12 @@ const SelectInput = ({ label, options, name, value, onValueChange, placeholder }
     setDropdownVisible(false);
   };
 
+  function getValue(value){
+    if(!value.label){
+      return options?.find(item=>item.value === value.value)?.label;
+    }
+    return  value.label
+  }
   return (
     <View style={styles.container}>
       <Text style={styles.label}>{label}</Text>
@@ -33,7 +38,7 @@ const SelectInput = ({ label, options, name, value, onValueChange, placeholder }
         ref={selectRef}
       >
         <Text style={styles.selectedText}>
-          {value ? value.label : placeholder}
+          {value ? getValue(value) : placeholder}
         </Text>
         <Icon name="chevron-down-outline" size={20} color="#555" />
       </TouchableOpacity>

@@ -154,6 +154,60 @@ class CategoryController {
     }
   };
 
+  updateItem = async (req, res) => {
+    const client = await pool.connect();
+    try {
+      const { id } = req.params; // Get the id from the request parameters
+      const { name, logo, parent } = req.body; // Get the fields to update from the request body
+
+      // Check if id is provided
+      if (!id) {
+        return res.status(400).json({ error: "ID is required" });
+      }
+
+      // Initialize an array to hold query parameters
+      const values = [];
+      let updateQuery = "UPDATE categories SET";
+
+      // Add dynamic fields to the query
+      if (name !== undefined) {
+        updateQuery += ` name = $${values.length + 1},`;
+        values.push(name);
+      }
+      if (logo !== undefined) {
+        updateQuery += ` logo = $${values.length + 1},`;
+        values.push(logo);
+      }
+      if (parent !== undefined) {
+        updateQuery += ` parent_id = $${values.length + 1},`;
+        values.push(parent);
+      }
+
+      // Remove trailing comma
+      if (values.length === 0) {
+        return res.status(400).json({ error: "No fields to update" });
+      }
+      updateQuery = updateQuery.slice(0, -1); // Remove trailing comma
+      updateQuery += ` WHERE id = $${values.length + 1} RETURNING *;`;
+      values.push(id);
+
+      // Execute the update query
+      const result = await client.query(updateQuery, values);
+
+      if (result.rowCount === 0) {
+        return res.status(404).json({ message: "Category not found" });
+      }
+
+      // Send the updated category back in the response
+      res.status(200).json({ message: "Success", data: result.rows[0] });
+    } catch (error) {
+      console.error("Error updating category:", error);
+      res.status(500).send({ error: "An error occurred while updating the category" });
+    } finally {
+      client.release(); // Release the client back to the pool
+    }
+  };
+
   getParentCategories = async (req, res) => {
     try {
       const { rows } = await pool.query(`select name,
@@ -175,6 +229,7 @@ class CategoryController {
       const { rows } = await pool.query(`select name,
                                                 id,
                                                 slug,
+                                                parent_id,
                                                 logo
                                          from categories
                                          where categories.parent_id = $1

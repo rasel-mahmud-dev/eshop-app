@@ -11,6 +11,7 @@ router.get("/parent", categoryController.getParentCategories);
 router.get("/sub-categories/:parentId", categoryController.getSubCategories);
 router.delete("/parent/:parentId", categoryController.deleteParent);
 router.delete("/:id", categoryController.deleteItem);
+router.patch("/:id", categoryController.updateItem);
 
 export default router;
 

@@ -10,6 +10,9 @@ import { useAuthStore } from "./store";
 import BottomNav from "./components/BottomNav";
 import DashboardHome from "./screen/AdminDashboard/DashboardHome";
 import CategoryListScreen from "./screen/AdminDashboard/Categories/Categories";
+import BrandListScreen from "./screen/AdminDashboard/BrandListScreen/BrandListScreen";
+import ProductList from "./screen/AdminDashboard/ProductScreen/Products";
+import AddProduct from "./screen/AdminDashboard/ProductScreen/AddProduct";
 
 const Stack = createNativeStackNavigator();
 
@@ -50,7 +53,7 @@ const MyStack = () => {
   return (
     <NavigationContainer>
       <ProfileScreen2 />
-      <Stack.Navigator initialRouteName="AdminDashboard::Categories">
+      <Stack.Navigator initialRouteName="AdminDashboard::Products">
         <Stack.Screen
           name="Home"
           component={HomeScreen}
@@ -58,7 +61,12 @@ const MyStack = () => {
         />
         <Stack.Screen name="Profile" component={ProfileScreen} />
         <Stack.Screen name="AdminDashboard" options={{ headerShown: false }} component={DashboardHome} />
-        <Stack.Screen name="AdminDashboard::Categories" options={{ headerShown: false }} component={CategoryListScreen} />
+        <Stack.Screen name="AdminDashboard::Categories" options={{ headerShown: false }}
+                      component={CategoryListScreen} />
+        <Stack.Screen name="AdminDashboard::Brands" options={{ headerShown: false }} component={BrandListScreen} />
+        <Stack.Screen name="AdminDashboard::Products" options={{ headerShown: false }} component={ProductList} />
+        <Stack.Screen name="AdminDashboard::AddProduct" options={{ headerShown: false }} component={AddProduct} />
+        <Stack.Screen name="AdminDashboard::UpdateProduct" options={{ headerShown: false }} component={AddProduct} />
         <Stack.Screen name="Login" component={LoginPage} options={{ headerShown: false }} />
       </Stack.Navigator>
     </NavigationContainer>

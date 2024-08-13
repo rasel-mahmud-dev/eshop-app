@@ -22,7 +22,6 @@ import CenteredPrompt from "../../../components/CenteredPrompt";
 import catchAxiosError from "../../../utils/catchAxiosError";
 import throwError from "../../../utils/throwError";
 import Entypo from "react-native-vector-icons/Entypo";
-import Toast from "../../../components/Toast";
 import { useToast } from "../../../lib/ToastService";
 
 
@@ -49,6 +48,7 @@ function CategoryListScreen({ navigation }) {
 
   const [selectedCategory, setSelectedCategory] = useState();
   const [isOpenBottomSheet, setOpenBottomSheet] = useState(false);
+  const [editItem, setEditItem] = useState(null);
 
 
   useEffect(() => {
@@ -79,12 +79,13 @@ function CategoryListScreen({ navigation }) {
   async function handleDeleteItem(id) {
     try {
       const { data } = await apis.delete(`/categories/${id}`);
-      toast.success( "Deleted..");
+      toast.success("Deleted..");
       fetchSubCategories(selectedCategory, true);
     } catch (ex) {
       toast.error(catchAxiosError(ex));
     }
   }
+
 
   async function handleDeleteParentItem() {
     try {
@@ -95,6 +96,8 @@ function CategoryListScreen({ navigation }) {
       toast.success("Deleted..");
     } catch (ex) {
       toast.error(catchAxiosError(ex));
+    } finally {
+      fetchCategories()
     }
   }
 
@@ -104,10 +107,14 @@ function CategoryListScreen({ navigation }) {
     } else {
       fetchCategories();
     }
-
   }
 
   const logo = "https://5.imimg.com/data5/SELLER/Default/2023/3/292019880/YM/MK/PO/104903331/apple-iphone-14-pro-max-250x250.jpg";
+
+  function handleCloseBottomSheet() {
+    setOpenBottomSheet(false);
+    setEditItem(null);
+  }
 
   return (
     <>
@@ -128,7 +135,6 @@ function CategoryListScreen({ navigation }) {
             <AntDesign style={{ color: "#4f4f4f" }} name="search1" size={20} />
           </View>
         </View>
-
 
         <View style={{ paddingStart: 10 }}>
           <FlatList
@@ -180,13 +186,21 @@ function CategoryListScreen({ navigation }) {
                 style={[
                   styles.card,
                 ]}>
-                <TouchableOpacity style={styles.trashIconWrapper} onPress={() => handleDeleteItem(item.id)}>
-                  <Ionicons style={styles.trashIcon} name="trash-outline" size={20} color={"red"} />
-                </TouchableOpacity>
+
                 <Image
                   source={{ uri: item?.logo || logo }}
                   style={styles.icon} />
                 <Text style={styles.cardText}>{item.name}</Text>
+
+                <View style={styles.trashIconWrapperRoot}>
+                  <TouchableOpacity style={styles.trashIconWrapper} onPress={() => setEditItem(item)}>
+                    <Ionicons style={styles.pencilIcon} name="pencil-outline" size={20} color={"green"} />
+                  </TouchableOpacity>
+                  <TouchableOpacity style={styles.trashIconWrapper} onPress={() => handleDeleteItem(item.id)}>
+                    <Ionicons style={styles.trashIcon} name="trash-outline" size={20} color={"red"} />
+                  </TouchableOpacity>
+                </View>
+
               </TouchableOpacity>
             )}
           />
@@ -218,10 +232,12 @@ function CategoryListScreen({ navigation }) {
           backgroundColor: "#ffffff",
           overflow: "scroll",
         }}
-        isOpen={isOpenBottomSheet} onClose={setOpenBottomSheet}>
+        isOpen={isOpenBottomSheet || editItem?.id}
+        onClose={handleCloseBottomSheet}>
         <ScrollView>
           <AddCategory
-            onClose={setOpenBottomSheet}
+            editItem={editItem}
+            onClose={handleCloseBottomSheet}
             onSuccess={refreshCategory}
           />
         </ScrollView>
@@ -250,7 +266,7 @@ const styles = StyleSheet.create({
     width: 100,
     flex: 1,
     alignItems: "center",
-    height: 100,
+    height: 120,
     justifyContent: "center",
     padding: 15,
     marginHorizontal: 4,
@@ -274,11 +290,18 @@ const styles = StyleSheet.create({
     bottom: 20,
     right: 20,
   },
+  trashIconWrapperRoot: {
+    paddingTop: 10,
+    columnGap: 10,
+    paddingBottom: 10,
+    flexDirection: "row",
+    justifyContent: "space-between",
+  },
   trashIconWrapper: {
-    zIndex: 1000,
-    position: "absolute",
-    top: 10,
-    right: 10,
+    // zIndex: 1000,
+    // position: "absolute",
+    // top: 10,
+    // right: 10,
     padding: 5,
     shadowColor: "#ff0505",
     shadowOpacity: 1,

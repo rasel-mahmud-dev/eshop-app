@@ -34,5 +34,33 @@ select name,
        slug,
        logo
 from categories
-where parent_id IS NULL
+where parent_id IS NULL;
 
+
+CREATE TABLE brands
+(
+    id         SERIAL PRIMARY KEY,
+    name       VARCHAR(255)        NOT NULL,
+    slug       VARCHAR(255) UNIQUE NOT NULL,
+    logo       TEXT,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE INDEX idx_brands_slug ON brands (slug);
+
+
+DROP TABLE if exists products;
+CREATE TABLE products
+(
+    id          SERIAL PRIMARY KEY,
+    title       VARCHAR(255)   NOT NULL,
+    slug        VARCHAR(255)   NOT NULL UNIQUE,
+    description TEXT,
+    price       DECIMAL(10, 2) NOT NULL,
+    image       VARCHAR(1024),
+    category_id INTEGER default Null REFERENCES categories (id),
+    brand_id    INTEGER default Null REFERENCES brands (id),
+    created_at  TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at  TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);

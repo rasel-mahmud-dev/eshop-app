@@ -4,9 +4,11 @@ class AuthController {
   getAdminDashboardSlats = async (req, res) => {
     try {
       const categoryCount = await pool.query("select count(id) from categories");
+      const brandCount = await pool.query("select count(id) from brands");
       res.status(201).json({
         message: "User registered successfully", data: {
-          categories: Number( categoryCount.rows?.[0]?.count || 0),
+          categories: Number(categoryCount.rows?.[0]?.count || 0),
+          brands: Number(brandCount.rows?.[0]?.count || 0),
         },
       });
     } catch (err) {

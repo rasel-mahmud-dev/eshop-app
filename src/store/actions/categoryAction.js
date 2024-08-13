@@ -12,10 +12,20 @@ class CategoryAction {
     }
   }
 
-  async addCategory(name, logo, parent) {
+  async addCategory({ name, logo, parent }) {
     try {
       await setAuthorization();
       const { data } = await apis.post("/categories", { name, logo, parent });
+      return data?.data || null;
+    } catch (err) {
+      throw err;
+    }
+  }
+
+  async updateCategory({ id, name, logo, parent }) {
+    try {
+      await setAuthorization();
+      const { data } = await apis.patch(`/categories/${id}`, { name, logo, parent });
       return data?.data || null;
     } catch (err) {
       throw err;

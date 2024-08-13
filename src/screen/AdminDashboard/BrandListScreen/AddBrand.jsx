@@ -1,18 +1,15 @@
 import React, { useEffect } from "react";
 import { View, StyleSheet, TouchableOpacity, Text, Image } from "react-native";
 import Icon from "react-native-vector-icons/Ionicons";
-import ImagePicker from "react-native-image-crop-picker"; // Import the image picker
-import categoryAction from "../../../store/actions/categoryAction";
+import ImagePicker from "react-native-image-crop-picker";
+import { useToast } from "../../../lib/ToastService";
 import InputField from "../../../components/InputField";
 import RsButton from "../../../components/RsButton/RsButton";
 import Loader from "../../../components/Loader/Loader";
 import { BlurView } from "@react-native-community/blur";
 import useReducer from "../../../hooks/useReducer";
 import FileUpload from "../../../services/FileUpload";
-import SelectInput from "../../../components/SelectInput";
-import { useCategoryStore } from "../../../store";
 import { apis } from "../../../apis";
-import { useToast } from "../../../lib/ToastService";
 import catchAxiosError from "../../../utils/catchAxiosError";
 
 const pickImage = (callback) => {
@@ -28,43 +25,28 @@ const pickImage = (callback) => {
   });
 };
 
-const AddCategory = ({ onClose, onSuccess, editItem = null }) => {
-
-  const { allDbCategories, setAllDbCategories } = useCategoryStore();
+const AddBrand = ({ onClose, onSuccess, editItem = null, brands }) => {
   const { error, success } = useToast();
 
   const [state, setState] = useReducer({
-    name: "Test",
-    parent: "",
+    name: "",
     logo: null,
     isUploadingLogo: false,
     uploadedUrl: "",
   });
 
   useEffect(() => {
-    if (allDbCategories.length) return;
-    apis.get("/categories/all").then((res) => {
-      const data = res?.data?.data;
-      if (data) {
-        setAllDbCategories(data);
-      }
-    });
-  }, []);
-
-  useEffect(() => {
     if (!editItem?.id) return;
     setState({
       name: editItem?.name,
-      parent: editItem?.parent_id ? { label: "", value: editItem.parent_id } : "",
       uploadedUrl: editItem?.logo,
     });
   }, [editItem]);
-  console.log(state);
 
   async function uploadLogo(uri) {
     try {
       setState({ isUploadingLogo: true });
-      const result = await FileUpload.uploadImage(uri, "category");
+      const result = await FileUpload.uploadImage(uri, "brand");
       const fileUrl = result.data?.[0]?.url;
       setState({
         isUploadingLogo: false,
@@ -87,28 +69,24 @@ const AddCategory = ({ onClose, onSuccess, editItem = null }) => {
       state.logo && await uploadLogo(state.logo);
 
       if (editItem?.id) {
-        const data = await categoryAction.updateCategory({
-          id: editItem.id,
+        const data = await apis.patch(`/brands/${editItem.id}`, {
           name: state.name,
           logo: state.uploadedUrl,
-          parent: state.parent?.value,
         });
         if (!data) throw new Error("Please try again later");
-        success("Category update successfully");
+        success("Brand updated successfully");
 
       } else {
-        const data = await categoryAction.addCategory({
+        const data = await apis.post("/brands", {
           name: state.name,
           logo: state.uploadedUrl,
-          parent: state.parent?.value,
         });
         if (!data) throw new Error("Please try again later");
-        success("Category added successfully");
+        success("Brand added successfully");
       }
 
       onClose(false);
-      const type = state.parent?.value ? "REFRESH_SUB_CATEGORY" : "REFRESH_PARENT_CATEGORY";
-      onSuccess(type, state.parent?.value);
+      onSuccess("REFRESH_BRAND_LIST");
     } catch (ex) {
       error(catchAxiosError(ex));
     }
@@ -124,65 +102,33 @@ const AddCategory = ({ onClose, onSuccess, editItem = null }) => {
   return (
     <View>
       {state.isUploadingLogo && (
-        <View style={{
-          zIndex: 2,
-          left: 0,
-          top: -10,
-          right: 0,
-          justifyContent: "center",
-          alignItems: "center",
-          width: "100%",
-          height: "100%",
-          position: "absolute",
-          backgroundColor: "rgba(23,23,23,0.19)",
-        }}>
+        <View style={styles.loaderContainer}>
           <BlurView
-            style={{
-              position: "absolute",
-              top: 0,
-              left: 0,
-              bottom: 0,
-              right: 0,
-            }}
+            style={styles.blurView}
             blurType="light"
             blurAmount={4}
           />
-
-          <View>
+          <View style={styles.loaderInner}>
             <Loader />
-            <Text style={{ color: "#232323", fontWeight: "600" }}>Uploading Logo</Text>
+            <Text style={styles.loaderText}>Uploading Logo</Text>
           </View>
         </View>
       )}
 
-      <View style={{ padding: 20 }}>
-        <Text style={{
-          fontSize: 25,
-          fontWeight: "bold",
-          color: "#212121",
-          paddingBottom: 10,
-        }}>{editItem ? "Update" : "Create"}</Text>
-
-        <SelectInput
-          label="Category"
-          name="parent"
-          options={allDbCategories?.map(item => ({ label: item.name, value: item.id })) || []}
-          value={state.parent}
-          onValueChange={handleChange}
-          placeholder="Select a category"
-        />
+      <View style={styles.formContainer}>
+        <Text style={styles.headerText}>{editItem ? "Update Brand" : "Create Brand"}</Text>
 
         <InputField
           name="name"
           icon={<Icon name="folder-outline" size={20} color="#555" style={styles.icon} />}
-          label="Category Name"
-          placeholder="Enter category name"
+          label="Brand Name"
+          placeholder="Enter brand name"
           value={state.name}
           onChangeText={handleChange}
         />
 
         <View style={styles.logoContainer}>
-          <Text style={{ color: "#838383", fontSize: 14, fontWeight: "500" }}>Logo</Text>
+          <Text style={styles.logoLabel}>Logo</Text>
           <TouchableOpacity onPress={() => pickImage((image) => handleChange({ name: "logo", value: image.uri }))}>
             {state.uploadedUrl || state.logo ?
               <Image source={{ uri: state.uploadedUrl || state.logo }} style={styles.logoPreview} />
@@ -196,18 +142,58 @@ const AddCategory = ({ onClose, onSuccess, editItem = null }) => {
         </View>
 
         <RsButton onPress={handleSubmit}>
-          <Text>{editItem ? "Update" : "Add"} Category</Text>
+          <Text>{editItem ? "Update Brand" : "Add Brand"}</Text>
         </RsButton>
       </View>
-
     </View>
   );
 };
 
 const styles = StyleSheet.create({
   icon: {},
+  loaderContainer: {
+    zIndex: 2,
+    left: 0,
+    top: -10,
+    right: 0,
+    justifyContent: "center",
+    alignItems: "center",
+    width: "100%",
+    height: "100%",
+    position: "absolute",
+    backgroundColor: "rgba(23,23,23,0.19)",
+  },
+  blurView: {
+    position: "absolute",
+    top: 0,
+    left: 0,
+    bottom: 0,
+    right: 0,
+  },
+  loaderInner: {
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  loaderText: {
+    color: "#232323",
+    fontWeight: "600",
+  },
+  formContainer: {
+    padding: 20,
+  },
+  headerText: {
+    fontSize: 25,
+    fontWeight: "bold",
+    color: "#212121",
+    paddingBottom: 10,
+  },
   logoContainer: {
-    marginVertical: 0,
+    marginVertical: 10,
+  },
+  logoLabel: {
+    color: "#838383",
+    fontSize: 14,
+    fontWeight: "500",
   },
   logoButton: {
     flexDirection: "row",
@@ -230,4 +216,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default AddCategory;
+export default AddBrand;

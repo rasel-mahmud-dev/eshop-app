@@ -41,6 +41,19 @@ export const useCategoryStore = create(
   ),
 );
 
+export const useBrandStore = create(
+  persist(
+    (set, get) => ({
+      brands: [],
+      setBrands: (val) => set((state) => ({ ...state, brands: val })),
+    }),
+    {
+      name: "brands-store-storage",
+      storage: createJSONStorage(() => AsyncStorage),
+    },
+  ),
+);
+
 export const useUsersStore = create(
   persist(
     (set, get) => ({
