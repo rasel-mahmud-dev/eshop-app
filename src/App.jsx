@@ -16,12 +16,13 @@ function App() {
   const isDarkMode = useColorScheme() === "dark";
 
   const backgroundStyle = {
-    backgroundColor: isDarkMode ? Colors.darker : Colors.lighter,
+    backgroundColor: isDarkMode ? "rgba(111,169,218,0.98)" : Colors.lighter,
   };
 
   return (
     <  >
       <StatusBar
+        // translucent={true}
         barStyle={isDarkMode ? "light-content" : "dark-content"}
         backgroundColor={backgroundStyle.backgroundColor}
       />

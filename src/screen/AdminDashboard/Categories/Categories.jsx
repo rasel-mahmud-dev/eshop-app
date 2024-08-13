@@ -21,6 +21,7 @@ import Ionicons from "react-native-vector-icons/Ionicons";
 import CenteredPrompt from "../../../components/CenteredPrompt";
 import catchAxiosError from "../../../utils/catchAxiosError";
 import throwError from "../../../utils/throwError";
+import Entypo from "react-native-vector-icons/Entypo";
 
 
 function CategoryListScreen({ navigation }) {
@@ -30,7 +31,7 @@ function CategoryListScreen({ navigation }) {
   const handleOpenPrompt = () => {
     setPromptVisible(true);
   };
-
+  console.log("s", navigation.getState());
   const handleClosePrompt = () => {
     setPromptVisible(false);
   };
@@ -57,9 +58,9 @@ function CategoryListScreen({ navigation }) {
       await setAuthorization();
       const { data } = await apis.get("/categories/parent");
       setParentCategories(data.data);
-      if(data?.data?.length){
+      if (data?.data?.length) {
         setSelectedCategory(data?.data[0]);
-        await fetchSubCategories(data?.data[0])
+        await fetchSubCategories(data?.data[0]);
       }
       ToastAndroid.show("call /categories/parent", 1000);
     }());
@@ -101,8 +102,18 @@ function CategoryListScreen({ navigation }) {
     <>
       <View style={styles.container}>
 
-        <View style={{ padding: 20, flexDirection: "row", justifyContent: "space-between", alignItems: "center" }}>
-          <Text style={{ fontSize: 20, fontWeight: "bold", color: "#1c1c1c" }}>Categories</Text>
+        <View style={{ padding: 15, flexDirection: "row", justifyContent: "space-between", alignItems: "center" }}>
+          <View style={{
+            padding: 0,
+            flexDirection: "row",
+            justifyContent: "space-between",
+            alignItems: "center",
+          }}>
+            <TouchableOpacity onPress={() => navigation.goBack()}>
+              <Entypo name="chevron-small-left" style={{ color: "#1c1c1c", justifyContent: "center", fontSize: 25 }} />
+            </TouchableOpacity>
+            <Text style={{ fontSize: 20, fontWeight: "bold", color: "#1c1c1c" }}>Categories</Text>
+          </View>
           <View>
             <AntDesign style={{ color: "#4f4f4f" }} name="search1" size={20} />
           </View>
@@ -132,8 +143,13 @@ function CategoryListScreen({ navigation }) {
         </View>
 
         <View style={{ flex: 1, paddingVertical: 20, paddingHorizontal: 10 }}>
-          <View style={{ flexDirection: "row", justifyContent: "space-between", alignItems: "center" }}>
-            <Text style={{ fontSize: 20, fontWeight: "bold", color: "#1c1c1c" }}>Sub-Categories</Text>
+          <View
+            style={{ flexDirection: "row", justifyContent: "space-between", alignItems: "center", paddingBottom: 10 }}>
+            <Text style={{
+              fontSize: 20,
+              fontWeight: "bold",
+              color: "#1c1c1c",
+            }}>{selectedCategory?.name || "Sub category"}</Text>
             <RsButton onPress={handleDeleteParentItem} loginButton={{
               paddingHorizontal: 30,
               columnGap: 5,
@@ -185,7 +201,13 @@ function CategoryListScreen({ navigation }) {
       <BottomSheet
         height={400}
         backdrop={{ backgroundColor: "rgba(31,31,31,0.75)" }}
-        style={{ backgroundColor: "#ffffff", overflow: "scroll" }}
+        style={{
+          paddingTop: 0,
+          paddingHorizontal: 0,
+          paddingBottom: 0,
+          backgroundColor: "#ffffff",
+          overflow: "scroll",
+        }}
         isOpen={isOpenBottomSheet} onClose={setOpenBottomSheet}>
         <ScrollView>
           <AddCategory onClose={setOpenBottomSheet} />

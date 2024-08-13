@@ -14,7 +14,7 @@ export default function BottomSheet({
                                       style = {},
                                       height = 100,
                                       backdropStyle = {},
-  children
+                                      children,
                                     }) {
   const bottomSheetHeight = height;
   const startPosition = height;
@@ -132,6 +132,8 @@ const styles = StyleSheet.create({
     backgroundColor: "#ccc",
     alignSelf: "center",
     marginBottom: 10,
+    position: "absolute",
+    top: 10,
   },
   sheetTitle: {
     fontSize: 24,
