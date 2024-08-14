@@ -1,4 +1,3 @@
-
 import React, { useEffect, useState } from "react";
 import { View, StyleSheet, Text, TouchableOpacity, FlatList, Alert, RefreshControl } from "react-native";
 import Icon from "react-native-vector-icons/Ionicons";
@@ -16,7 +15,6 @@ const RolesList = () => {
   const { error, success } = useToast();
   const [roles, setRoles] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [refreshing, setRefreshing] = useState(false);
 
   const navigation = useNavigation();
 
@@ -50,20 +48,25 @@ const RolesList = () => {
     <View style={styles.itemContainer}>
       <View style={styles.itemDetails}>
         <Text style={styles.roleName}>{item.name}</Text>
+        <Text style={styles.roleSlug}>{item.slug}</Text>
         <Text style={styles.roleDescription}>{item.description}</Text>
       </View>
       <View style={styles.actions}>
-        <RsButton style={styles.actionButton} onPress={() => navigation.navigate("AdminDashboard::UpdateRole", { roleId: item.id })}>
+        <RsButton loginButton={styles.loginButton}
+                  onPress={() => navigation.navigate("AdminDashboard::UpdateRole", { roleId: item.id })}
+                  style={styles.actionButton}>
           <Icon name="pencil-outline" size={14} color="#fff" />
           <Text style={styles.actionText}>Edit</Text>
         </RsButton>
-        <RsButton style={styles.actionButton} onPress={() => handleDelete(item.id)}>
+        <RsButton loginButton={styles.loginButton} onPress={() => handleDelete(item.id)} style={styles.actionButton}>
           <Icon name="trash-outline" size={14} color="#fff" />
           <Text style={styles.actionText}>Delete</Text>
         </RsButton>
       </View>
     </View>
   );
+
+  const [refreshing, setRefreshing] = useState(false);
 
   const onRefresh = async () => {
     try {
@@ -105,7 +108,8 @@ const RolesList = () => {
           renderItem={renderItem}
           keyExtractor={(item) => item.id.toString()}
         />
-        <RsButton onPress={() => navigation.navigate("AdminDashboard::AddRole")} style={styles.addButton}>
+        <RsButton loginButton={{ width: "100%" }} onPress={() => navigation.navigate("AdminDashboard::AddRole")}
+                  style={styles.addButton}>
           <Text style={styles.addButtonText}>Add Role</Text>
         </RsButton>
       </View>
@@ -116,35 +120,29 @@ const RolesList = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: colors["background"], // Background color from theme
   },
   header: {
     padding: 15,
     flexDirection: "row",
     justifyContent: "space-between",
     alignItems: "center",
-    backgroundColor: colors["headerBackground"], // Header background color from theme
-    shadowColor: "#000",
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.1,
-    elevation: 2,
   },
   headerContent: {
     flexDirection: "row",
     alignItems: "center",
   },
   backButton: {
-    color: colors["textPrimary"], // Primary text color from theme
+    color: "#1c1c1c",
     fontSize: 25,
   },
   headerTitle: {
     fontSize: 20,
     fontWeight: "bold",
-    color: colors["textPrimary"], // Primary text color from theme
+    color: "#1c1c1c",
     marginLeft: 10,
   },
   searchIcon: {
-    color: colors["textSecondary"], // Secondary text color from theme
+    color: "#4f4f4f",
   },
   listContainer: {
     flex: 1,
@@ -152,63 +150,58 @@ const styles = StyleSheet.create({
     paddingBottom: 10,
   },
   addButton: {
-    marginBottom: 20,
-    padding: 15,
-    backgroundColor: colors["primary"], // Primary color from theme
-    borderRadius: 10,
-    shadowColor: "#000",
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.1,
-    elevation: 2,
+    marginBottom: 0,
+    margin: 0,
+    padding: 0,
+    backgroundColor: "#1E90FF",
   },
   addButtonText: {
     textAlign: "center",
     color: "#fff",
     fontWeight: "bold",
-    fontSize: 16,
   },
   itemContainer: {
     flexDirection: "row",
     alignItems: "center",
     borderBottomWidth: 1,
-    borderBottomColor: colors["border"], // Border color from theme
-    paddingVertical: 15,
-    backgroundColor: '#fff',
-    borderRadius: 10,
-    marginBottom: 10,
-    shadowColor: "#000",
-    shadowOffset: { width: 0, height: 1 },
-    shadowOpacity: 0.1,
-    elevation: 1,
+    borderBottomColor: "#E0E0E0",
+    paddingVertical: 10,
   },
   itemDetails: {
     flex: 1,
+    marginRight: 10,
   },
   roleName: {
     fontSize: 16,
     fontWeight: "bold",
-    color: colors["textPrimary"], // Primary text color from theme
+    color: colors["gray-13"],
+  },
+  roleSlug: {
+    fontSize: 14,
+    color: "#1E90FF",
   },
   roleDescription: {
-    fontSize: 14,
-    color: colors["textSecondary"], // Secondary text color from theme
+    fontSize: 12,
+    color: "#555",
   },
   actions: {
     flexDirection: "row",
   },
-  actionButton: {
+  loginButton: {
     flexDirection: "row",
-    paddingVertical: 8,
-    paddingHorizontal: 12,
+    paddingVertical: 4,
+    paddingHorizontal: 10,
     alignItems: "center",
-    borderRadius: 5,
-    backgroundColor: colors["primary"], // Primary color from theme
+  },
+  actionButton: {
+    paddingHorizontal: 5,
+    backgroundColor: "#1E90FF",
     marginLeft: 5,
   },
   actionText: {
     color: "#fff",
     marginLeft: 5,
-    fontSize: 12,
+    fontSize: 10,
   },
 });
 

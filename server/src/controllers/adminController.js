@@ -19,7 +19,17 @@ class AuthController {
     try {
       const { rows } = await pool.query("select * from users");
       res.status(200).json({
-        message: "", data: rows
+        message: "", data: rows,
+      });
+    } catch (err) {
+      res.status(500).json({ message: "Error registering user", error: err.message });
+    }
+  };
+  getRoles = async (req, res) => {
+    try {
+      const { rows } = await pool.query("select * from roles");
+      res.status(200).json({
+        message: "", data: rows,
       });
     } catch (err) {
       res.status(500).json({ message: "Error registering user", error: err.message });

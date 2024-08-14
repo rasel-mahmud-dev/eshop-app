@@ -59,8 +59,38 @@ CREATE TABLE products
     description TEXT,
     price       DECIMAL(10, 2) NOT NULL,
     image       VARCHAR(1024),
-    category_id INTEGER default Null REFERENCES categories (id),
-    brand_id    INTEGER default Null REFERENCES brands (id),
+    category_id INTEGER   default Null REFERENCES categories (id),
+    brand_id    INTEGER   default Null REFERENCES brands (id),
     created_at  TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at  TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
+
+
+CREATE TABLE roles
+(
+    id          SERIAL PRIMARY KEY,
+    name        VARCHAR(255) NOT NULL UNIQUE,
+    slug        VARCHAR(255) NOT NULL UNIQUE,
+    description TEXT,
+    created_at  TIMESTAMP  DEFAULT CURRENT_TIMESTAMP,
+    updated_at  TIMESTAMP  DEFAULT CURRENT_TIMESTAMP,
+    status      varchar(8) default 'active'
+);
+
+INSERT INTO roles (name, slug, description, status)
+VALUES ('Admin', 'admin', 'Administrator with full access to all system features.', 'active'),
+       ('Manager', 'manager', 'Oversees inventory, sales, and other business operations.',
+        'active'),
+       ('Sales Representative', 'sales_representative',
+        'Handles customer inquiries and sales transactions.', 'active'),
+       ('Inventory Manager', 'inventory_manager', 'Manages stock levels and inventory.', 'active'),
+       ('Customer Support', 'customer_support', 'Assists customers with inquiries and support.',
+        'active'),
+       ('Marketing Specialist', 'marketing_specialist',
+        'Handles marketing campaigns and promotions.', 'active'),
+       ('Content Editor', 'content_editor',
+        'Manages and updates website content and product descriptions.', 'active'),
+       ('Analyst', 'analyst', 'Analyzes sales data and metrics to provide business insights.',
+        'active'),
+       ('Supplier', 'supplier', 'Manages product supply and order fulfillment.', 'active'),
+       ('Guest', 'guest', 'Role for users who have not logged in or registered.', 'inactive');
