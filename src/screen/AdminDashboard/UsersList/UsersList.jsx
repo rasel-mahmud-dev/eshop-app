@@ -1,5 +1,15 @@
 import React, { useEffect, useState } from "react";
-import { View, StyleSheet, Text, TouchableOpacity, FlatList, Image, Alert, RefreshControl } from "react-native";
+import {
+  View,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  FlatList,
+  Image,
+  Alert,
+  RefreshControl,
+  ScrollView,
+} from "react-native";
 import Icon from "react-native-vector-icons/Ionicons";
 import { useToast } from "../../../lib/ToastService";
 import { apis } from "../../../apis";
@@ -10,9 +20,11 @@ import Entypo from "react-native-vector-icons/Entypo";
 import AntDesign from "react-native-vector-icons/AntDesign";
 import { useNavigation } from "@react-navigation/native";
 import colors from "../../../styles/colors";
+import BottomSheet from "../../../components/BottomSheet/BottomSheet";
+import AddUser from "./AddUser";
 
 const UsersList = () => {
-  const { error, success } = useToast();
+  const toast = useToast();
   const [users, setUsers] = useState([]);
   const [loading, setLoading] = useState(true);
 
@@ -24,7 +36,7 @@ const UsersList = () => {
       const res = await apis.get("/admin/users");
       setUsers(res?.data?.data || []);
     } catch (ex) {
-      error(catchAxiosError(ex));
+      toast.error(catchAxiosError(ex));
     } finally {
       setLoading(false);
     }
@@ -38,11 +50,22 @@ const UsersList = () => {
     try {
       await apis.delete(`/admin/users/${id}`);
       setUsers(users.filter(user => user.id !== id));
-      success("User deleted successfully");
+      toast.success("User deleted successfully");
     } catch (ex) {
-      error(catchAxiosError(ex));
+      toast.error(catchAxiosError(ex));
     }
   };
+
+  const [isOpenBottomSheet, setOpenBottomSheet] = useState(false);
+
+
+  function handleCloseBottomSheet() {
+    setOpenBottomSheet(false);
+    setEditItem(null);
+  }
+
+  const [editItem, setEditItem] = useState(null);
+
 
   const renderItem = ({ item }) => (
     <View style={styles.itemContainer}>
@@ -112,11 +135,33 @@ const UsersList = () => {
           renderItem={renderItem}
           keyExtractor={(item) => item.id.toString()}
         />
-        <RsButton loginButton={{ width: "100%" }} onPress={() => navigation.navigate("AdminDashboard::AddUser")}
+        <RsButton loginButton={{ width: "100%" }} onPress={() => setOpenBottomSheet(true)}
                   style={styles.addButton}>
           <Text style={styles.addButtonText}>Add User</Text>
         </RsButton>
       </View>
+
+      <BottomSheet
+        height={680}
+        backdrop={{ backgroundColor: "rgba(31,31,31,0.75)" }}
+        style={{
+          paddingTop: 0,
+          paddingHorizontal: 0,
+          paddingBottom: 0,
+          backgroundColor: "#ffffff",
+          overflow: "scroll",
+        }}
+        isOpen={isOpenBottomSheet || editItem?.id}
+        onClose={handleCloseBottomSheet}>
+        <ScrollView>
+          <AddUser
+            editItem={editItem}
+            onClose={handleCloseBottomSheet}
+            onSuccess={fetchUsers}
+          />
+        </ScrollView>
+      </BottomSheet>
+
     </View>
   );
 };

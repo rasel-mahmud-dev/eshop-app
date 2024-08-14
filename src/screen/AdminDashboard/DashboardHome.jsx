@@ -14,9 +14,10 @@ import Entypo from "react-native-vector-icons/Entypo";
 const sidebarItems = [
   {
     name: "Dashboard",
-    icon: () => <FontAwesome name="product-hunt" size={20} color="#000" />,
+    icon: () => <FontAwesome name="dashboard" size={20} color="#000" />,
     id: "home_management",
-  }, {
+  },
+  {
     name: "Product Management",
     icon: () => <FontAwesome name="product-hunt" size={20} color="#000" />,
     id: "product_management",
@@ -31,11 +32,7 @@ const sidebarItems = [
     icon: () => <FontAwesome name="users" size={20} color="#000" />,
     id: "user_management",
   },
-  {
-    name: "Dashboard",
-    icon: () => <FontAwesome name="dashboard" size={20} color="#000" />,
-    id: "dashboard",
-  },
+
   {
     name: "Reports",
     icon: () => <FontAwesome name="bar-chart" size={20} color="#000" />,
@@ -184,6 +181,32 @@ const DashboardHome = () => {
         itemCount: 5, // Example count, update as necessary
       },
     ],
+    "order_management": [
+      {
+        name: "Orders",
+        backgroundColor: "#FF4500",
+        icon: () => <MaterialIcons name="receipt" size={24} color="#fff" />,
+        itemCount: 250, // Example count, update as necessary
+      },
+      {
+        name: "Order Status",
+        backgroundColor: "#FF6347",
+        icon: () => <FontAwesome name="status" size={24} color="#fff" />,
+        itemCount: 5, // Example count, update as necessary
+      },
+      {
+        name: "Order History",
+        backgroundColor: "#32CD32",
+        icon: () => <MaterialIcons name="history" size={24} color="#fff" />,
+        itemCount: 100, // Example count, update as necessary
+      },
+      {
+        name: "Shipping",
+        backgroundColor: "#1E90FF",
+        icon: () => <MaterialIcons name="local-shipping" size={24} color="#fff" />,
+        itemCount: 75, // Example count, update as necessary
+      },
+    ],
     "home_management": [
       {
         name: "Categories",
@@ -220,6 +243,113 @@ const DashboardHome = () => {
         backgroundColor: "#FF4500",
         icon: () => <FontAwesome name="percent" size={24} color="#fff" />,
         itemCount: 10,
+      },
+    ],
+    "settings": [
+      {
+        name: "General Settings",
+        backgroundColor: "#FF8C00",
+        icon: () => <MaterialIcons name="settings" size={24} color="#fff" />,
+        itemCount: 10, // Example count, update as necessary
+      },
+      {
+        name: "User Preferences",
+        backgroundColor: "#ADFF2F",
+        icon: () => <FontAwesome name="user" size={24} color="#fff" />,
+        itemCount: 8, // Example count, update as necessary
+
+        // Potential Details Included in User Preferences Reports
+        // Notification Preferences:
+
+        // Data on how users configure their notification settings, such as email alerts, push notifications, or in-app messages.
+        //   Theme and Appearance:
+        //
+        //   Insights into the visual themes or appearance settings users select, including dark mode vs. light mode.
+        //   Content Preferences:
+        //
+        //   Information on the types of content or topics users prefer, such as categories or tags they follow.
+        //   Language Settings:
+        //
+        //   Data on the languages or regional settings chosen by users for the application interface.
+        //   Privacy Settings:
+        //
+        //   Analysis of user privacy preferences, including visibility settings for personal information.
+        //   Frequency of Updates:
+        //
+        //   Metrics on how often users change their settings or update their preferences.
+        //   Customizations:
+        //
+        // Details on any personalized features or customizations applied by users, such as custom dashboards or layouts.
+        //   User Segments:
+        //
+        //   Insights into different user groups based on their preference settings, helping to understand diverse needs and behaviors.
+      },
+      {
+        name: "Notifications",
+        backgroundColor: "#4682B4",
+        icon: () => <MaterialIcons name="notifications" size={24} color="#fff" />,
+        itemCount: 15, // Example count, update as necessary
+      },
+      {
+        name: "Security",
+        backgroundColor: "#B22222",
+        icon: () => <FontAwesome name="shield" size={24} color="#fff" />,
+        itemCount: 5, // Example count, update as necessary
+      },
+    ],
+    "reports": [
+      {
+        name: "Sales Reports",
+        backgroundColor: "#FF1493",
+        icon: () => <MaterialIcons name="bar-chart" size={24} color="#fff" />,
+        itemCount: 30, // Example count, update as necessary
+      },
+      {
+        name: "User Activity",
+        backgroundColor: "#00BFFF",
+        icon: () => <FontAwesome name="user-circle" size={24} color="#fff" />,
+        itemCount: 25, // Example count, update as necessary
+
+        //     [
+        //       Potential Details Included in User Activity Reports
+        //       Login Frequency:
+        //
+        // Number of times users log in over a specified period.
+        //   Session Duration:
+        //
+        //   Average time users spend on the platform during each session.
+        //   Page Views:
+        //
+        //   Metrics on how many pages users view and which pages are most visited.
+        //   Feature Usage:
+        //
+        //   Insights into which features or functionalities are most used by users.
+        //   User Segments:
+        //
+        //   Analysis of different user groups based on activity levels, such as active, inactive, or new users.
+        // Engagement Metrics:
+        //
+        //   Data on how users interact with content, including likes, comments, and shares.
+        //   Activity Trends:
+        //
+        //   Trends and patterns in user activity over time, highlighting peaks, drops, or changes in engagement.
+        //   Geographic Distribution:
+        //
+        //   Information on where users are accessing the platform from, geographically.
+        //       ]
+
+      },
+      {
+        name: "Product Performance",
+        backgroundColor: "#32CD32",
+        icon: () => <MaterialIcons name="assessment" size={24} color="#fff" />,
+        itemCount: 12, // Example count, update as necessary
+      },
+      {
+        name: "Order Insights",
+        backgroundColor: "#FF8C00",
+        icon: () => <MaterialIcons name="trending-up" size={24} color="#fff" />,
+        itemCount: 18, // Example count, update as necessary
       },
     ],
   };

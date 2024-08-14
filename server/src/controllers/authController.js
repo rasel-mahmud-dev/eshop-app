@@ -7,30 +7,10 @@ class AuthController {
 
 // Register a new user
   register = async (req, res) => {
-    const {
-      password,
-      email,
-      firstName,
-    } = req.body;
-
     try {
-      // Check if the user already exists
-      let user = await User.findByUsernameOrEmail(email);
-      if (user) {
-        return res.status(400).json({ message: "Username or email already exists" });
-      }
+      let result = await User.registration(req.body);
+      res.status(201).json({ message: "User registered successfully", user: result });
 
-      // Hash the password
-      const hashedPassword = await makeHash(password);
-      // Create a new user
-      user = await User.create({
-        username: firstName,
-        password: hashedPassword,
-        email,
-        first_name: firstName,
-      });
-
-      res.status(201).json({ message: "User registered successfully", user });
     } catch (err) {
       console.log(err);
       res.status(500).json({ message: "Error registering user", error: err.message });

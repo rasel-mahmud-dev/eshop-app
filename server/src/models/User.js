@@ -1,161 +1,205 @@
 import pool from "../database";
+import { makeHash } from "src/hash";
 
 class User {
-    constructor({
-                    id,
-                    username,
-                    password,
-                    email,
-                    first_name,
-                    last_name,
-                    address,
-                    city,
-                    state,
-                    postal_code,
-                    country,
-                    phone_number,
-                    created_at,
-                    deleted_at
-                }) {
-        this.id = id;
-        this.username = username;
-        this.password = password;
-        this.email = email;
-        this.first_name = first_name;
-        this.last_name = last_name;
-        this.address = address;
-        this.city = city;
-        this.state = state;
-        this.postal_code = postal_code;
-        this.country = country;
-        this.phone_number = phone_number;
-        this.created_at = created_at;
-        this.deleted_at = deleted_at;
+  constructor({
+                id,
+                username,
+                password,
+                email,
+                first_name,
+                last_name,
+                address,
+                city,
+                state,
+                postal_code,
+                country,
+                phone_number,
+                created_at,
+                deleted_at,
+              }) {
+    this.id = id;
+    this.username = username;
+    this.password = password;
+    this.email = email;
+    this.first_name = first_name;
+    this.last_name = last_name;
+    this.address = address;
+    this.city = city;
+    this.state = state;
+    this.postal_code = postal_code;
+    this.country = country;
+    this.phone_number = phone_number;
+    this.created_at = created_at;
+    this.deleted_at = deleted_at;
+  }
+
+  // Save a new user to the database
+  static async create(userData) {
+    const {
+      username,
+      password,
+      email,
+      first_name,
+      last_name,
+      address,
+      city,
+      state,
+      postal_code,
+      country,
+      phone_number,
+    } = userData;
+
+    const query = `
+        INSERT INTO users
+        (username, password, email, first_name, last_name, address, city, state, postal_code,
+         country, phone_number)
+        VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11)
+        RETURNING *`;
+
+    const values = [
+      username,
+      password,
+      email,
+      first_name,
+      last_name,
+      address,
+      city,
+      state,
+      postal_code,
+      country,
+      phone_number,
+    ];
+
+    try {
+      const result = await pool.query(query, values);
+      return new User(result.rows[0]);
+    } catch (err) {
+      throw new Error("Error creating user: " + err.message);
     }
+  }
 
-    // Save a new user to the database
-    static async create(userData) {
-        const {
-            username,
-            password,
-            email,
-            first_name,
-            last_name,
-            address,
-            city,
-            state,
-            postal_code,
-            country,
-            phone_number
-        } = userData;
 
-        const query = `
-            INSERT INTO users
-            (username, password, email, first_name, last_name, address, city, state, postal_code,
-             country, phone_number)
-            VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11)
-            RETURNING *`;
+  static async findByUsernameOrEmail(identifier) {
+    const query = `
+        SELECT *
+        FROM users
+        WHERE username = $1
+           OR email = $1`;
+    const values = [identifier];
 
-        const values = [
-            username,
-            password,
-            email,
-            first_name,
-            last_name,
-            address,
-            city,
-            state,
-            postal_code,
-            country,
-            phone_number
-        ];
+    try {
+      const result = await pool.query(query, values);
+      if (result.rows.length === 0) return null;
+      return new User(result.rows[0]);
+    } catch (err) {
+      throw new Error("Error finding user: " + err.message);
+    }
+  }
 
-        try {
-            const result = await pool.query(query, values);
-            return new User(result.rows[0]);
-        } catch (err) {
-            throw new Error('Error creating user: ' + err.message);
+  // Example of updating a user's information
+  async update() {
+    const query = `
+        UPDATE users
+        SET username     = $1,
+            password     = $2,
+            email        = $3,
+            first_name   = $4,
+            last_name    = $5,
+            address      = $6,
+            city         = $7,
+            state        = $8,
+            postal_code  = $9,
+            country      = $10,
+            phone_number = $11,
+            deleted_at   = $12
+        WHERE id = $13
+        RETURNING *`;
+
+    const values = [
+      this.username,
+      this.password,
+      this.email,
+      this.first_name,
+      this.last_name,
+      this.address,
+      this.city,
+      this.state,
+      this.postal_code,
+      this.country,
+      this.phone_number,
+      this.deleted_at,
+      this.id,
+    ];
+
+    try {
+      const result = await pool.query(query, values);
+      return new User(result.rows[0]);
+    } catch (err) {
+      throw new Error("Error updating user: " + err.message);
+    }
+  }
+
+  // Delete a user (soft delete)
+  async delete() {
+    const query = `
+        UPDATE users
+        SET deleted_at = CURRENT_TIMESTAMP
+        WHERE id = $1
+        RETURNING *`;
+
+    const values = [this.id];
+
+    try {
+      const result = await pool.query(query, values);
+      return new User(result.rows[0]);
+    } catch (err) {
+      throw new Error("Error deleting user: " + err.message);
+    }
+  }
+
+
+  static async registration(body) {
+    const {
+      password = "123",
+      email,
+      firstName, // New field for full name
+      lastName,
+      phoneNumber,
+      role,
+    } = body;
+
+    console.log(body);
+
+    try {
+      // Check if the email is provided and if the user already exists
+      if (email) {
+        let user = await User.findByUsernameOrEmail(email);
+        if (user) {
+          throw Error("Email already exists");
         }
+      }
+
+      const userData = {
+        email,
+        username: lastName ? `${firstName}_${lastName}` : firstName,
+        first_name: firstName,
+        last_name: lastName,
+        phone_number: phoneNumber,
+        role,
+      };
+
+      if (password) {
+        const hashedPassword = await makeHash(password);
+        userData.password = hashedPassword;
+      }
+
+      return await User.create(userData);
+
+    } catch (err) {
+      throw err;
     }
-
-
-    static async findByUsernameOrEmail(identifier) {
-        const query = `
-            SELECT *
-            FROM users
-            WHERE username = $1
-               OR email = $1`;
-        const values = [identifier];
-
-        try {
-            const result = await pool.query(query, values);
-            if (result.rows.length === 0) return null;
-            return new User(result.rows[0]);
-        } catch (err) {
-            throw new Error('Error finding user: ' + err.message);
-        }
-    }
-
-    // Example of updating a user's information
-    async update() {
-        const query = `
-            UPDATE users
-            SET username     = $1,
-                password     = $2,
-                email        = $3,
-                first_name   = $4,
-                last_name    = $5,
-                address      = $6,
-                city         = $7,
-                state        = $8,
-                postal_code  = $9,
-                country      = $10,
-                phone_number = $11,
-                deleted_at   = $12
-            WHERE id = $13
-            RETURNING *`;
-
-        const values = [
-            this.username,
-            this.password,
-            this.email,
-            this.first_name,
-            this.last_name,
-            this.address,
-            this.city,
-            this.state,
-            this.postal_code,
-            this.country,
-            this.phone_number,
-            this.deleted_at,
-            this.id
-        ];
-
-        try {
-            const result = await pool.query(query, values);
-            return new User(result.rows[0]);
-        } catch (err) {
-            throw new Error('Error updating user: ' + err.message);
-        }
-    }
-
-    // Delete a user (soft delete)
-    async delete() {
-        const query = `
-            UPDATE users
-            SET deleted_at = CURRENT_TIMESTAMP
-            WHERE id = $1
-            RETURNING *`;
-
-        const values = [this.id];
-
-        try {
-            const result = await pool.query(query, values);
-            return new User(result.rows[0]);
-        } catch (err) {
-            throw new Error('Error deleting user: ' + err.message);
-        }
-    }
+  }
 }
 
 export default User;

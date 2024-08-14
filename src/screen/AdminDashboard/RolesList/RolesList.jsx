@@ -87,7 +87,6 @@ const RolesList = () => {
     setOpenBottomSheet(false);
     setEditItem(null);
   }
-
   const [editItem, setEditItem] = useState(null);
 
   return (

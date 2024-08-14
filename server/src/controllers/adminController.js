@@ -1,4 +1,6 @@
 import pool from "src/database";
+import { makeHash } from "src/hash";
+import User from "src/models/User";
 
 class AuthController {
   getAdminDashboardSlats = async (req, res) => {
@@ -25,6 +27,36 @@ class AuthController {
       res.status(500).json({ message: "Error registering user", error: err.message });
     }
   };
+  addUser = async (req, res) => {
+    try {
+      let result = await User.registration(req.body);
+      res.status(201).json({ message: "User registered successfully", user: result });
+    } catch (err) {
+      console.log(err);
+      res.status(500).json({ message: "Error registering user", error: err.message });
+    }
+  };
+
+  deleteUser = async (req, res) => {
+    try {
+      const { userId } = req.params;
+
+      if (!userId) {
+        return res.status(400).json({ message: "User ID is required" });
+      }
+
+      const result = await pool.query("DELETE FROM users WHERE id = $1 RETURNING *", [userId]);
+
+      if (result.rowCount === 0) {
+        return res.status(404).json({ message: "User not found" });
+      }
+
+      res.status(200).json({ message: "User deleted successfully", data: result.rows[0] });
+    } catch (err) {
+      res.status(500).json({ message: "Error deleting user", error: err.message });
+    }
+  };
+
   getRoles = async (req, res) => {
     try {
       const { rows } = await pool.query("select * from roles");
