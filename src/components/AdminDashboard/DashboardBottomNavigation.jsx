@@ -1,26 +1,21 @@
 import React from "react";
 import { View, TouchableOpacity, StyleSheet, Text } from "react-native";
 import Icon from "react-native-vector-icons/MaterialIcons";
-import colors from "../styles/colors";
 import { LinearGradient } from "react-native-linear-gradient";
 import { useNavigation, useRoute } from "@react-navigation/native";
+import colors from "../../styles/colors";
 
-const BottomNav = () => {
+const DashboardBottomNavigation = () => {
   const navigation = useNavigation();
   const route = useRoute();
 
   const navItems = [
     { name: "Home", icon: "home", path: "Home" },
-    { name: "Categories", icon: "category", path: "Categories" },
-    { name: "Cart", icon: "shopping-cart", path: "Cart" },
-    { name: "Orders", icon: "receipt", path: "Orders" },
+    { name: "Seller", icon: "shopping-cart", path: "Cart" },
     { name: "Profile", icon: "person", path: "Profile" },
+    { name: "Dashboard", icon: "dashboard", path: "AdminDashboard" }, // Admin Dashboard item
   ];
-  // Add Admin Dashboard if the user is an admin
-  // if (userRole === "admin") {
 
-    navItems.push({ name: "Admin", icon: "dashboard", path: "AdminDashboard" });
-  //
   const location = route.name;
 
   return (
@@ -36,7 +31,7 @@ const BottomNav = () => {
             <TouchableOpacity
               key={item.name}
               style={styles.navItem}
-              onPress={() => navigation.navigate(item.path, JSON.stringify({ prevRoute: route.name }))}
+              onPress={() => navigation.navigate(item.path)}
             >
               <Icon
                 name={item.icon}
@@ -76,4 +71,5 @@ const styles = StyleSheet.create({
   },
 });
 
-export default BottomNav;
+export default DashboardBottomNavigation;
+
