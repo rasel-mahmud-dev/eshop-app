@@ -80,7 +80,7 @@ const UsersList = () => {
       </View>
       <View style={styles.actions}>
         <RsButton loginButton={styles.loginButton}
-                  onPress={() => navigation.navigate("AdminDashboard::UpdateUser", { userId: item.id })}
+                  onPress={() => setEditItem(item)}
                   style={styles.actionButton}>
           <Icon name="pencil-outline" size={14} color="#fff" />
           <Text style={styles.actionText}>Edit</Text>

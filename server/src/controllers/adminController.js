@@ -36,6 +36,25 @@ class AuthController {
       res.status(500).json({ message: "Error registering user", error: err.message });
     }
   };
+  updateUser = async (req, res) => {
+    try {
+      const { userId } = req.params;
+      if (!userId) {
+        return res.status(400).json({ message: "User ID is required" });
+      }
+      const result2 = await pool.query("SELECT id FROM users WHERE id = $1", [userId]);
+      if (!result2.rows?.[0]) {
+        return res.status(404).json({ message: "User not founds" });
+      }
+
+      let user = new User(req.body);
+      let result = await user.update(userId);
+      res.status(201).json({ message: "User update successfully ", user: result });
+    } catch (err) {
+      console.log(err);
+      res.status(500).json({ message: "Error updating user", error: err.message });
+    }
+  };
 
   deleteUser = async (req, res) => {
     try {

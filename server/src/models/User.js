@@ -8,6 +8,7 @@ class User {
                 password,
                 email,
                 first_name,
+                role,
                 last_name,
                 address,
                 city,
@@ -29,6 +30,7 @@ class User {
     this.state = state;
     this.postal_code = postal_code;
     this.country = country;
+    this.role = role;
     this.phone_number = phone_number;
     this.created_at = created_at;
     this.deleted_at = deleted_at;
@@ -44,6 +46,7 @@ class User {
       last_name,
       address,
       city,
+      role,
       state,
       postal_code,
       country,
@@ -53,8 +56,8 @@ class User {
     const query = `
         INSERT INTO users
         (username, password, email, first_name, last_name, address, city, state, postal_code,
-         country, phone_number)
-        VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11)
+         country, phone_number, role)
+        VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12)
         RETURNING *`;
 
     const values = [
@@ -69,6 +72,7 @@ class User {
       postal_code,
       country,
       phone_number,
+      role,
     ];
 
     try {
@@ -97,44 +101,47 @@ class User {
     }
   }
 
-  // Example of updating a user's information
-  async update() {
-    const query = `
-        UPDATE users
-        SET username     = $1,
-            password     = $2,
-            email        = $3,
-            first_name   = $4,
-            last_name    = $5,
-            address      = $6,
-            city         = $7,
-            state        = $8,
-            postal_code  = $9,
-            country      = $10,
-            phone_number = $11,
-            deleted_at   = $12
-        WHERE id = $13
-        RETURNING *`;
 
-    const values = [
-      this.username,
-      this.password,
-      this.email,
-      this.first_name,
-      this.last_name,
-      this.address,
-      this.city,
-      this.state,
-      this.postal_code,
-      this.country,
-      this.phone_number,
-      this.deleted_at,
-      this.id,
+  async update(userId) {
+    const query = [];
+    const values = [];
+    const columns = [
+      { column: "username", value: this.username },
+      { column: "password", value: this.password },
+      { column: "email", value: this.email },
+      { column: "first_name", value: this.first_name },
+      { column: "last_name", value: this.last_name },
+      { column: "address", value: this.address },
+      { column: "city", value: this.city },
+      { column: "state", value: this.state },
+      { column: "postal_code", value: this.postal_code },
+      { column: "country", value: this.country },
+      { column: "phone_number", value: this.phone_number },
+      { column: "deleted_at", value: this.deleted_at },
+      { column: "role", value: this.role },
     ];
 
+    columns.forEach((column, index) => {
+      if (column.value !== undefined) {
+        query.push(`${column.column} = $${values.length + 1}`);
+        values.push(column.value);
+      }
+    });
+    if (query.length === 0) {
+      throw new Error("No fields to update");
+    }
+    values.push(userId);
+
+    const updateQuery = `UPDATE users
+                         SET ${query.join(", ")}
+                         WHERE id = $${values.length} RETURNING *`;
+
     try {
-      const result = await pool.query(query, values);
-      return new User(result.rows[0]);
+      const result = await pool.query(updateQuery, values);
+      if (result.rows.length === 0) {
+        throw new Error("User not found");
+      }
+      return  result.rows[0]
     } catch (err) {
       throw new Error("Error updating user: " + err.message);
     }
@@ -157,7 +164,6 @@ class User {
       throw new Error("Error deleting user: " + err.message);
     }
   }
-
 
   static async registration(body) {
     const {

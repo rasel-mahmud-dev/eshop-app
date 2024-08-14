@@ -13,8 +13,13 @@ CREATE TABLE users
     country      VARCHAR(255),
     phone_number VARCHAR(20),
     created_at   TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    deleted_at   TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+    deleted_at   TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    role INT default null REFERENCES roles(id)
 );
+
+alter table users  add column   role INT default null REFERENCES roles(id);
+
+
 
 CREATE TABLE categories
 (

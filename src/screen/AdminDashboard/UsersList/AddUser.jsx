@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { View, StyleSheet, Text } from "react-native";
+import { View, StyleSheet, Text, TouchableOpacity } from "react-native";
 import Icon from "react-native-vector-icons/Ionicons";
 import InputField from "../../../components/InputField";
 import RsButton from "../../../components/RsButton/RsButton";
@@ -8,6 +8,7 @@ import useReducer from "../../../hooks/useReducer";
 import { apis } from "../../../apis";
 import catchAxiosError from "../../../utils/catchAxiosError";
 import SelectInput from "../../../components/SelectInput";
+import SimpleLineIcons from "react-native-vector-icons/SimpleLineIcons";
 
 const AddUser = ({ onClose, onSuccess, editItem = null }) => {
   const { error, success } = useToast();
@@ -23,6 +24,7 @@ const AddUser = ({ onClose, onSuccess, editItem = null }) => {
 
   useEffect(() => {
     if (!editItem?.id) return;
+    console.log(editItem);
     setState({
       firstName: editItem?.first_name,
       lastName: editItem?.last_name,
@@ -91,9 +93,26 @@ const AddUser = ({ onClose, onSuccess, editItem = null }) => {
     }));
   }
 
+  function handleFillData() {
+    setState({
+      firstName: "John",
+      lastName: "Doe",
+      email: "john.doe@example.com",
+      password: "123",
+      phoneNumber: "123-456-7890",
+      role: roles.length > 0 ? { value: roles[0].id, label: roles[0].name } : "",
+    });
+    success("Sample data filled in");
+  }
+
   return (
     <View style={styles.formContainer}>
-      <Text style={styles.headerText}>{editItem ? "Update User" : "Create User"}</Text>
+      <View style={styles.headerContainer}>
+        <Text style={styles.headerText}>{editItem ? "Update User" : "Create User"}</Text>
+        <TouchableOpacity onPress={handleFillData} style={styles.fillDataIcon}>
+          <SimpleLineIcons name="magic-wand" size={24} color="#1E90FF" />
+        </TouchableOpacity>
+      </View>
 
       <InputField
         name="firstName"
@@ -136,7 +155,7 @@ const AddUser = ({ onClose, onSuccess, editItem = null }) => {
         icon={<Icon name="key" size={20} color="#555" style={styles.icon} />}
         label="Password"
         placeholder="Enter password"
-        value={state.Password}
+        value={state.password}
         onChangeText={handleChange}
       />
 
@@ -162,11 +181,19 @@ const styles = StyleSheet.create({
   formContainer: {
     padding: 20,
   },
+  headerContainer: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
+    marginBottom: 10,
+  },
+  fillDataIcon: {
+    marginLeft: 10,
+  },
   headerText: {
     fontSize: 25,
     fontWeight: "bold",
     color: "#212121",
-    paddingBottom: 10,
   },
   buttonText: {
     textAlign: "center",

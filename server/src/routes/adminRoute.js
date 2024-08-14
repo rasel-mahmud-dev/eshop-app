@@ -5,6 +5,7 @@ const router = require("express").Router();
 router.get("/slats", adminController.getAdminDashboardSlats);
 router.get("/users", adminController.getUsers);
 router.post("/users", adminController.addUser);
+router.patch("/users/:userId", adminController.updateUser);
 router.delete("/users/:userId", adminController.deleteUser);
 router.get("/roles", adminController.getRoles);
 router.post("/roles", adminController.addRole);
