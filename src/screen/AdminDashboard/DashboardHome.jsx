@@ -8,6 +8,8 @@ import { GestureHandlerRootView } from "react-native-gesture-handler";
 import AdminDashboardSidebar from "../../components/AdminDashboard/AdminDashboardSidebar";
 import FontAwesome from "react-native-vector-icons/FontAwesome";
 import MaterialIcons from "react-native-vector-icons/MaterialIcons";
+import Ionicons from "react-native-vector-icons/Ionicons";
+import Entypo from "react-native-vector-icons/Entypo";
 
 const sidebarItems = [
   {
@@ -68,7 +70,6 @@ const sidebarItems = [
 ];
 
 
-
 const DashboardHome = () => {
 
   const navigation = useNavigation();
@@ -111,6 +112,64 @@ const DashboardHome = () => {
   const [selectedSidebarItem, setSelectedSidebarItem] = useState(sidebarItems[0]);
 
   const content = {
+    "production_management": [
+      {
+        name: "Products",
+        backgroundColor: "#FF6347",
+        icon: () => <MaterialIcons name="production" size={24} color="#fff" />,
+        itemCount: 120, // Example count, update as necessary
+      },
+      {
+        name: "Categories",
+        backgroundColor: "#32CD32",
+        icon: () => <Entypo name="list" size={24} color="#fff" />,
+        itemCount: 15, // Example count, update as necessary
+      },
+      {
+        name: "Suppliers",
+        backgroundColor: "#00BFFF",
+        icon: () => <Ionicons name="business" size={24} color="#fff" />,
+        itemCount: 8, // Example count, update as necessary
+      },
+      {
+        name: "Orders",
+        backgroundColor: "#FF4500",
+        icon: () => <MaterialIcons name="order" size={24} color="#fff" />,
+        itemCount: 25, // Example count, update as necessary
+      },
+      {
+        name: "Inventory",
+        backgroundColor: "#ADFF2F",
+        icon: () => <Ionicons name="ios-stats" size={24} color="#fff" />,
+        itemCount: 60, // Example count, update as necessary
+      },
+    ],
+    "product_management": [
+      {
+        name: "Products",
+        backgroundColor: "#32CD32",
+        icon: () => <MaterialIcons name="shopping-bag" size={24} color="#fff" />,
+        itemCount: 120, // Example count, update as necessary
+      },
+      {
+        name: "Categories",
+        backgroundColor: "#FF6347",
+        icon: () => <FontAwesome name="tags" size={24} color="#fff" />,
+        itemCount: 20, // Example count, update as necessary
+      },
+      {
+        name: "Brands",
+        backgroundColor: "#1E90FF",
+        icon: () => <MaterialIcons name="label" size={24} color="#fff" />,
+        itemCount: 15, // Example count, update as necessary
+      },
+      {
+        name: "Stock",
+        backgroundColor: "#FFD700",
+        icon: () => <FontAwesome name="inventory" size={24} color="#fff" />,
+        itemCount: 300, // Example count, update as necessary
+      },
+    ],
     "user_management": [
       {
         name: "Users",

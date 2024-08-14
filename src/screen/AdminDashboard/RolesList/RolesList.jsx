@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { View, StyleSheet, Text, TouchableOpacity, FlatList, Alert, RefreshControl } from "react-native";
+import { View, StyleSheet, Text, TouchableOpacity, FlatList, Alert, RefreshControl, ScrollView } from "react-native";
 import Icon from "react-native-vector-icons/Ionicons";
 import { useToast } from "../../../lib/ToastService";
 import { apis } from "../../../apis";
@@ -10,6 +10,8 @@ import Entypo from "react-native-vector-icons/Entypo";
 import AntDesign from "react-native-vector-icons/AntDesign";
 import { useNavigation } from "@react-navigation/native";
 import colors from "../../../styles/colors";
+import BottomSheet from "../../../components/BottomSheet/BottomSheet";
+import AddRole from "./AddRole";
 
 const RolesList = () => {
   const { error, success } = useToast();
@@ -53,7 +55,7 @@ const RolesList = () => {
       </View>
       <View style={styles.actions}>
         <RsButton loginButton={styles.loginButton}
-                  onPress={() => navigation.navigate("AdminDashboard::UpdateRole", { roleId: item.id })}
+                  onPress={() => setEditItem(item)}
                   style={styles.actionButton}>
           <Icon name="pencil-outline" size={14} color="#fff" />
           <Text style={styles.actionText}>Edit</Text>
@@ -66,6 +68,8 @@ const RolesList = () => {
     </View>
   );
 
+  const toast = useToast();
+  const [isOpenBottomSheet, setOpenBottomSheet] = useState(false);
   const [refreshing, setRefreshing] = useState(false);
 
   const onRefresh = async () => {
@@ -78,6 +82,13 @@ const RolesList = () => {
       setRefreshing(false);
     }
   };
+
+  function handleCloseBottomSheet() {
+    setOpenBottomSheet(false);
+    setEditItem(null);
+  }
+
+  const [editItem, setEditItem] = useState(null);
 
   return (
     <View style={styles.container}>
@@ -108,11 +119,30 @@ const RolesList = () => {
           renderItem={renderItem}
           keyExtractor={(item) => item.id.toString()}
         />
-        <RsButton loginButton={{ width: "100%" }} onPress={() => navigation.navigate("AdminDashboard::AddRole")}
+        <RsButton loginButton={{ width: "100%" }} onPress={() => setOpenBottomSheet(true)}
                   style={styles.addButton}>
           <Text style={styles.addButtonText}>Add Role</Text>
         </RsButton>
       </View>
+
+
+      <BottomSheet
+        height={450}
+        backdrop={{ backgroundColor: "rgba(31,31,31,0.75)" }}
+        style={styles.bottomSheet}
+        isOpen={isOpenBottomSheet || editItem?.id}
+        onClose={handleCloseBottomSheet}
+      >
+        <ScrollView>
+          <AddRole
+            editItem={editItem}
+            onClose={handleCloseBottomSheet}
+            onSuccess={fetchRoles}
+          />
+        </ScrollView>
+      </BottomSheet>
+
+
     </View>
   );
 };
