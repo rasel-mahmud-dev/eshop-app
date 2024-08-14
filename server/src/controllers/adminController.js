@@ -15,6 +15,16 @@ class AuthController {
       res.status(500).json({ message: "Error registering user", error: err.message });
     }
   };
+  getUsers = async (req, res) => {
+    try {
+      const { rows } = await pool.query("select * from users");
+      res.status(200).json({
+        message: "", data: rows
+      });
+    } catch (err) {
+      res.status(500).json({ message: "Error registering user", error: err.message });
+    }
+  };
 }
 
 const authController = new AuthController();

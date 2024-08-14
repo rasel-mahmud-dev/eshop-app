@@ -1,11 +1,16 @@
 import React, { useState } from "react";
-import { View, Text, TouchableOpacity,  StyleSheet, Alert, Image } from "react-native";
+import { View, Text, TouchableOpacity, StyleSheet, Alert, Image } from "react-native";
 import Icon from "react-native-vector-icons/Ionicons";
 import { LinearGradient } from "react-native-linear-gradient";
 import { useNavigation } from "@react-navigation/native";
 import InputField from "../../components/InputField";
 import RsButton from "../../components/RsButton/RsButton";
 import FontAwesome from "react-native-vector-icons/FontAwesome";
+import { apis } from "../../apis";
+import toast from "../../components/Toast";
+import { useToast } from "../../lib/ToastService";
+import catchAxiosError from "../../utils/catchAxiosError";
+
 
 const RegistrationPage = () => {
   const navigation = useNavigation();
@@ -15,15 +20,17 @@ const RegistrationPage = () => {
     password: "",
   });
 
+  const toast = useToast();
+
   async function handleRegister() {
     try {
-      // Perform registration logic here
-      // For example, you can call an API endpoint to register the user
-      Alert.alert("Success", "Registration Successful");
+
+      const { data } = await apis.post("/auth/register", state);
+      console.log(data);
+      toast.success("Registration Successful");
       navigation.navigate("Home"); // Navigate to Home or any other page after registration
     } catch (ex) {
-      console.error(ex);
-      Alert.alert("Error", "Registration Failed");
+      toast.error(catchAxiosError(ex));
     }
   }
 
@@ -79,16 +86,18 @@ const RegistrationPage = () => {
             secureTextEntry
           />
 
-          <RsButton  onPress={handleRegister}>Register</RsButton>
+          <RsButton onPress={handleRegister}>Register</RsButton>
 
           <View style={styles.socialContainer}>
             <Text style={styles.socialText}>Or Sign Up With</Text>
             <View style={styles.socialIcons}>
-              <TouchableOpacity onPress={() => {/* Handle Google Sign Up */}}>
-                <FontAwesome style={styles.socialIcon("g")}  name="google" />
+              <TouchableOpacity onPress={() => {/* Handle Google Sign Up */
+              }}>
+                <FontAwesome style={styles.socialIcon("g")} name="google" />
               </TouchableOpacity>
-              <TouchableOpacity onPress={() => {/* Handle Facebook Sign Up */}}>
-                <FontAwesome style={styles.socialIcon("f")}  name="facebook" />
+              <TouchableOpacity onPress={() => {/* Handle Facebook Sign Up */
+              }}>
+                <FontAwesome style={styles.socialIcon("f")} name="facebook" />
               </TouchableOpacity>
             </View>
           </View>
@@ -159,7 +168,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     marginTop: 10,
   },
-  socialIcon:(n)=> ({
+  socialIcon: (n) => ({
     width: 40,
     height: 40,
     marginHorizontal: 15,
@@ -168,8 +177,8 @@ const styles = StyleSheet.create({
     lineHeight: 40,
     fontSize: 20,
     borderRadius: 40,
-    color: n === "g" ? "red": "green",
-    backgroundColor:  n === "g" ? "rgba(255,151,151,0.6)": "rgba(142,208,128,0.35)",
+    color: n === "g" ? "red" : "green",
+    backgroundColor: n === "g" ? "rgba(255,151,151,0.6)" : "rgba(142,208,128,0.35)",
   }),
   linkText: {
     color: "#007BFF",

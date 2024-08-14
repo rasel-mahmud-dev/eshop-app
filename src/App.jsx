@@ -11,6 +11,8 @@ import {
 } from "react-native/Libraries/NewAppScreen";
 import MyStack from "./MyStack";
 import { ToastProvider } from "./lib/ToastService";
+import Drawer from "./components/AdminDashboard/Drawer";
+import { GestureHandlerRootView } from "react-native-gesture-handler";
 // import "../global.css"
 
 function App() {
@@ -28,6 +30,7 @@ function App() {
         backgroundColor={backgroundStyle.backgroundColor}
       />
       <MyStack />
+
     </ToastProvider>
   );
 }

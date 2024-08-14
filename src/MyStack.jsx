@@ -14,6 +14,8 @@ import BrandListScreen from "./screen/AdminDashboard/BrandListScreen/BrandListSc
 import ProductList from "./screen/AdminDashboard/ProductScreen/Products";
 import AddProduct from "./screen/AdminDashboard/ProductScreen/AddProduct";
 import RegistrationPage from "./screen/auth/Registration";
+import UsersList from "./screen/AdminDashboard/UsersList/UsersList";
+import RolesList from "./screen/AdminDashboard/RolesList/RolesList";
 
 const Stack = createNativeStackNavigator();
 
@@ -67,6 +69,8 @@ const MyStack = () => {
         <Stack.Screen name="AdminDashboard::Products" options={{ headerShown: false }} component={ProductList} />
         <Stack.Screen name="AdminDashboard::AddProduct" options={{ headerShown: false }} component={AddProduct} />
         <Stack.Screen name="AdminDashboard::UpdateProduct" options={{ headerShown: false }} component={AddProduct} />
+        <Stack.Screen name="AdminDashboard::Users" options={{ headerShown: false }} component={UsersList} />
+        <Stack.Screen name="AdminDashboard::Roles" options={{ headerShown: false }} component={RolesList} />
         <Stack.Screen name="Login" component={LoginPage} options={{ headerShown: false }} />
         <Stack.Screen name="Registration" component={RegistrationPage} options={{ headerShown: false }} />
       </Stack.Navigator>
