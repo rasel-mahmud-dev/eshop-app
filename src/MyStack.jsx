@@ -13,6 +13,7 @@ import CategoryListScreen from "./screen/AdminDashboard/Categories/Categories";
 import BrandListScreen from "./screen/AdminDashboard/BrandListScreen/BrandListScreen";
 import ProductList from "./screen/AdminDashboard/ProductScreen/Products";
 import AddProduct from "./screen/AdminDashboard/ProductScreen/AddProduct";
+import RegistrationPage from "./screen/auth/Registration";
 
 const Stack = createNativeStackNavigator();
 
@@ -67,6 +68,7 @@ const MyStack = () => {
         <Stack.Screen name="AdminDashboard::AddProduct" options={{ headerShown: false }} component={AddProduct} />
         <Stack.Screen name="AdminDashboard::UpdateProduct" options={{ headerShown: false }} component={AddProduct} />
         <Stack.Screen name="Login" component={LoginPage} options={{ headerShown: false }} />
+        <Stack.Screen name="Registration" component={RegistrationPage} options={{ headerShown: false }} />
       </Stack.Navigator>
     </NavigationContainer>
   );

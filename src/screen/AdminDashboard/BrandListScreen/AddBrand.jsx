@@ -53,10 +53,10 @@ const AddBrand = ({ onClose, onSuccess, editItem = null, brands }) => {
         uploadedUrl: fileUrl,
       });
       success("Logo has uploaded.");
-      return true;
+      return fileUrl;
     } catch (ex) {
       error(catchAxiosError(ex));
-      return false;
+      return null;
     } finally {
       setState({
         isUploadingLogo: false,
@@ -66,12 +66,16 @@ const AddBrand = ({ onClose, onSuccess, editItem = null, brands }) => {
 
   async function handleSubmit() {
     try {
-      state.logo && await uploadLogo(state.logo);
+      let uploadedUrl = state?.uploadedUrl;
+      if (state?.logo) {
+        const result = await uploadLogo(state.logo);
+        if (result) uploadedUrl = result;
+      }
 
       if (editItem?.id) {
         const data = await apis.patch(`/brands/${editItem.id}`, {
           name: state.name,
-          logo: state.uploadedUrl,
+          logo: uploadedUrl,
         });
         if (!data) throw new Error("Please try again later");
         success("Brand updated successfully");
@@ -79,7 +83,7 @@ const AddBrand = ({ onClose, onSuccess, editItem = null, brands }) => {
       } else {
         const data = await apis.post("/brands", {
           name: state.name,
-          logo: state.uploadedUrl,
+          logo: uploadedUrl,
         });
         if (!data) throw new Error("Please try again later");
         success("Brand added successfully");
@@ -142,7 +146,7 @@ const AddBrand = ({ onClose, onSuccess, editItem = null, brands }) => {
         </View>
 
         <RsButton onPress={handleSubmit}>
-          <Text>{editItem ? "Update Brand" : "Add Brand"}</Text>
+          <Text style={{textAlign: "center", fontWeight: "500", color: "white"}}>{editItem ? "Update Brand" : "Add Brand"}</Text>
         </RsButton>
       </View>
     </View>

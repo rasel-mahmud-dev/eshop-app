@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { StyleSheet, Text, Image, TouchableOpacity, View, ScrollView, RefreshControl, Alert } from "react-native";
 import { LinearGradient } from "react-native-linear-gradient";
 import { useNavigation, useRoute } from "@react-navigation/native";
@@ -8,7 +8,6 @@ import catchAxiosError from "../../utils/catchAxiosError";
 const DashboardHome = () => {
 
   const navigation = useNavigation();
-
   const [dashboardSlats, setDashboardSlats] = useState({
     categories: 0,
     brands: 0,
@@ -26,6 +25,12 @@ const DashboardHome = () => {
       backgroundColor: "#4682B4",
       iconUrl: "https://ikall.in/wp-content/uploads/2023/06/51sJmHfw92L._SL1000_-300x300.jpg",
       itemCount: dashboardSlats.brands,
+    },
+    {
+      name: "Products",
+      backgroundColor: "rgba(38,227,67,0.62)",
+      iconUrl: "https://5.imimg.com/data5/SELLER/Default/2023/3/292019880/YM/MK/PO/104903331/apple-iphone-14-pro-max-250x250.jpg",
+      itemCount: 30,
     },
     {
       name: "Best Sellers",
@@ -51,18 +56,24 @@ const DashboardHome = () => {
     navigation.navigate("AdminDashboard::" + item.name);
   }
 
-  const route = useRoute();
-
   const [refreshing, setRefreshing] = useState(false);
+
+  async function fetchSlats() {
+    const updateDashboardSlats = { ...dashboardSlats };
+    const { data } = await apis.get("/admin/slats");
+    updateDashboardSlats.categories = data?.data?.categories || 0;
+    updateDashboardSlats.brands = data?.data?.brands || 0;
+    setDashboardSlats(updateDashboardSlats);
+  }
+
+  useEffect(() => {
+    fetchSlats()
+  }, []);
 
   const onRefresh = async () => {
     try {
       setRefreshing(true);
-      const updateDashboardSlats = { ...dashboardSlats };
-      const { data } = await apis.get("/admin/slats");
-      updateDashboardSlats.categories = data?.data?.categories || 0;
-      updateDashboardSlats.brands = data?.data?.brands || 0;
-      setDashboardSlats(updateDashboardSlats);
+      fetchSlats();
     } catch (ex) {
       Alert.alert(catchAxiosError(ex));
     } finally {

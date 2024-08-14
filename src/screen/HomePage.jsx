@@ -60,7 +60,6 @@ const HomePage = () => {
 
       <View style={styles.productContainer}>
         {loading && <Loader />}
-
         {products.map((product, index) => (
           <Product key={index} {...product} />
         ))}

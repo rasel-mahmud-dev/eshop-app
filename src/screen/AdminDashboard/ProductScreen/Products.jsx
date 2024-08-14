@@ -107,6 +107,7 @@ const ProductList = () => {
       ) : (
         <View style={styles.listContainer}>
           <FlatList
+
             refreshControl={
               <RefreshControl
                 progressBackgroundColor={"rgba(111,169,218,0.98)"}

@@ -32,6 +32,7 @@ const styles = StyleSheet.create({
   loginButtonText: {
     color: "#FFFFFF",
     fontSize: 16,
+    textAlign: "center"
   },
 });
 

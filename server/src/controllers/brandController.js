@@ -117,6 +117,7 @@ class BrandController {
     try {
       const { id } = req.params;
       const { name, logo } = req.body;
+      console.log(req.body);
 
       if (!id) {
         return res.status(400).json({ error: "ID is required" });

@@ -14,7 +14,6 @@ import Loader from "../../../components/Loader/Loader";
 import InputField from "../../../components/InputField";
 import RsButton from "../../../components/RsButton/RsButton";
 import Entypo from "react-native-vector-icons/Entypo";
-import AntDesign from "react-native-vector-icons/AntDesign";
 import { useNavigation, useRoute } from "@react-navigation/native";
 
 const pickImage = (callback) => {
@@ -90,7 +89,6 @@ const AddProduct = ({ route }) => {
     }).catch(ex => {
       error(catchAxiosError(ex));
     });
-
   }, [productId]);
 
 
@@ -101,13 +99,12 @@ const AddProduct = ({ route }) => {
       const fileUrl = result.data?.[0]?.url;
       setState({
         isUploadingImage: false,
-        uploadedUrl: fileUrl,
       });
       success("Image has uploaded.");
-      return true;
+      return fileUrl;
     } catch (ex) {
       error(catchAxiosError(ex));
-      return false;
+      return null;
     } finally {
       setState({
         isUploadingImage: false,
@@ -117,12 +114,20 @@ const AddProduct = ({ route }) => {
 
   async function handleSubmit() {
     try {
-      state.image && await uploadImage(state.image);
+
+      console.log(state?.image, "_____");
+
+      let uploadedUrl = state?.uploadedUrl;
+      if (state?.image) {
+        const result = await uploadImage(state.image);
+        if (result) uploadedUrl = result;
+      }
+
 
       if (productId) {
         const data = await apis.patch(`/products/${productId}`, {
           title: state.title,
-          image: state.uploadedUrl,
+          image: uploadedUrl,
           category: state.category?.value,
           brand: state.brand?.value,
           price: state.price,
@@ -134,7 +139,7 @@ const AddProduct = ({ route }) => {
       } else {
         const data = await apis.post("/products", {
           title: state.title,
-          image: state.uploadedUrl,
+          image: uploadedUrl,
           categoryId: state.category?.value,
           brandId: state.brand?.value,
           price: state.price,

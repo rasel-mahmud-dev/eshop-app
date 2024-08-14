@@ -59,7 +59,6 @@ const AddCategory = ({ onClose, onSuccess, editItem = null }) => {
       uploadedUrl: editItem?.logo,
     });
   }, [editItem]);
-  console.log(state);
 
   async function uploadLogo(uri) {
     try {
@@ -68,13 +67,12 @@ const AddCategory = ({ onClose, onSuccess, editItem = null }) => {
       const fileUrl = result.data?.[0]?.url;
       setState({
         isUploadingLogo: false,
-        uploadedUrl: fileUrl,
       });
       success("Logo has uploaded.");
-      return true;
+      return fileUrl;
     } catch (ex) {
       error(catchAxiosError(ex));
-      return false;
+      return null;
     } finally {
       setState({
         isUploadingLogo: false,
@@ -84,13 +82,17 @@ const AddCategory = ({ onClose, onSuccess, editItem = null }) => {
 
   async function handleSubmit() {
     try {
-      state.logo && await uploadLogo(state.logo);
+      let uploadedUrl = state?.uploadedUrl;
+      if (state?.logo) {
+        const result = await uploadLogo(state.logo);
+        if (result) uploadedUrl = result;
+      }
 
       if (editItem?.id) {
         const data = await categoryAction.updateCategory({
           id: editItem.id,
           name: state.name,
-          logo: state.uploadedUrl,
+          logo: uploadedUrl,
           parent: state.parent?.value,
         });
         if (!data) throw new Error("Please try again later");
@@ -99,7 +101,7 @@ const AddCategory = ({ onClose, onSuccess, editItem = null }) => {
       } else {
         const data = await categoryAction.addCategory({
           name: state.name,
-          logo: state.uploadedUrl,
+          logo: uploadedUrl,
           parent: state.parent?.value,
         });
         if (!data) throw new Error("Please try again later");
@@ -196,7 +198,7 @@ const AddCategory = ({ onClose, onSuccess, editItem = null }) => {
         </View>
 
         <RsButton onPress={handleSubmit}>
-          <Text>{editItem ? "Update" : "Add"} Category</Text>
+          <Text  style={{textAlign: "center", fontWeight: "500", color: "white"}}>{editItem ? "Update" : "Add"} Category</Text>
         </RsButton>
       </View>
 

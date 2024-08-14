@@ -98,6 +98,21 @@ adb install ./android/app/build/outputs/apk/release/app-release.apk
 
 adb install -r ./android/app/build/outputs/apk/release/app-release.apk
 
+
+
 If you get an error saying the APK is already installed, you can add the -r flag to replace the existing installation:
 
 adb shell am start -n com.devicename/.MainActivity
+
+### FROM ANDROID STUDIO
+```shell
+adb install -r ./app/release/app-release.apk
+```
+
+```shell
+keytool -genkey -v -keystore your-release-key.keystore -alias your_key_alias -keyalg RSA -keysize 2048 -validity 10000
+
+jarsigner -verbose -keystore "C:\Users\Rasel\test-key.jks" -storepass 123456 -keypass 123456 app/build/outputs/apk/release/app-release-unsigned.apk key0
+
+
+```
