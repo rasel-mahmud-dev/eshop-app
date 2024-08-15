@@ -8,9 +8,13 @@ import authAction from "../../store/actions/authAction";
 import catchAxiosError from "../../utils/catchAxiosError";
 import localStorage from "../../services/LocalStorage";
 import RsButton from "../../components/RsButton/RsButton";
+import { useToast } from "../../lib/ToastService";
+import { useAuthStore } from "../../store";
 
 const LoginPage = () => {
   const navigation = useNavigation();
+  const { setAuth } = useAuthStore();
+  const toast = useToast();
   const [state, setState] = useState({
     email: "rasel.mahmud.dev@gmail.com",
     password: "123",
@@ -22,10 +26,14 @@ const LoginPage = () => {
       const data = await authAction.login(state.email, state.password);
       if (!data) throw new Error("Please try again later");
       await localStorage.set("token", data.token);
-      Alert.alert("Success", JSON.stringify(data));
+      await localStorage.set("auth", JSON.stringify(data?.user));
+      setAuth(data?.user);
+      navigation.navigate("Home");
+      toast.success("Success");
+
     } catch (ex) {
       console.log(catchAxiosError(ex));
-      Alert.alert(catchAxiosError(ex));
+      toast.error(catchAxiosError(ex));
     }
   }
 

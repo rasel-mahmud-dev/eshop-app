@@ -11,6 +11,8 @@ import MaterialIcons from "react-native-vector-icons/MaterialIcons";
 import Ionicons from "react-native-vector-icons/Ionicons";
 import Entypo from "react-native-vector-icons/Entypo";
 import DashboardBottomNavigation from "../../components/AdminDashboard/DashboardBottomNavigation";
+import authAction from "../../store/actions/authAction";
+import { useAuthStore } from "../../store";
 
 const sidebarItems = [
   {
@@ -71,6 +73,7 @@ const sidebarItems = [
 const DashboardHome = () => {
 
   const navigation = useNavigation();
+  const { setAuth } = useAuthStore();
   const [dashboardSlats, setDashboardSlats] = useState({
     categories: 0,
     brands: 0,
@@ -106,7 +109,7 @@ const DashboardHome = () => {
     }
   };
 
-  const [openSidebar, setOpenSidebar] = useState(true);
+  const [openSidebar, setOpenSidebar] = useState(false);
   const [selectedSidebarItem, setSelectedSidebarItem] = useState(sidebarItems[0]);
 
   const content = {
@@ -355,6 +358,15 @@ const DashboardHome = () => {
     ],
   };
 
+  async function handleSelectItem(item) {
+    if (item.id === "logout") {
+      await authAction.logOut();
+      setAuth(null);
+      return;
+    }
+    setSelectedSidebarItem(item);
+  }
+
   return (
     <View style={styles.container}>
       <GestureHandlerRootView style={{ flex: 1 }}>
@@ -362,7 +374,7 @@ const DashboardHome = () => {
           items={sidebarItems}
           isOpen={openSidebar}
           activeItem={selectedSidebarItem}
-          onSelectItem={setSelectedSidebarItem}
+          onSelectItem={handleSelectItem}
           onClose={() => setOpenSidebar(false)}
         />
 

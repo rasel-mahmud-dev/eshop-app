@@ -31,20 +31,25 @@ const HomeScreen = ({ navigation }) => {
 const ProfileScreen = ({ navigation, route }) => {
   return <Text>This is {route.params.name}'s profile</Text>;
 };
+
 const ProfileScreen2 = () => {
 
   const { setAuth, auth } = useAuthStore();
 
   async function Click() {
     try {
-      const data = await authAction.verifyUser();
-      if (data.user) {
-        setAuth(data.user);
+      const auth = await authAction.verifyUser();
+      if (auth) {
+        setAuth(auth);
       }
     } catch (ex) {
       console.log(ex);
     }
   }
+
+  useEffect(() => {
+    Click();
+  }, []);
 
   return null;
   // return <Button onPress={Click} title="DD" />;

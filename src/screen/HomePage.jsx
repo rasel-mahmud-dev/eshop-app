@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { ScrollView, View, StyleSheet, Alert, RefreshControl } from "react-native";
+import { ScrollView, View, Text, StyleSheet, Alert, RefreshControl } from "react-native";
 import Header from "./Header";
 import Category from "./Category";
 import Product from "./Product";
@@ -7,11 +7,14 @@ import { apis } from "../apis";
 import catchAxiosError from "../utils/catchAxiosError";
 import { useToast } from "../lib/ToastService";
 import Loader from "../components/Loader/Loader";
+import { useAuthStore } from "../store";
 
 const HomePage = () => {
 
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(true);
+
+  const {auth} = useAuthStore()
 
   const { error } = useToast();
 
@@ -54,9 +57,10 @@ const HomePage = () => {
         onRefresh={onRefresh}
       />
     }>
-      <Header />
+      <Header auth={auth} />
       <Category />
 
+      <Text>{auth?.email}</Text>
 
       <View style={styles.productContainer}>
         {loading && <Loader />}

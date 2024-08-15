@@ -97,6 +97,7 @@ cd TurboModuleDemo/DeviceName/android
 adb install ./android/app/build/outputs/apk/release/app-release.apk
 
 adb install -r ./android/app/build/outputs/apk/release/app-release.apk
+adb install -r ./app/build/outputs/apk/release/app-release.apk
 
 
 
