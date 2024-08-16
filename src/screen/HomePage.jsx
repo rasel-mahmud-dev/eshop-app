@@ -1,8 +1,7 @@
-import React, { useCallback, useEffect, useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { ScrollView, View, Text, StyleSheet, Alert, RefreshControl, findNodeHandle } from "react-native";
 import Header from "./Header";
 import Category from "./Category";
-import Product from "./Product";
 import { apis } from "../apis";
 import catchAxiosError from "../utils/catchAxiosError";
 import { useToast } from "../lib/ToastService";
@@ -12,16 +11,14 @@ import HeroSlider from "../components/Sliders/HeroSlider";
 import HomeCategories from "../components/HomeScreen/HomeCategories";
 import { useNavigation } from "@react-navigation/native";
 import HomeProducts from "../components/HomeScreen/HomeProducts";
+import Tabs from "../components/HomeScreen/CustomTabBar";
 
 const HomePage = () => {
 
   const navigation = useNavigation();
-
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(true);
-
   const { auth } = useAuthStore();
-
   const { error } = useToast();
 
   async function fetchProducts() {
@@ -56,13 +53,13 @@ const HomePage = () => {
   const [isSticky, setIsSticky] = useState(false);
   const stickyHeaderRef = useRef(null);
   const scrollViewRef = useRef(null);
-  const stickyHeaderPositionRef= useRef(0)
+  const stickyHeaderPositionRef = useRef(0);
 
   useEffect(() => {
     if (stickyHeaderRef.current && scrollViewRef.current) {
       stickyHeaderRef.current.measureLayout(
         findNodeHandle(scrollViewRef.current),
-        (x, y) => stickyHeaderPositionRef.current = y
+        (x, y) => stickyHeaderPositionRef.current = y,
       );
     }
   }, []);
@@ -75,6 +72,12 @@ const HomePage = () => {
       setIsSticky(false);
     }
   };
+
+  const [activeTab, setActiveTab] = useState(0);
+
+  function handleTabChange(pageIndex) {
+    setActiveTab(pageIndex);
+  }
 
   return (
     <ScrollView
@@ -102,13 +105,17 @@ const HomePage = () => {
       <HomeCategories navigation={navigation} />
       {loading && <Loader />}
 
-
       <View ref={stickyHeaderRef}
-            style={{ backgroundColor: "red", padding: 10 }}>
-        <Text>BBBBBBBBB</Text>
+            style={{ marginTop: 10, paddingVertical: 10, backgroundColor: "#fff" }}>
+        <Tabs activeTab={activeTab} setActiveTab={setActiveTab} />
       </View>
-      <HomeProducts products={products} navigation={navigation} />
 
+      <HomeProducts
+        tab={activeTab}
+        onTabChange={handleTabChange}
+        products={products}
+        navigation={navigation}
+      />
 
     </ScrollView>
   );
@@ -121,5 +128,6 @@ const styles = StyleSheet.create({
   },
 
 });
+
 
 export default HomePage;

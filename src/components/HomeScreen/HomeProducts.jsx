@@ -1,33 +1,15 @@
-import React, { useEffect, useState } from "react";
-import { FlatList, TouchableOpacity, View, StyleSheet, Image, Text, ScrollView, Dimensions } from "react-native";
-import { useToast } from "../../lib/ToastService";
-import { apis } from "../../apis";
-import CustomTabBar from "./CustomTabBar";
-import { SafeAreaView } from "react-native-safe-area-context"; // Make sure to import CustomTabBar
+import React, { useEffect, useRef, useState } from "react";
+import { FlatList, TouchableOpacity, View, StyleSheet, Image, Text, Dimensions } from "react-native";
+import RsButton from "../RsButton/RsButton";
 
-const HomeProducts = () => {
-  const [products, setProducts] = useState([]);
-  const toast = useToast();
-  const tabs = ["For You", "Free Delivery", "Buy More"];
-  const [activeTab, setActiveTab] = useState(tabs[0]);
+const HomeProducts = ({ onTabChange, products, tab }) => {
+  const scrollViewRef = useRef(null);
+  const scrollDragging = useRef(false);
+  const [userScrolled, setUserScrolled] = useState(false);
 
-  useEffect(() => {
-    fetchProducts();
-  }, [activeTab]);
-
-  async function fetchProducts() {
-    try {
-      // You might want to adjust this URL based on the active tab
-      const { data } = await apis.get(`/products`);
-      if (data.data) {
-        setProducts(data.data);
-      }
-    } catch (ex) {
-      toast.error("Failed to fetch products");
-    }
-  }
-
-  const renderProduct = ({ item }) => (
+  const width = Dimensions.get("window").width;
+  const itemWidth = width / 2;
+  const renderProduct2 = ({ item = 0 }) => (
     <TouchableOpacity style={styles.card}>
       <Image source={{ uri: item.image }} style={styles.image} />
       <View style={styles.details}>
@@ -37,58 +19,100 @@ const HomeProducts = () => {
     </TouchableOpacity>
   );
 
-  let www = Dimensions.get("window").width / 2;
+  const views = [
+    {
+      el: (
+        <View style={{ width: itemWidth }}>
+          <Text>AAAAAAA</Text>
+          {products.map(item => renderProduct2({ item }))}
+        </View>
+      ),
+    },
+    {
+      el: (
+        <View style={{ width: itemWidth }}>
+          <Text>BBBBBB</Text>
+          {products.map(item => renderProduct2({ item }))}
+        </View>
+      ),
+    },
+    {
+      el: (
+        <View style={{ width: itemWidth }}>
+          <Text>CCCCCCCC</Text>
+          {products.map(item => renderProduct2({ item }))}
+        </View>
+      ),
+    },
+    {
+      el: (
+        <View style={{ width: itemWidth }}>
+          <Text>DDDDDDD</Text>
+          {products.map(item => renderProduct2({ item }))}
+        </View>
+      ),
+    },
+  ];
+
+  const renderProduct = ({ item }) => {
+    return <View>{item.el}</View>;
+  };
+
+
+  const handleScroll = (event) => {
+    if (!userScrolled) {
+      const contentOffsetX = event.nativeEvent.contentOffset.x;
+      const newTab = Math.round(contentOffsetX / width);
+      onTabChange(newTab);
+    }
+  };
+
+  const handleScrollBeginDrag = () => {
+    scrollDragging.current = true;
+    setUserScrolled(true);
+  };
+
+  const handleScrollEndDrag = () => {
+    scrollDragging.current = false;
+    setUserScrolled(false);
+  };
+
+  useEffect(() => {
+    if (scrollViewRef.current && !scrollDragging.current) {
+      scrollViewRef.current.scrollToIndex({
+        index: tab,
+        animated: true,
+      });
+    }
+  }, [tab]);
+
   return (
     <>
-      <View style={styles.container}>
-
-        <ScrollView
-          pagingEnabled={true}
-          horizontal={true}
-          snapToAlignment="start"
-          decelerationRate="normal"
-          snapToInterval={www * 2}
-        >
-          <View style={{ width: www }}>
-            <Text>AAAAAAA</Text>
-            <ScrollView style={styles.container}>
-              {products.map(item => renderProduct({ item }))}
-            </ScrollView>
-          </View>
-
-          <View style={{ width: www }}>
-            <Text>BBBB</Text>
-            <ScrollView style={styles.container}>
-              {products.map(item => renderProduct({ item }))}
-            </ScrollView>
-          </View>
-
-
-          <View style={{ width: www }}>
-            <Text>TAb 2 AAAAAAA</Text>
-            <ScrollView style={styles.container}>
-              {products.map(item => renderProduct({ item }))}
-            </ScrollView>
-          </View>
-
-          <View style={{ width: www }}>
-            <Text>TAb 2 BBBB</Text>
-            <ScrollView style={styles.container}>
-              {products.map(item => renderProduct({ item }))}
-            </ScrollView>
-          </View>
-        </ScrollView>
-
-      </View>
+      <RsButton onPress={() => {
+        scrollViewRef.current.scrollToIndex({
+          index: 2,
+          animated: true,
+        });
+      }}>
+        CHANGE
+      </RsButton>
+      <FlatList
+        onScrollBeginDrag={handleScrollBeginDrag}
+        onScrollEndDrag={handleScrollEndDrag}
+        ref={scrollViewRef}
+        horizontal
+        pagingEnabled
+        data={views}
+        renderItem={renderProduct}
+        onScroll={handleScroll}
+        snapToInterval={width}
+        decelerationRate="fast"
+      />
     </>
   );
 };
 
 const styles = StyleSheet.create({
-  container: {
-    // flex: 1,
-    // backgroundColor: "#F5F5F5",
-  },
   card: {
     margin: 6,
     flex: 1,

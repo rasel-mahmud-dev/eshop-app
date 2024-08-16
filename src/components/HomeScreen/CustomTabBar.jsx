@@ -1,58 +1,92 @@
+import React, { useState } from "react";
+import { View, Text, TouchableOpacity, ScrollView, StyleSheet } from "react-native";
+import Icon from "react-native-vector-icons/MaterialCommunityIcons"; // Import icons
 
-import React from "react";
-import { View, Text, TouchableOpacity, StyleSheet } from "react-native";
+export const tabs = [
+  { name: "For You", id: 1, icon: "heart-outline" }, // Add icon names
+  { name: "Free Delivery", id: 2, icon: "truck-outline" },
+  { name: "Buy More Save More", id: 3, icon: "cart-outline" },
+  { name: "New Arrival", id: 4, icon: "star-outline" },
+  { name: "Best Price Guaranteed", id: 5, icon: "tag-outline" },
+  { name: "Coins", id: 6, icon: "coin-outline" },
+];
 
-const CustomTabBar = ({ tabs, activeTab, onTabPress }) => {
+function Tabs({ activeTab, setActiveTab }) {
+
   return (
-    <View style={styles.tabContainer}>
-      {tabs.map((tab, index) => (
-        <TouchableOpacity
-          key={index}
-          style={[
-            styles.tab,
-            activeTab === tab ? styles.activeTab : styles.inactiveTab
-          ]}
-          onPress={() => onTabPress(tab)}
-        >
-          <Text style={activeTab === tab ? styles.activeText : styles.inactiveText}>
-            {tab}
-          </Text>
-        </TouchableOpacity>
-      ))}
+    <View style={styles.container}>
+      <ScrollView
+        horizontal
+        showsHorizontalScrollIndicator={false}
+        style={styles.tabsContainer}
+      >
+        {tabs.map((item, index) => (
+          <TouchableOpacity
+            key={item.id}
+            style={[
+              styles.tab,
+              activeTab === index && styles.activeTab,
+            ]}
+            onPress={() => setActiveTab(index)}
+          >
+            <Icon
+              name={item.icon}
+              size={16}
+              color={activeTab === index ? "#007AFF" : "#555"}
+            />
+            <Text style={[
+              styles.tabText,
+              activeTab === index && styles.activeTabText,
+            ]}>
+              {item.name}
+            </Text>
+          </TouchableOpacity>
+        ))}
+      </ScrollView>
+
+      {/*<View style={styles.content}>*/}
+      {/*  {activeTab === 0 && <Text>Content for "For You"</Text>}*/}
+      {/*  {activeTab === 1 && <Text>Content for "Free Delivery"</Text>}*/}
+      {/*  {activeTab === 2 && <Text>Content for "Buy More Save More"</Text>}*/}
+      {/*  {activeTab === 3 && <Text>Content for "New Arrival"</Text>}*/}
+      {/*  {activeTab === 4 && <Text>Content for "Best Price Guaranteed"</Text>}*/}
+      {/*  {activeTab === 5 && <Text>Content for "Coins"</Text>}*/}
+      {/*</View>*/}
     </View>
   );
-};
+}
 
 const styles = StyleSheet.create({
-  tabContainer: {
+  container: {
+    flex: 1,
+  },
+  tabsContainer: {
     flexDirection: "row",
-    justifyContent: "space-around",
-    backgroundColor: "#fff",
     borderBottomWidth: 1,
-    borderBottomColor: "#ddd",
+    borderColor: "#ccc",
   },
   tab: {
-    flex: 1,
+    flexDirection: "row", // Arrange icon and text vertically
     alignItems: "center",
-    paddingVertical: 6,
+    // justifyContent: "center",
+    paddingHorizontal: 10,
+    columnGap: 4
   },
   activeTab: {
     borderBottomWidth: 1,
-    borderBottomColor: "#1E90FF",
+    borderColor: "#007AFF",
   },
-  inactiveTab: {
-    borderBottomWidth: 3,
-    borderBottomColor: "transparent",
+  tabText: {
+    color: "#797979",
+    fontSize: 13,
   },
-  activeText: {
-    fontSize: 14,
+  activeTabText: {
+    color: "#007AFF",
     fontWeight: "bold",
-    color: "#1E90FF",
   },
-  inactiveText: {
-    fontSize: 14,
-    color: "#666",
+  content: {
+    padding: 20,
   },
 });
 
-export default CustomTabBar;
+export default Tabs;
