@@ -18,6 +18,8 @@ import UsersList from "./screen/AdminDashboard/UsersList/UsersList";
 import RolesList from "./screen/AdminDashboard/RolesList/RolesList";
 import ManageRoles from "./screen/AdminDashboard/RolesList/ManageRoles";
 import Profile from "./screen/ProfileScreen/Profile";
+import MoreCategories from "./components/HomeScreen/MoreCategories";
+import HomeProducts from "./components/HomeScreen/Sticky";
 
 const Stack = createNativeStackNavigator();
 
@@ -31,9 +33,6 @@ const HomeScreen = ({ navigation }) => {
   );
 };
 
-const ProfileScreen = ({ navigation, route }) => {
-  return <Text>This is {route.params.name}'s profile</Text>;
-};
 
 const ProfileScreen2 = () => {
 
@@ -71,6 +70,7 @@ const MyStack = () => {
           options={{ title: "Welcome", headerShown: false }}
         />
         <Stack.Screen name="Profile" options={{ headerShown: false }} component={Profile} />
+        <Stack.Screen name="MoreCategories" options={{ headerShown: false }} component={MoreCategories} />
 
         <Stack.Screen name="AdminDashboard" options={{ headerShown: false }} component={DashboardHome} />
 
