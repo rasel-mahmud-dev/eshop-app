@@ -1,4 +1,7 @@
 const colors = {
+    "text-primary": "#715ca8",
+    "primary": "#6750A4",
+
     "primary-300": "#715ca8",
     "primary-400": "#6750A4",
     "primary-500": "#6b4fb5",

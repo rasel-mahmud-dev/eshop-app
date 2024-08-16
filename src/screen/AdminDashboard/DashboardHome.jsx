@@ -81,7 +81,7 @@ const DashboardHome = () => {
 
 
   function jumpScreen(item) {
-    navigation.navigate("AdminDashboard::" + item.name);
+    navigation.navigate("AdminDashboard::" + item.route);
   }
 
   const [refreshing, setRefreshing] = useState(false);
@@ -116,30 +116,35 @@ const DashboardHome = () => {
     "production_management": [
       {
         name: "Products",
+        route: "Products",
         backgroundColor: "#FF6347",
         icon: () => <MaterialIcons name="production" size={24} color="#fff" />,
         itemCount: 120, // Example count, update as necessary
       },
       {
         name: "Categories",
+        route: "Categories",
         backgroundColor: "#32CD32",
         icon: () => <Entypo name="list" size={24} color="#fff" />,
         itemCount: 15, // Example count, update as necessary
       },
       {
         name: "Suppliers",
+        route: "Suppliers",
         backgroundColor: "#00BFFF",
         icon: () => <Ionicons name="business" size={24} color="#fff" />,
         itemCount: 8, // Example count, update as necessary
       },
       {
         name: "Orders",
+        route: "Orders",
         backgroundColor: "#FF4500",
         icon: () => <MaterialIcons name="order" size={24} color="#fff" />,
         itemCount: 25, // Example count, update as necessary
       },
       {
         name: "Inventory",
+        route: "Inventory",
         backgroundColor: "#ADFF2F",
         icon: () => <Ionicons name="ios-stats" size={24} color="#fff" />,
         itemCount: 60, // Example count, update as necessary
@@ -148,18 +153,21 @@ const DashboardHome = () => {
     "product_management": [
       {
         name: "Products",
+        route: "Products",
         backgroundColor: "#32CD32",
         icon: () => <MaterialIcons name="shopping-bag" size={24} color="#fff" />,
         itemCount: 120, // Example count, update as necessary
       },
       {
         name: "Categories",
+        route: "Categories",
         backgroundColor: "#FF6347",
         icon: () => <FontAwesome name="tags" size={24} color="#fff" />,
         itemCount: 20, // Example count, update as necessary
       },
       {
         name: "Brands",
+        route: "Brands",
         backgroundColor: "#1E90FF",
         icon: () => <MaterialIcons name="label" size={24} color="#fff" />,
         itemCount: 15, // Example count, update as necessary
@@ -174,38 +182,51 @@ const DashboardHome = () => {
     "user_management": [
       {
         name: "Users",
+        route: "Users",
         backgroundColor: "#1E90FF",
         icon: () => <MaterialIcons name="person" size={24} color="#fff" />,
         itemCount: 45, // Example count, update as necessary
       },
       {
         name: "Roles",
+        route: "Roles",
         backgroundColor: "#FFD700",
         icon: () => <FontAwesome name="shield" size={24} color="#fff" />,
         itemCount: 5, // Example count, update as necessary
+      },
+      {
+        name: "Manage Roles",
+        backgroundColor: "#8A2BE2",
+        icon: () => <FontAwesome name="tasks" size={24} color="#fff" />,
+        itemCount: 2, // Example count, update as necessary
+        route: "ManageRoles" // Navigation route for the Manage Roles page
       },
     ],
     "order_management": [
       {
         name: "Orders",
+        route: "Orders",
         backgroundColor: "#FF4500",
         icon: () => <MaterialIcons name="receipt" size={24} color="#fff" />,
         itemCount: 250, // Example count, update as necessary
       },
       {
         name: "Order Status",
+        route: "Order Status",
         backgroundColor: "#FF6347",
         icon: () => <FontAwesome name="status" size={24} color="#fff" />,
         itemCount: 5, // Example count, update as necessary
       },
       {
         name: "Order History",
+        route: "Order History",
         backgroundColor: "#32CD32",
         icon: () => <MaterialIcons name="history" size={24} color="#fff" />,
         itemCount: 100, // Example count, update as necessary
       },
       {
         name: "Shipping",
+        route: "Shipping",
         backgroundColor: "#1E90FF",
         icon: () => <MaterialIcons name="local-shipping" size={24} color="#fff" />,
         itemCount: 75, // Example count, update as necessary
@@ -214,24 +235,28 @@ const DashboardHome = () => {
     "home_management": [
       {
         name: "Categories",
+        route: "Categories",
         backgroundColor: "#FF6347",
         icon: () => <FontAwesome name="tags" size={24} color="#fff" />,
         itemCount: dashboardSlats.categories,
       },
       {
         name: "Brands",
+        route: "Brands",
         backgroundColor: "#4682B4",
         icon: () => <FontAwesome name="th" size={24} color="#fff" />,
         itemCount: dashboardSlats.brands,
       },
       {
         name: "Products",
+        route: "Products",
         backgroundColor: "rgba(38,227,67,0.62)",
         icon: () => <FontAwesome name="product-hunt" size={24} color="#fff" />,
         itemCount: 30,
       },
       {
         name: "Best Sellers",
+        route: "Best Sellers",
         backgroundColor: "rgba(38,227,67,0.62)",
         icon: () => <FontAwesome name="star" size={24} color="#fff" />,
         itemCount: 30,
@@ -244,6 +269,7 @@ const DashboardHome = () => {
       },
       {
         name: "Offers",
+        route: "Offers",
         backgroundColor: "#FF4500",
         icon: () => <FontAwesome name="percent" size={24} color="#fff" />,
         itemCount: 10,

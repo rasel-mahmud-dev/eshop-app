@@ -8,6 +8,7 @@ import catchAxiosError from "../utils/catchAxiosError";
 import { useToast } from "../lib/ToastService";
 import Loader from "../components/Loader/Loader";
 import { useAuthStore } from "../store";
+import Carousel from "../components/Carousel/Carousel";
 
 const HomePage = () => {
 
@@ -61,6 +62,8 @@ const HomePage = () => {
       <Category />
 
       <Text>{auth?.email}</Text>
+
+      <Carousel />
 
       <View style={styles.productContainer}>
         {loading && <Loader />}

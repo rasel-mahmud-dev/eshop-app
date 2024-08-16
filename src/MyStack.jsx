@@ -1,7 +1,7 @@
 import * as React from "react";
 import { NavigationContainer } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
-import { Button, Text, View } from "react-native";
+import { Text } from "react-native";
 import HomePage from "./screen/HomePage";
 import LoginPage from "./screen/auth/Login";
 import { useEffect } from "react";
@@ -16,6 +16,8 @@ import AddProduct from "./screen/AdminDashboard/ProductScreen/AddProduct";
 import RegistrationPage from "./screen/auth/Registration";
 import UsersList from "./screen/AdminDashboard/UsersList/UsersList";
 import RolesList from "./screen/AdminDashboard/RolesList/RolesList";
+import ManageRoles from "./screen/AdminDashboard/RolesList/ManageRoles";
+import Profile from "./screen/ProfileScreen/Profile";
 
 const Stack = createNativeStackNavigator();
 
@@ -28,6 +30,7 @@ const HomeScreen = ({ navigation }) => {
     </>
   );
 };
+
 const ProfileScreen = ({ navigation, route }) => {
   return <Text>This is {route.params.name}'s profile</Text>;
 };
@@ -57,6 +60,7 @@ const ProfileScreen2 = () => {
 
 
 const MyStack = () => {
+  const { auth } = useAuthStore();
   return (
     <NavigationContainer>
       <ProfileScreen2 />
@@ -66,8 +70,10 @@ const MyStack = () => {
           component={HomeScreen}
           options={{ title: "Welcome", headerShown: false }}
         />
-        <Stack.Screen name="Profile" component={ProfileScreen} />
+        <Stack.Screen name="Profile" options={{ headerShown: false }} component={Profile} />
+
         <Stack.Screen name="AdminDashboard" options={{ headerShown: false }} component={DashboardHome} />
+
         <Stack.Screen name="AdminDashboard::Categories" options={{ headerShown: false }}
                       component={CategoryListScreen} />
         <Stack.Screen name="AdminDashboard::Brands" options={{ headerShown: false }} component={BrandListScreen} />
@@ -76,6 +82,7 @@ const MyStack = () => {
         <Stack.Screen name="AdminDashboard::UpdateProduct" options={{ headerShown: false }} component={AddProduct} />
         <Stack.Screen name="AdminDashboard::Users" options={{ headerShown: false }} component={UsersList} />
         <Stack.Screen name="AdminDashboard::Roles" options={{ headerShown: false }} component={RolesList} />
+        <Stack.Screen name="AdminDashboard::ManageRoles" options={{ headerShown: false }} component={ManageRoles} />
         <Stack.Screen name="Login" component={LoginPage} options={{ headerShown: false }} />
         <Stack.Screen name="Registration" component={RegistrationPage} options={{ headerShown: false }} />
       </Stack.Navigator>
