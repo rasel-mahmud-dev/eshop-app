@@ -63,10 +63,9 @@ const ManageHomeCategoryDetail = () => {
 
   async function fetchCategories(parentId) {
     try {
+      console.log(parentId, "parentId");
       const { data } = await apis.get(`/categories/filter?type=category&parent_id=${parentId}`);
-      console.log(data);
-
-      // setCategories(data?.data || []);
+      setCategories(data?.data || []);
     } catch (ex) {
       toast.error("Failed to fetch popular categories");
     }
@@ -133,11 +132,20 @@ const ManageHomeCategoryDetail = () => {
         setSeSubCategory(prev => {
           let upd = prev?.id === value.id ? null : value;
           if (upd) {
-            fetchCategories(upd);
+            fetchCategories(upd?.id);
           }
           return upd;
         });
       }
+    } else if (type === "category" && value.id === "new") {
+      setEditUpdateState({
+        initData: {
+          parentId: selSubCategory.id,
+          type: "category",
+        },
+        isCreateUpdate: true,
+        type: "category",
+      });
     }
   }
 
@@ -147,8 +155,15 @@ const ManageHomeCategoryDetail = () => {
     type: "category_group",
   });
 
-  function handleCloseBottomSheet(type, state = {}) {
-    type === "category_group" && fetchCategoryGroup();
+  function handleCloseBottomSheet(state = {}) {
+    if (state?.type?.value === "category_group") {
+      fetchCategoryGroup();
+    }
+    const parentId = state?.parentId?.value;
+    if (state?.type?.value === "category" && parentId) {
+      fetchCategories(parentId);
+    }
+
     setEditUpdateState({
       isCreateUpdate: false,
       type: "category_group",
@@ -244,27 +259,40 @@ const ManageHomeCategoryDetail = () => {
                       ) : (
                         <>
                           <Text style={styles.subCategoryText}>{item.name}</Text>
-                          <TouchableOpacity onPress={() => handleSelectCategory("subCategory", item)}>
+                          <TouchableOpacity onPress={() => handleSelectCategory("sub_category", item)}>
                             <Icon style={styles.chevronIcon} name="chevron-down" size={18} color={colors["gray-18"]} />
                           </TouchableOpacity>
                         </>
                       )}
                     </View>
 
+
                     {/* drop down absolute */}
                     {selSubCategory?.id === item.id && <View style={styles.childCategories}>
+
+
+                      <RsButton
+                        loginButton={{ paddingHorizontal: 0 }}
+                        style={{ marginVertical: 10 }}
+                        textStyle={{ fontSize: 10 }}
+                        onPress={() => handleSelectCategory("category", { id: "new", name: "Create" })}>
+                        Create One
+                      </RsButton>
 
                       {!categories?.length ? (
                         <Text style={{ color: colors["gray-8"], fontSize: 16, fontWeight: "500" }}>There is no
                           category..</Text>
                       ) : null}
 
-                      {categories?.map(cat => (
-                        <View style={styles.childCategoryItem}>
-                          <Image style={styles.childCategoryImg} source={{ uri: cat?.logo }} />
-                          <Text style={styles.childCategoryText}>{cat.name}</Text>
-                        </View>
-                      ))}
+
+                      <View style={styles.childCategoriesGrid}>
+                        {categories?.map(cat => (
+                          <View style={styles.childCategoryItem}>
+                            {cat?.logo && <Image style={styles.childCategoryImg} source={{ uri: cat?.logo }} />}
+                            <Text style={styles.childCategoryText}>{cat.name}</Text>
+                          </View>
+                        ))}
+                      </View>
 
                       {/*<FlatList scrollEnabled={false} data={subCategories}*/}
                       {/*          renderItem={({ item }) => (*/}
@@ -285,10 +313,9 @@ const ManageHomeCategoryDetail = () => {
 
       <BottomSheet height={500} isOpen={isOpenBottomSheet} onClose={() => handleCloseBottomSheet()}>
         <AddCategory
-          onSuccess={(type, state) => handleCloseBottomSheet(type, state)}
+          onSuccess={(state) => handleCloseBottomSheet(state)}
           onClose={() => {
           }}
-          editItem={{}}
           initData={editUpdateState.initData}
         />
       </BottomSheet>
@@ -394,11 +421,13 @@ const styles = StyleSheet.create({
     borderLeftWidth: 1,
   },
   childCategories: {
+    padding: 5,
+  },
+  childCategoriesGrid: {
     flex: 1,
     flexDirection: "row",
     flexWrap: "wrap",
     justifyContent: "space-between", // Ensure equal spacing between items
-    padding: 10,
   },
   childCategoryItem: {
     width: "48%",

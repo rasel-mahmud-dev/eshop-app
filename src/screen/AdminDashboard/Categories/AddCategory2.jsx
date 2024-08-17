@@ -34,7 +34,7 @@ const categoryTypes = [
   { label: "Category", value: "category" },
 ];
 
-const AddCategory = ({ onClose, initData, onSuccess, editItem = null }) => {
+const AddCategory = ({ onClose, initData, onSuccess }) => {
 
   const { allDbCategories, setAllDbCategories } = useCategoryStore();
   const { error, success } = useToast();
@@ -97,31 +97,19 @@ const AddCategory = ({ onClose, initData, onSuccess, editItem = null }) => {
         if (result) uploadedUrl = result;
       }
 
-      if (editItem?.id) {
-        const data = await categoryAction.updateCategory({
-          id: editItem.id,
-          name: state.name,
-          logo: uploadedUrl,
-          parentId: state.parentId?.value,
-          type: state.type?.value,
-        });
-        if (!data) throw new Error("Please try again later");
-        success("Category update successfully");
+      const data = await categoryAction.addCategory({
+        name: state.name,
+        logo: uploadedUrl,
+        parentId: state.parentId?.value,
+        type: state.type?.value,
+      });
 
-      } else {
-        const data = await categoryAction.addCategory({
-          name: state.name,
-          logo: uploadedUrl,
-          parentId: state.parentId?.value,
-          type: state.type?.value,
-        });
-        if (!data) throw new Error("Please try again later");
-        success("Category added successfully");
-      }
+      if (!data) throw new Error("Please try again later");
+      success("Category added successfully");
+
 
       onClose(false);
-      const type = state.type;
-      onSuccess(type, state);
+      onSuccess(state);
     } catch (ex) {
       error(catchAxiosError(ex));
     }
@@ -174,7 +162,7 @@ const AddCategory = ({ onClose, initData, onSuccess, editItem = null }) => {
           fontWeight: "bold",
           color: "#212121",
           paddingBottom: 10,
-        }}>{editItem ? "Update" : "Create"}</Text>
+        }}>Create</Text>
 
         <SelectInput
           label="Type"
@@ -223,7 +211,7 @@ const AddCategory = ({ onClose, initData, onSuccess, editItem = null }) => {
             textAlign: "center",
             fontWeight: "500",
             color: "white",
-          }}>{editItem ? "Update" : "Add"} Category</Text>
+          }}>Create Category</Text>
         </RsButton>
       </View>
 
