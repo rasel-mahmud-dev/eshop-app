@@ -55,21 +55,22 @@ class CategoryController {
     }
   };
 
-  importCategoryGroups = async (req, res) => {
+  importCategory = async (req, res) => {
     try {
       const categoryGroups = req.body; // Expecting an array of category groups
 
-      const queries = categoryGroups.map(({ name, icon, logo }) => {
+      const queries = categoryGroups.map(({ name, parentId, logo, type = "category_group" }) => {
         const slug = slugify(name, { lower: true });
         return pool.query(
-          `INSERT INTO categories(name, slug, logo, type)
-           VALUES ($1, $2, $3, 'category_group')
+          `INSERT INTO categories(name, slug, logo, parent_id, type)
+           VALUES ($1, $2, $3, $4, $5)
            ON CONFLICT (slug) DO UPDATE
-               SET name = excluded.name,
-                   logo = excluded.logo,
-                   type = excluded.type
+               SET name      = excluded.name,
+                   logo      = excluded.logo,
+                   parent_id = excluded.parent_id,
+                   type      = excluded.type
            returning *`,
-          [name, slug, logo]
+          [name, slug, logo, parentId, type],
         );
       });
 
@@ -82,30 +83,31 @@ class CategoryController {
       console.log(error);
       res.status(500).json({ error: "An error occurred while importing category groups" });
     }
-  }
+  };
+
   create = async (req, res) => {
     try {
-      const { name, logo, parent } = req.body;
-      if (!name) throw Error(`Name is required`);
-      console.log(req.body);
-      const slug = slugify(name, { lower: true });
+      const { name, logo, parentId, type } = req.body;
 
-      const ress = await pool.query(
-        `INSERT INTO categories(name, slug, logo, parent_id)
-         VALUES ($1, $2, $3, $4)
+      if (!name) throw Error(`Name is required`);
+
+      const slug = slugify(name, { lower: true });
+      const result = await pool.query(
+        `INSERT INTO categories(name, slug, logo, parent_id, type)
+         VALUES ($1, $2, $3, $4, $5)
          ON CONFLICT (slug) DO UPDATE
              SET name      = excluded.name,
                  logo      = excluded.logo,
-                 parent_id = excluded.parent_id
+                 parent_id = excluded.parent_id,
+                 type      = excluded.type
          returning *`,
-        [name, slug, logo, parent],
+        [name, slug, logo, parentId, type],
       );
 
-      res.status(201).json({ data: ress.rows?.[0] });
+      res.status(201).json({ data: result.rows?.[0] });
 
     } catch (error) {
-      console.log(error);
-      res.status(500).json({ error: "An error occurred while importing categories" });
+      res.status(500).json({ error: "An error occurred while creating category." });
     }
   };
 
@@ -121,20 +123,28 @@ class CategoryController {
 
   getCategoriesFilter = async (req, res) => {
     try {
-      const { type = "category" } = req.query;
-
-      let query = `SELECT * FROM categories`;
+      const { type, parent_id, id } = req.query;
+      let query = `SELECT *
+                   FROM categories`;
       const queryParams = [];
-
+      const conditions = [];
       if (type) {
-        query += ` WHERE type = $1`;
+        conditions.push(`type = $${queryParams.length + 1}`);
         queryParams.push(type);
       }
-
+      if (parent_id) {
+        conditions.push(`parent_id = $${queryParams.length + 1}`);
+        queryParams.push(parent_id);
+      }
+      if (id) {
+        conditions.push(`id = $${queryParams.length + 1}`);
+        queryParams.push(id);
+      }
+      if (conditions.length > 0) {
+        query += ` WHERE ` + conditions.join(" AND ");
+      }
       query += ` ORDER BY name ASC`;
-
       const result = await pool.query(query, queryParams);
-
       res.status(200).json({ data: result.rows });
 
     } catch (error) {
