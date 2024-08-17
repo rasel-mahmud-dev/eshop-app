@@ -15,8 +15,8 @@ const Pagination = ({ style = {}, paginationIndex = 0, total, onPress }) => {
     </View>
   );
 };
-export default Pagination
 
+export default Pagination
 
 
 const astyles = StyleSheet.create({

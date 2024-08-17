@@ -103,12 +103,20 @@ const HomePage = () => {
 
       <HeroSlider />
       <HomeCategories navigation={navigation} />
+
       {loading && <Loader />}
 
       <View ref={stickyHeaderRef}
-            style={{ marginTop: 10, paddingVertical: 10, backgroundColor: "#fff" }}>
-        <Tabs activeTab={activeTab} setActiveTab={setActiveTab} />
+            style={{ marginTop: 15,   backgroundColor: "white"  }}>
+        <Tabs
+          activeTab={activeTab}
+          setActiveTab={setActiveTab}
+        />
+
+
+
       </View>
+
 
       <HomeProducts
         tab={activeTab}
@@ -116,6 +124,7 @@ const HomePage = () => {
         products={products}
         navigation={navigation}
       />
+
 
     </ScrollView>
   );

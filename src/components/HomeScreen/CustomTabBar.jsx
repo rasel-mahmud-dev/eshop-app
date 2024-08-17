@@ -12,7 +12,6 @@ export const tabs = [
 ];
 
 function Tabs({ activeTab, setActiveTab }) {
-
   return (
     <View style={styles.container}>
       <ScrollView
@@ -43,15 +42,6 @@ function Tabs({ activeTab, setActiveTab }) {
           </TouchableOpacity>
         ))}
       </ScrollView>
-
-      {/*<View style={styles.content}>*/}
-      {/*  {activeTab === 0 && <Text>Content for "For You"</Text>}*/}
-      {/*  {activeTab === 1 && <Text>Content for "Free Delivery"</Text>}*/}
-      {/*  {activeTab === 2 && <Text>Content for "Buy More Save More"</Text>}*/}
-      {/*  {activeTab === 3 && <Text>Content for "New Arrival"</Text>}*/}
-      {/*  {activeTab === 4 && <Text>Content for "Best Price Guaranteed"</Text>}*/}
-      {/*  {activeTab === 5 && <Text>Content for "Coins"</Text>}*/}
-      {/*</View>*/}
     </View>
   );
 }
@@ -63,14 +53,15 @@ const styles = StyleSheet.create({
   tabsContainer: {
     flexDirection: "row",
     borderBottomWidth: 1,
-    borderColor: "#ccc",
+    borderColor: "rgba(180,180,180,0.13)",
   },
   tab: {
     flexDirection: "row", // Arrange icon and text vertically
     alignItems: "center",
     // justifyContent: "center",
     paddingHorizontal: 10,
-    columnGap: 4
+    paddingVertical: 15,
+    columnGap: 4,
   },
   activeTab: {
     borderBottomWidth: 1,

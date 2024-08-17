@@ -1,11 +1,9 @@
 import React, { useEffect, useRef, useState } from "react";
-import { FlatList, TouchableOpacity, View, StyleSheet, Image, Text, Dimensions } from "react-native";
-import RsButton from "../RsButton/RsButton";
+import {  Animated, TouchableOpacity, View, StyleSheet, Image, Text, Dimensions } from "react-native";
 
 const HomeProducts = ({ onTabChange, products, tab }) => {
   const scrollViewRef = useRef(null);
-  const scrollDragging = useRef(false);
-  const [userScrolled, setUserScrolled] = useState(false);
+  const prevScrollIndexRef = useRef(0);
 
   const width = Dimensions.get("window").width;
   const itemWidth = width / 2;
@@ -21,66 +19,70 @@ const HomeProducts = ({ onTabChange, products, tab }) => {
 
   const views = [
     {
-      el: (
+      el: (products) => (
         <View style={{ width: itemWidth }}>
-          <Text>AAAAAAA</Text>
+          {/*<Text>AAAAAAA</Text>*/}
           {products.map(item => renderProduct2({ item }))}
         </View>
       ),
     },
     {
-      el: (
+      el: (products) => (
         <View style={{ width: itemWidth }}>
-          <Text>BBBBBB</Text>
+          {/*<Text>BBBBBB</Text>*/}
           {products.map(item => renderProduct2({ item }))}
         </View>
       ),
     },
     {
-      el: (
+      el: (products) => (
         <View style={{ width: itemWidth }}>
-          <Text>CCCCCCCC</Text>
+          {/*<Text>CCCCCCCC</Text>*/}
           {products.map(item => renderProduct2({ item }))}
         </View>
       ),
     },
     {
-      el: (
+      el: (products) => (
         <View style={{ width: itemWidth }}>
-          <Text>DDDDDDD</Text>
+          {/*<Text>DDDDDDD</Text>*/}
           {products.map(item => renderProduct2({ item }))}
         </View>
       ),
     },
   ];
 
-  const renderProduct = ({ item }) => {
-    return <View>{item.el}</View>;
+  const renderProduct = ({ item, products }) => {
+    return <View>{item?.el(products)}</View>;
+    return null;
   };
+
+  const [scrolling, setScrolling] = useState(false);
 
 
   const handleScroll = (event) => {
-    if (!userScrolled) {
-      const contentOffsetX = event.nativeEvent.contentOffset.x;
-      const newTab = Math.round(contentOffsetX / width);
-      onTabChange(newTab);
+    if (!scrolling  && !prevScrollIndexRef.current === tab) {
+      const offsetX = event.nativeEvent.contentOffset.x;
+      const newIndex = Math.round(offsetX / width);
+      onTabChange(newIndex);
+      prevScrollIndexRef.current = newIndex;
     }
   };
 
-  const handleScrollBeginDrag = () => {
-    scrollDragging.current = true;
-    setUserScrolled(true);
-  };
-
-  const handleScrollEndDrag = () => {
-    scrollDragging.current = false;
-    setUserScrolled(false);
+  const handleScrollEnd = () => {
+    setScrolling(false);
   };
 
   useEffect(() => {
-    if (scrollViewRef.current && !scrollDragging.current) {
+    if (scrollViewRef.current) {
+      if (prevScrollIndexRef.current === tab) return;
+      prevScrollIndexRef.current = tab;
+      let index = 0;
+      if (tab !== 0){
+        index = tab + 1
+      }
       scrollViewRef.current.scrollToIndex({
-        index: tab,
+        index,
         animated: true,
       });
     }
@@ -88,22 +90,19 @@ const HomeProducts = ({ onTabChange, products, tab }) => {
 
   return (
     <>
-      <RsButton onPress={() => {
-        scrollViewRef.current.scrollToIndex({
-          index: 2,
-          animated: true,
-        });
-      }}>
-        CHANGE
-      </RsButton>
-      <FlatList
-        onScrollBeginDrag={handleScrollBeginDrag}
-        onScrollEndDrag={handleScrollEndDrag}
+      <Animated.FlatList
+        style={{ flexGrow: 0 }}
+        bounces={false}
+        showsHorizontalScrollIndicator={false}
+        scrollEventThrottle={16}
+        onMomentumScrollEnd={handleScrollEnd}
+        onEndReachedThreshold={0.5}
+        keyExtractor={(item) => item.id}
         ref={scrollViewRef}
         horizontal
         pagingEnabled
         data={views}
-        renderItem={renderProduct}
+        renderItem={({ item }) => renderProduct({ item, products })}
         onScroll={handleScroll}
         snapToInterval={width}
         decelerationRate="fast"

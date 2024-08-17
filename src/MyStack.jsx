@@ -20,6 +20,7 @@ import ManageRoles from "./screen/AdminDashboard/RolesList/ManageRoles";
 import Profile from "./screen/ProfileScreen/Profile";
 import MoreCategories from "./components/HomeScreen/MoreCategories";
 import HomeProducts from "./components/HomeScreen/Sticky";
+import ManageHomeCategoryDetail from "./screen/AdminDashboard/Categories/ManageHomeCategoryDetail";
 
 const Stack = createNativeStackNavigator();
 
@@ -63,7 +64,7 @@ const MyStack = () => {
   return (
     <NavigationContainer>
       <ProfileScreen2 />
-      <Stack.Navigator initialRouteName="Home">
+      <Stack.Navigator initialRouteName="AdminDashboard::ManageHomeCategoryDetail">
         <Stack.Screen
           name="Home"
           component={HomeScreen}
@@ -73,6 +74,7 @@ const MyStack = () => {
         <Stack.Screen name="MoreCategories" options={{ headerShown: false }} component={MoreCategories} />
 
         <Stack.Screen name="AdminDashboard" options={{ headerShown: false }} component={DashboardHome} />
+        <Stack.Screen name="AdminDashboard::ManageHomeCategoryDetail" options={{ headerShown: false }} component={ManageHomeCategoryDetail} />
 
         <Stack.Screen name="AdminDashboard::Categories" options={{ headerShown: false }}
                       component={CategoryListScreen} />

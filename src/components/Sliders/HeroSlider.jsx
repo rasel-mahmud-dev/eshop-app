@@ -1,6 +1,5 @@
-
 import React, { useState, useRef, useEffect } from "react";
-import { View, Animated,  Dimensions, StyleSheet, TouchableOpacity, Image } from "react-native";
+import { View, Animated, Dimensions, StyleSheet, TouchableOpacity, Image } from "react-native";
 import Pagination from "../Pagination/Pagination";
 
 const { width } = Dimensions.get("window");
@@ -61,7 +60,7 @@ const HeroSlider = () => {
   useEffect(() => {
     startAutoScroll();
     return () => stopAutoScroll(); // Clear interval on component unmount
-  }, [activeIndex, items]);
+  }, [activeIndex]);
 
   const RenderItem = ({ item }) => (
     <TouchableOpacity
@@ -100,7 +99,14 @@ const HeroSlider = () => {
       ...item,
       id: `${item.id}-${index + items.length}`,
     }));
-    setItems((prevItems) => [...prevItems, ...newItems]);
+    setItems((prevItems) => {
+      const more = [...prevItems, ...newItems];
+      if (more > 50) {
+        setActiveIndex(0);
+        return newItems;
+      }
+      return more;
+    });
   };
 
   return (

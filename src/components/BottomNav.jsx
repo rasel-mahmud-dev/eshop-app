@@ -25,10 +25,9 @@ const BottomNav = () => {
 
   return (
     <View style={styles.wrapper}>
-      <LinearGradient
-        start={{ x: 0, y: 0 }}
-        end={{ x: 1, y: 1 }}
-        colors={["rgba(88,81,219,0.82)", "rgba(225,48,108,0.76)"]}
+      <View
+
+
         style={styles.gradient}
       >
         <View style={styles.navContainer}>
@@ -40,12 +39,14 @@ const BottomNav = () => {
             >
               <Icon
                 name={item.icon}
-                size={30}
-                color={location === item.path ? colors["blue-500"] : colors["gray-200"]}
+                size={20}
+                color={location === item.path ? colors["blue-500"] : colors["gray-900"]}
               />
               <Text
                 style={{
-                  color: location === item.path ? colors["blue-500"] : colors["gray-200"],
+                  fontSize: 12,
+                  fontWeight: 600,
+                  color: location === item.path ? colors["blue-500"] : colors["gray-900"],
                 }}
               >
                 {item.name}
@@ -53,17 +54,21 @@ const BottomNav = () => {
             </TouchableOpacity>
           ))}
         </View>
-      </LinearGradient>
+      </View>
     </View>
   );
 };
 
 const styles = StyleSheet.create({
   wrapper: {
-    height: 60,
+    height: 55,
+
   },
   gradient: {
-    height: 60,
+    backgroundColor:"white",
+    elevation: 10,
+    shadowOpacity: 1,
+    shadowColor: "#000000"
   },
   navContainer: {
     flexDirection: "row",

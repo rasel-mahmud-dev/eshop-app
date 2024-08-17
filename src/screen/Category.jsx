@@ -8,7 +8,6 @@ const categories = [
   { name: 'Electronics', image: 'https://rukminim2.flixcart.com/fk-p-flap/200/200/image/717b5077a5e25324.jpg?q=100' },
   { name: 'Grocery', image: 'https://rukminim2.flixcart.com/fk-p-flap/200/200/image/25f400c36bc3487d.jpg?q=100' },
   { name: 'Furniture', image: 'https://rukminim2.flixcart.com/fk-p-flap/200/200/image/7a5e96c10ada8a56.jpg?q=100' },
-  // Add more categories as needed
 ];
 
 const Category = () => {
