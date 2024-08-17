@@ -2,6 +2,7 @@ import pool from "src/database";
 import slugify from "slugify";
 
 class CategoryController {
+
   importBatch = async (req, res) => {
     const categories = req.body;
     const client = await pool.connect();
@@ -54,6 +55,34 @@ class CategoryController {
     }
   };
 
+  importCategoryGroups = async (req, res) => {
+    try {
+      const categoryGroups = req.body; // Expecting an array of category groups
+
+      const queries = categoryGroups.map(({ name, icon, logo }) => {
+        const slug = slugify(name, { lower: true });
+        return pool.query(
+          `INSERT INTO categories(name, slug, logo, type)
+           VALUES ($1, $2, $3, 'category_group')
+           ON CONFLICT (slug) DO UPDATE
+               SET name = excluded.name,
+                   logo = excluded.logo,
+                   type = excluded.type
+           returning *`,
+          [name, slug, logo]
+        );
+      });
+
+      const results = await Promise.all(queries);
+      const insertedCategories = results.map(result => result.rows[0]);
+
+      res.status(201).json({ data: insertedCategories });
+
+    } catch (error) {
+      console.log(error);
+      res.status(500).json({ error: "An error occurred while importing category groups" });
+    }
+  }
   create = async (req, res) => {
     try {
       const { name, logo, parent } = req.body;
@@ -87,6 +116,29 @@ class CategoryController {
       res.status(200).json({ data: rows });
     } catch (error) {
       res.status(500).send({ error: "An error occurred while importing categories" });
+    }
+  };
+
+  getCategoriesFilter = async (req, res) => {
+    try {
+      const { type = "category" } = req.query;
+
+      let query = `SELECT * FROM categories`;
+      const queryParams = [];
+
+      if (type) {
+        query += ` WHERE type = $1`;
+        queryParams.push(type);
+      }
+
+      query += ` ORDER BY name ASC`;
+
+      const result = await pool.query(query, queryParams);
+
+      res.status(200).json({ data: result.rows });
+
+    } catch (error) {
+      res.status(500).json({ error: "An error occurred while fetching categories" });
     }
   };
 
@@ -257,6 +309,7 @@ class CategoryController {
       res.status(500).send({ error: "An error occurred while importing categories" });
     }
   };
+
 }
 
 const categoryController = new CategoryController();

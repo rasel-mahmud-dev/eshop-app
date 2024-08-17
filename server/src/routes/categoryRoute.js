@@ -4,6 +4,8 @@ const router = require("express").Router();
 
 router.post("/", categoryController.create);
 router.post("/import", categoryController.importBatch);
+router.get("/filter", categoryController.getCategoriesFilter);
+router.post("/import-category-groups", categoryController.importCategoryGroups);
 router.get("/", categoryController.getCategories);
 router.get("/all", categoryController.getAllCategories);
 router.delete("/", categoryController.deleteAll);

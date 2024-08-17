@@ -14,10 +14,11 @@ CREATE TABLE users
     phone_number VARCHAR(20),
     created_at   TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     deleted_at   TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    role INT default null REFERENCES roles(id)
+    role         INT       default null REFERENCES roles (id)
 );
 
-alter table users  add column   role INT default null REFERENCES roles(id);
+alter table users
+    add column role INT default null REFERENCES roles (id);
 
 
 
@@ -27,12 +28,15 @@ CREATE TABLE categories
     name      VARCHAR(255) NOT NULL UNIQUE,
     slug      VARCHAR(255) NOT NULL UNIQUE,
     logo      VARCHAR(1024),
+    type      VARCHAR(1024) default 'category',
     parent_id INT,
     CONSTRAINT fk_parent
         FOREIGN KEY (parent_id)
             REFERENCES categories (id)
             ON DELETE SET NULL
 );
+
+alter table categories add column type varchar(1024) default 'category';
 
 select name,
        id,

@@ -2,8 +2,8 @@ import axios from "axios";
 import localStorage from "../services/LocalStorage";
 import envConfig from "../config/envConfig";
 
-export const BACKEND = envConfig.NODE_ENV !== "development"
-  ? "http://192.168.20.201:9050/api/v1"
+export const BACKEND = envConfig.NODE_ENV === "development"
+  ? "http://192.168.20.201:3000/api/v1"
   : "https://eshop-pi-seven.vercel.app/api/v1";
 
 export const apis = axios.create({
