@@ -72,11 +72,7 @@ const ProductList = () => {
             <Text style={styles.actionText}>Delete</Text>
           </RsButton>
         </View>
-
-
       </View>
-
-
     </View>
   );
 

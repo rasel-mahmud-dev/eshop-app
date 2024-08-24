@@ -11,6 +11,7 @@ import {
 } from "react-native/Libraries/NewAppScreen";
 import MyStack from "./MyStack";
 import { ToastProvider } from "./lib/ToastService";
+import { useEffect } from "react";
 
 
 function App() {
@@ -19,6 +20,7 @@ function App() {
   const backgroundStyle = {
     backgroundColor: isDarkMode ? "rgba(111,169,218,0.98)" : Colors.lighter,
   };
+
 
   return (
     <ToastProvider>

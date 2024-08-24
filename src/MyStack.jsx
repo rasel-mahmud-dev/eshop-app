@@ -1,5 +1,5 @@
 import * as React from "react";
-import { NavigationContainer } from "@react-navigation/native";
+import { NavigationContainer, useNavigation } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { Text } from "react-native";
 import HomePage from "./screen/HomePage";
@@ -21,9 +21,9 @@ import Profile from "./screen/ProfileScreen/Profile";
 import MoreCategories from "./components/HomeScreen/MoreCategories";
 import HomeProducts from "./components/HomeScreen/Sticky";
 import ManageHomeCategoryDetail from "./screen/AdminDashboard/Categories/ManageHomeCategoryDetail";
+import LocalStorage from "./services/LocalStorage";
 
 const Stack = createNativeStackNavigator();
-
 const HomeScreen = ({ navigation }) => {
 
   return (
@@ -36,7 +36,6 @@ const HomeScreen = ({ navigation }) => {
 
 
 const ProfileScreen2 = () => {
-
   const { setAuth, auth } = useAuthStore();
 
   async function Click() {
@@ -50,19 +49,38 @@ const ProfileScreen2 = () => {
     }
   }
 
+
   useEffect(() => {
     Click();
+  }, []);
+
+  const navigation = useNavigation();
+
+  useEffect(() => {
+    LocalStorage.get("screen").then(name=>{
+      navigation.navigate(name)
+    })
+
   }, []);
 
   return null;
   // return <Button onPress={Click} title="DD" />;
 };
 
+function handleChangeState(e) {
+  const routes = e.routes.slice(e.routes.length - 1);
+  const name = routes?.[0]?.name;
+  if (name) {
+      LocalStorage.set("screen", name).then(r => {})
+  }
+}
 
 const MyStack = () => {
   const { auth } = useAuthStore();
+
+
   return (
-    <NavigationContainer>
+    <NavigationContainer onStateChange={handleChangeState}>
       <ProfileScreen2 />
       <Stack.Navigator initialRouteName="Home">
         <Stack.Screen
@@ -74,7 +92,8 @@ const MyStack = () => {
         <Stack.Screen name="MoreCategories" options={{ headerShown: false }} component={MoreCategories} />
 
         <Stack.Screen name="AdminDashboard" options={{ headerShown: false }} component={DashboardHome} />
-        <Stack.Screen name="AdminDashboard::ManageHomeCategoryDetail" options={{ headerShown: false }} component={ManageHomeCategoryDetail} />
+        <Stack.Screen name="AdminDashboard::ManageHomeCategoryDetail" options={{ headerShown: false }}
+                      component={ManageHomeCategoryDetail} />
 
         <Stack.Screen name="AdminDashboard::Categories" options={{ headerShown: false }}
                       component={CategoryListScreen} />
