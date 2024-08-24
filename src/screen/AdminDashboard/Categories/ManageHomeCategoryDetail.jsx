@@ -1,71 +1,61 @@
 import React, { useEffect, useState } from "react";
-import { View, Text, TouchableOpacity, FlatList, StyleSheet, ScrollView, Image } from "react-native";
-import Icon from "react-native-vector-icons/MaterialCommunityIcons";
-import { useToast } from "../../../lib/ToastService";
 import { useNavigation } from "@react-navigation/native";
-import { apis } from "../../../apis";
-import colors from "../../../styles/colors";
-import Entypo from "react-native-vector-icons/Entypo";
-import AntDesign from "react-native-vector-icons/AntDesign";
+import { FlatList, ScrollView, TouchableOpacity, View, StyleSheet, Text, Image, RefreshControl } from "react-native";
+import Icon from "react-native-vector-icons/MaterialCommunityIcons";
 import Ionicons from "react-native-vector-icons/Ionicons";
+import AntDesign from "react-native-vector-icons/AntDesign";
+import Entypo from "react-native-vector-icons/Entypo";
 import BottomSheet from "../../../components/BottomSheet/BottomSheet";
+import colors from "../../../styles/colors";
+import { apis } from "../../../apis";
+import { useToast } from "../../../lib/ToastService";
 import useReducer from "../../../hooks/useReducer";
-import AddCategory from "./AddCategory2";
-import RsButton from "../../../components/RsButton/RsButton";
-import EvilIcons from "react-native-vector-icons/EvilIcons";
+import SelectRooCategories from "./SelectRooCategories";
 
-const categoryGroupIcons = {
-  "Women's & Girls' Fashion": "chess-bishop",
-  "Men's & Boys' Fashion": "tshirt-crew",
-  "Electronic Accessories": "headphones",
-  "TV & Home Appliances": "television",
-  "Electronics Device": "laptop",
-  "Mother & Baby": "baby-bottle-outline",
-  "Automotive & Motorbike": "car",
-  "Sports & Outdoors": "basketball",
-  "Home & Lifestyle": "sofa",
-  "Groceries": "shopping",
-  "Health & Beauty": "lipstick",
-  "Watches, Bags, Jewellery": "watch",
-};
+export async function udpateCategoryConfig(config) {
+  try {
+    const { data } = await apis.post(`/categories/category-config`, config);
+    return data
+  } catch (ex) {
+    throw ex;
+  }
+}
 
 const ManageHomeCategoryDetail = () => {
 
   const [selectedRootCategory, setSelectedRootCategory] = useState(null);
   const [selSubCategory, setSeSubCategory] = useState(null);
 
-  const [subCategories, setSubCategories] = useState({});
+  const [mobileCategoryMapping, setMobileCategoryMapping] = useState(null);
+  const [isOpenBottomSheet, setIsOpenBottomSheet] = useReducer({
+    isOpen: false,
+    action: "",
+  });
 
-  const [categoryGroup, setCategoryGroup] = useState([{
-    name: "Create",
-    icon: "create",
-    id: "new",
-  }]);
+  const [subCategories, setSubCategories] = useState({});
+  const [categoryGroup, setCategoryGroup] = useState([]);
   const [categories, setCategories] = useState([]);
 
   const toast = useToast();
   const navigation = useNavigation();
 
   useEffect(() => {
-    fetchCategoryGroup();
+    fetchCategoryConfig();
   }, []);
 
-  async function fetchSubCategories(parentId) {
+  async function fetchCategories() {
     try {
-      const { data } = await apis.get(`/categories/filter?type=sub_category&parent_id=${parentId}`);
-      if (data.data) {
-        setSubCategories(prevState => ({ ...prevState, [parentId]: data.data }));
-      }
+      const { data } = await apis.get(`/categories/filter`);
+      setCategories(data?.data || []);
     } catch (ex) {
       toast.error("Failed to fetch popular categories");
     }
   }
 
-  async function fetchCategories(parentId) {
+  async function fetchCategoryConfig() {
     try {
-      console.log(parentId, "parentId");
-      const { data } = await apis.get(`/categories/filter?type=category&parent_id=${parentId}`);
-      setCategories(data?.data || []);
+      const { data } = await apis.get(`/categories/category-config`);
+      setMobileCategoryMapping(data?.mobile_category_mapping || []);
     } catch (ex) {
       toast.error("Failed to fetch popular categories");
     }
@@ -74,252 +64,198 @@ const ManageHomeCategoryDetail = () => {
   async function fetchCategoryGroup() {
     try {
       const { data } = await apis.get("/categories/filter?type=category_group");
-      if (data.data) {
-        let items = data.data;
-        items = items.map(el => {
-          const iconName = categoryGroupIcons?.[el?.name];
-          return {
-            ...el,
-            icon: iconName,
-          };
-        });
-        items.unshift({
-          name: "Create",
-          icon: "create",
-          id: "new",
-        });
-        setCategoryGroup(items);
-        const catDetail = items[0];
-        if (catDetail?.id) {
-          setSelectedRootCategory(catDetail);
-          fetchSubCategories(catDetail?.id);
-        }
-      }
+
+
     } catch (ex) {
       toast.error("Failed to fetch category_group.");
     }
   }
 
   function handleSelectCategory(type, value) {
+    if (type === "root") {
 
-    if (type === "category_group") {
-      setSelectedRootCategory(value);
-      if (value.id === "new") {
-        setEditUpdateState({
-          isCreateUpdate: true,
-          type: "category_group",
-          initData: {
-            parentId: "",
-            type: "category_group",
-          },
-        });
-      } else {
-        if (value?.id) {
-          fetchSubCategories(value?.id);
-        }
+      if (value.id === "select_root") {
+        setIsOpenBottomSheet({
+          isOpen: true,
+          action: "select_root"
+        })
       }
+
+
     } else if (type === "sub_category") {
-      if (value.id === "new") {
-        setEditUpdateState({
-          initData: {
-            parentId: selectedRootCategory.id,
-            type: "sub_category",
-          },
-          isCreateUpdate: true,
-          type: "sub_category",
-        });
-      } else {
-        setSeSubCategory(prev => {
-          let upd = prev?.id === value.id ? null : value;
-          if (upd) {
-            fetchCategories(upd?.id);
-          }
-          return upd;
-        });
-      }
-    } else if (type === "category" && value.id === "new") {
-      setEditUpdateState({
-        initData: {
-          parentId: selSubCategory.id,
-          type: "category",
-        },
-        isCreateUpdate: true,
-        type: "category",
+      setSeSubCategory(prev => {
+        let upd = prev?.id === value.id ? null : value;
+        if (upd) {
+          fetchCategories(upd?.id);
+        }
+        return upd;
       });
     }
   }
 
-  const [editUpdateState, setEditUpdateState] = useReducer({
-    isCreateUpdate: false,
-    initData: {},
-    type: "category_group",
-  });
+  function getSubCategories(obj) {
+    if (selectedRootCategory?.id === "new") return [];
+    return obj?.[selectedRootCategory?.id] || [];
+  }
 
-  function handleCloseBottomSheet(state = {}) {
-    if (state?.type?.value === "category_group") {
-      fetchCategoryGroup();
-    }
-    const parentId = state?.parentId?.value;
-    if (state?.type?.value === "category" && parentId) {
-      fetchCategories(parentId);
-    }
 
-    setEditUpdateState({
-      isCreateUpdate: false,
-      type: "category_group",
+  function handleCloseBottomSheet() {
+    setIsOpenBottomSheet({
+      isOpen: false,
+      action: "select",
     });
   }
 
-  function handleDeleteCategory() {
-    toast.success("Not implemented.");
-  }
-
-  function getSubCategories(obj) {
-    if (selectedRootCategory?.id === "new") return [];
-    const items = obj?.[selectedRootCategory?.id] || [];
+  function appendInsert(arr) {
     return [
-      { name: "Create Sub Categories", icon: "create", id: "new" },
-      ...items,
+      {
+        name: "Select",
+        id: "select_root",
+        logo: "https://static-assets-web.flixcart.com/www/linchpin/batman-returns/images/fk-default-image-75ff340b.png?q=90",
+      },
+      ...(arr ?? []),
     ];
   }
 
-  const isOpenBottomSheet = editUpdateState.isCreateUpdate;
+  const sheetOpen = isOpenBottomSheet?.isOpen;
+  function onRefresh(){
+    fetchCategoryConfig().finally(()=>{
+      setR(false)
+    })
+  }
+  const [refreshing, setR] = useState(false)
 
   return (
-    <>
-      {selectedRootCategory && selectedRootCategory?.id !== "new" && (
-        <RsButton
-          onPress={handleDeleteCategory}
-          loginButton={{
-            paddingVertical: 0,
-            paddingHorizontal: 0,
-            justifyContent: "center",
-            alignItems: "center",
-          }} style={styles.floatingDeleteBtn}>
-          <EvilIcons name="trash" size={25} color="white" />
-        </RsButton>
-      )}
-
-      <View style={styles.container}>
-        <View style={styles.header}>
-          <View style={styles.left}>
-            <TouchableOpacity onPress={() => navigation.goBack()}>
-              <Entypo name="chevron-small-left" style={{ color: "#1c1c1c", justifyContent: "center", fontSize: 25 }} />
-            </TouchableOpacity>
-            <Text style={{ fontSize: 15, fontWeight: "bold", color: "#1c1c1c" }}>{selectedRootCategory?.name}</Text>
-          </View>
-          <View style={styles.right}>
-            <TouchableOpacity onPress={() => navigation.goBack()}>
-              <AntDesign name="shoppingcart" style={{ color: "#1c1c1c", justifyContent: "center", fontSize: 18 }} />
-            </TouchableOpacity>
-            <TouchableOpacity onPress={() => navigation.goBack()}>
-              <AntDesign name="search1" style={{ color: "#1c1c1c", justifyContent: "center", fontSize: 19 }} />
-            </TouchableOpacity>
-            <TouchableOpacity onPress={() => navigation.goBack()}>
-              <Ionicons name="ellipsis-vertical" style={{ color: "#1c1c1c", justifyContent: "center", fontSize: 18 }} />
-            </TouchableOpacity>
-
-          </View>
+    <View style={styles.container}>
+      <View style={styles.header}>
+        <View style={styles.left}>
+          <TouchableOpacity onPress={() => navigation.goBack()}>
+            <Entypo name="chevron-small-left" style={{ color: "#1c1c1c", justifyContent: "center", fontSize: 25 }} />
+          </TouchableOpacity>
+          <Text style={{ fontSize: 15, fontWeight: "bold", color: "#1c1c1c" }}>{selectedRootCategory?.name}</Text>
         </View>
+        <View style={styles.right}>
+          <TouchableOpacity onPress={() => navigation.goBack()}>
+            <AntDesign name="shoppingcart" style={{ color: "#1c1c1c", justifyContent: "center", fontSize: 18 }} />
+          </TouchableOpacity>
+          <TouchableOpacity onPress={() => navigation.goBack()}>
+            <AntDesign name="search1" style={{ color: "#1c1c1c", justifyContent: "center", fontSize: 19 }} />
+          </TouchableOpacity>
+          <TouchableOpacity onPress={() => navigation.goBack()}>
+            <Ionicons name="ellipsis-vertical" style={{ color: "#1c1c1c", justifyContent: "center", fontSize: 18 }} />
+          </TouchableOpacity>
 
-        <View style={styles.containerWrapper}>
-          <View style={styles.sidebar}>
-            <FlatList
-              data={categoryGroup}
-              renderItem={({ item }) => (
-                <TouchableOpacity style={styles.categoryItem(selectedRootCategory?.name === item.name)}
-                                  onPress={() => handleSelectCategory("category_group", item)}>
-                  <Icon name={item.icon} size={20} color={selectedRootCategory?.name === item.name
-                    ? colors.primary : colors["gray-10"]} />
-                  <Text style={styles.categoryText(selectedRootCategory?.name === item.name)}>{item.name}</Text>
-                </TouchableOpacity>
-              )}
-              keyExtractor={(item) => item.name}
-              contentContainerStyle={styles.categoryList}
-            />
-          </View>
-
-          <View style={styles.mainContent}>
-            <ScrollView contentContainerStyle={styles.subCategoryList}>
-              {getSubCategories(subCategories).map((item, index) => (
-                <View key={index} style={styles.subCategoryItem}>
-                  <View style={{ width: "100%" }}>
-                    <View
-                      style={{
-                        width: "100%",
-                        flexDirection: "row",
-                        alignItems: "center",
-                        justifyContent: "space-between",
-                      }}>
-
-                      {item.id === "new" ? (
-                        <TouchableOpacity onPress={() => handleSelectCategory("sub_category", item)}>
-                          <Text style={{ fontWeight: "600", fontSize: 14, color: colors.primary }}>{item.name}</Text>
-                        </TouchableOpacity>
-                      ) : (
-                        <>
-                          <Text style={styles.subCategoryText}>{item.name}</Text>
-                          <TouchableOpacity onPress={() => handleSelectCategory("sub_category", item)}>
-                            <Icon style={styles.chevronIcon} name="chevron-down" size={18} color={colors["gray-18"]} />
-                          </TouchableOpacity>
-                        </>
-                      )}
-                    </View>
-
-
-                    {/* drop down absolute */}
-                    {selSubCategory?.id === item.id && <View style={styles.childCategories}>
-
-
-                      <RsButton
-                        loginButton={{ paddingHorizontal: 0 }}
-                        style={{ marginVertical: 10 }}
-                        textStyle={{ fontSize: 10 }}
-                        onPress={() => handleSelectCategory("category", { id: "new", name: "Create" })}>
-                        Create One
-                      </RsButton>
-
-                      {!categories?.length ? (
-                        <Text style={{ color: colors["gray-8"], fontSize: 16, fontWeight: "500" }}>There is no
-                          category..</Text>
-                      ) : null}
-
-
-                      <View style={styles.childCategoriesGrid}>
-                        {categories?.map(cat => (
-                          <View style={styles.childCategoryItem}>
-                            {cat?.logo && <Image style={styles.childCategoryImg} source={{ uri: cat?.logo }} />}
-                            <Text style={styles.childCategoryText}>{cat.name}</Text>
-                          </View>
-                        ))}
-                      </View>
-
-                      {/*<FlatList scrollEnabled={false} data={subCategories}*/}
-                      {/*          renderItem={({ item }) => (*/}
-                      {/*            <View style={styles.childCategoryItem}>*/}
-                      {/*              <Text>{item.name}</Text>*/}
-                      {/*            </View>*/}
-                      {/*          )} />*/}
-
-                    </View>}
-
-                  </View>
-                </View>
-              ))}
-            </ScrollView>
-          </View>
         </View>
       </View>
 
-      <BottomSheet height={500} isOpen={isOpenBottomSheet} onClose={() => handleCloseBottomSheet()}>
-        <AddCategory
+      <View style={styles.containerWrapper}>
+        <View style={styles.sidebar}>
+          <FlatList
+            refreshControl={
+              <RefreshControl
+                progressBackgroundColor={"rgba(111,169,218,0.98)"}
+                progressColor={"green"}
+                colors={["#5851DB", "#C13584"]}
+                refreshing={refreshing}
+                onRefresh={onRefresh}
+              />
+            }
+            data={appendInsert(mobileCategoryMapping)}
+            renderItem={({ item }) => (
+              <TouchableOpacity style={styles.categoryItem(selectedRootCategory?.name === item.name)}
+                                onPress={() => handleSelectCategory("root", item)}>
+                <Image source={{ uri: item.logo }} style={styles.rootCategoryImage} />
+                <Text style={styles.categoryText(selectedRootCategory?.name === item.name)}>{item.name}</Text>
+              </TouchableOpacity>
+            )}
+            keyExtractor={(item) => item.name}
+            contentContainerStyle={styles.categoryList}
+          />
+        </View>
+
+        <View style={styles.mainContent}>
+          <ScrollView contentContainerStyle={styles.subCategoryList}>
+            {getSubCategories(subCategories).map((item, index) => (
+              <View key={index} style={styles.subCategoryItem}>
+                <View style={{ width: "100%" }}>
+                  <View
+                    style={{
+                      width: "100%",
+                      flexDirection: "row",
+                      alignItems: "center",
+                      justifyContent: "space-between",
+                    }}>
+
+                    {item.id === "new" ? (
+                      <TouchableOpacity onPress={() => handleSelectCategory("sub_category", item)}>
+                        <Text style={{ fontWeight: "600", fontSize: 14, color: colors.primary }}>{item.name}</Text>
+                      </TouchableOpacity>
+                    ) : (
+                      <>
+                        <Text style={styles.subCategoryText}>{item.name}</Text>
+                        <TouchableOpacity onPress={() => handleSelectCategory("sub_category", item)}>
+                          <Icon style={styles.chevronIcon} name="chevron-down" size={18} color={colors["gray-18"]} />
+                        </TouchableOpacity>
+                      </>
+                    )}
+                  </View>
+
+
+                  {/* drop down absolute */}
+                  {selSubCategory?.id === item.id && <View style={styles.childCategories}>
+
+
+                    {!categories?.length ? (
+                      <Text style={{ color: colors["gray-8"], fontSize: 16, fontWeight: "500" }}>There is no
+                        category..</Text>
+                    ) : null}
+
+
+                    <View style={styles.childCategoriesGrid}>
+                      {categories?.map(cat => (
+                        <View style={styles.childCategoryItem}>
+                          {cat?.logo && <Image style={styles.childCategoryImg} source={{ uri: cat?.logo }} />}
+                          <Text style={styles.childCategoryText}>{cat.name}</Text>
+                        </View>
+                      ))}
+                    </View>
+
+                    {/*<FlatList scrollEnabled={false} data={subCategories}*/}
+                    {/*          renderItem={({ item }) => (*/}
+                    {/*            <View style={styles.childCategoryItem}>*/}
+                    {/*              <Text>{item.name}</Text>*/}
+                    {/*            </View>*/}
+                    {/*          )} />*/}
+
+                  </View>}
+
+                </View>
+              </View>
+            ))}
+          </ScrollView>
+        </View>
+      </View>
+
+
+      <BottomSheet height={700} isOpen={sheetOpen} onClose={() => handleCloseBottomSheet()}>
+        {/*<AddCategory*/}
+        {/*  onSuccess={(state) => handleCloseBottomSheet(state)}*/}
+        {/*  onClose={() => {*/}
+        {/*  }}*/}
+        {/*  initData={editUpdateState.initData}*/}
+        {/*/>*/}
+
+        <SelectRooCategories
+          mobileCategoryMapping={mobileCategoryMapping}
           onSuccess={(state) => handleCloseBottomSheet(state)}
           onClose={() => {
           }}
-          initData={editUpdateState.initData}
+
         />
+
       </BottomSheet>
-    </>
+
+    </View>
   );
 };
 
@@ -444,6 +380,12 @@ const styles = StyleSheet.create({
   childCategoryImg: {
     height: 40,
     aspectRatio: 1,
+  },
+
+  rootCategoryImage: {
+    width: 40,
+    height: 40,
+    resizeMode: "contain",
   },
 });
 

@@ -36,7 +36,8 @@ CREATE TABLE categories
             ON DELETE SET NULL
 );
 
-alter table categories add column type varchar(1024) default 'category';
+alter table categories
+    add column type varchar(1024) default 'category';
 
 select name,
        id,
@@ -103,3 +104,38 @@ VALUES ('Admin', 'admin', 'Administrator with full access to all system features
         'active'),
        ('Supplier', 'supplier', 'Manages product supply and order fulfillment.', 'active'),
        ('Guest', 'guest', 'Role for users who have not logged in or registered.', 'inactive');
+
+
+
+DROP TABLE if exists configs;
+CREATE TABLE configs
+(
+    id                      SERIAL PRIMARY KEY,
+    mobile_category_mapping jsonb     default '[]',
+    created_at              TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at              TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+[
+    {
+        id: 1,
+        name: "Electronices",
+        logo: "sdf",
+        subMenu: [
+            {name: "Tables", type: 'category'},
+            {name: "Laptops", type: 'category'},
+            {name: "Tables", type: 'category'},
+        ]
+    },
+    {name: "Mobiles", logo: "sdf",
+        subMenu: [
+                {name: "Tables",  type: 'spotlight', values: [{name: "sdf", logo: 2, id: 1}]},
+                {name: "Mobiles", type: 'category'},
+                {name: "Shop by brands",  type: 'brands', values: [{name: "sdf", logo: 2, id: 1}]},
+            ]
+},
+    {name: "Fashion", logo: "sdf"},
+    {name: "Furnitures", logo: "sdf"},
+    ...
+]
+

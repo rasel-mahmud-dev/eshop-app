@@ -3,6 +3,8 @@ import categoryController from "src/controllers/categoryController";
 const router = require("express").Router();
 
 router.post("/", categoryController.create);
+router.post("/category-config", categoryController.updateConfig);
+router.get("/category-config", categoryController.getConfig);
 router.post("/import", categoryController.importBatch);
 router.get("/filter", categoryController.getCategoriesFilter);
 router.post("/import-categories", categoryController.importCategory);

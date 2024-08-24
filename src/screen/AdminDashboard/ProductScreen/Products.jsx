@@ -55,7 +55,7 @@ const ProductList = () => {
       <View style={{ flexDirection: "column", flex: 1 }}>
 
         <View style={styles.itemDetails}>
-          <Text style={styles.productName}>{item.title}</Text>
+          <Text style={styles.productName}>{subStr(item.title, 50)}</Text>
           <Text style={styles.productPrice}>${item.price}</Text>
           <Text style={styles.productDescription}>{subStr(item.description, 150)}</Text>
         </View>
@@ -187,14 +187,15 @@ const styles = StyleSheet.create({
   },
   productName: {
     color: "#555",
-    fontSize: 16,
-    fontWeight: "bold",
+    fontSize: 15,
+    fontWeight: "500",
   },
   productPrice: {
     fontSize: 14,
     color: "#1E90FF",
   },
   productDescription: {
+    marginTop: 4,
     fontSize: 12,
     color: "#555",
     writingDirection: "auto",

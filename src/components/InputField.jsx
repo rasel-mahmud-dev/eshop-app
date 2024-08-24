@@ -37,7 +37,7 @@ const InputField = ({ label, required, name, onChangeText, icon, labelStyle = {}
     <Animated.View style={[styles.container, { borderColor: animatedBorderColor }]}>
       {icon && icon}
 
-      <View>
+      <View style={{flex: 1}}>
         <TouchableWithoutFeedback onPress={focusInput}>
           <View style={styles.labelRoot}>
             <Text style={{ ...styles.label, ...labelStyle }}>{label}</Text>

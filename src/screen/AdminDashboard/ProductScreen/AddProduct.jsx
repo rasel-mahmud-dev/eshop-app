@@ -1,5 +1,5 @@
 import React, { useEffect } from "react";
-import { View, StyleSheet, TouchableOpacity, Text, Image } from "react-native";
+import { View, StyleSheet, TouchableOpacity, Text, Image, ScrollView } from "react-native";
 import Icon from "react-native-vector-icons/Ionicons";
 import ImagePicker from "react-native-image-crop-picker";
 import { BlurView } from "@react-native-community/blur";
@@ -15,6 +15,7 @@ import InputField from "../../../components/InputField";
 import RsButton from "../../../components/RsButton/RsButton";
 import Entypo from "react-native-vector-icons/Entypo";
 import { useNavigation, useRoute } from "@react-navigation/native";
+import colors from "../../../styles/colors";
 
 const pickImage = (callback) => {
   ImagePicker.openPicker({
@@ -75,7 +76,6 @@ const AddProduct = ({ route }) => {
   useEffect(() => {
     if (!productId) return;
     apis.get(`/products/${productId}`).then(res => {
-
       const data = res?.data?.data;
       if (!data) return;
       setState({
@@ -161,8 +161,10 @@ const AddProduct = ({ route }) => {
     }));
   }
 
+  console.log(allDbCategories?.find(({ id }) => id == "986"));
+
   return (
-    <View>
+    <ScrollView>
       <View style={{ padding: 15, flexDirection: "row", justifyContent: "space-between", alignItems: "center" }}>
         <View style={{
           padding: 0,
@@ -244,8 +246,19 @@ const AddProduct = ({ route }) => {
           numberOfLines={4}
         />
 
+        <InputField
+          name="uploadedUrl"
+          multiline
+          numberOfLines={2}
+          icon={<Icon name="cube-outline" size={20} color="#555" style={styles.icon} />}
+          label="Image url"
+          placeholder="Enter image url"
+          value={state.uploadedUrl}
+          onChangeText={handleChange}
+        />
+
         <View style={styles.imageContainer}>
-          <Text style={styles.imageLabel}>Image</Text>
+          <Text style={styles.imageLabel}>Pick Image</Text>
           <TouchableOpacity onPress={() => pickImage((image) => handleChange({ name: "image", value: image.uri }))}>
             {state.uploadedUrl || state.image ?
               <Image source={{ uri: state.uploadedUrl || state.image }} style={styles.imagePreview} />
@@ -256,13 +269,20 @@ const AddProduct = ({ route }) => {
                 </View>
               )}
           </TouchableOpacity>
+
         </View>
 
+
         <RsButton onPress={handleSubmit}>
-          <Text>{productId ? "Update" : "Add"} Product</Text>
+          <Text style={{
+            fontSize: 14,
+            fontWeight: "500",
+            color: colors["gray-1"],
+            textAlign: "center",
+          }}>{productId ? "Update" : "Add"} Product</Text>
         </RsButton>
       </View>
-    </View>
+    </ScrollView>
   );
 };
 
@@ -328,6 +348,7 @@ const styles = StyleSheet.create({
   imagePreview: {
     width: 100,
     height: 100,
+    resizeMode: "contain",
     marginTop: 10,
     borderRadius: 10,
   },

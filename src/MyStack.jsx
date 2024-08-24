@@ -78,7 +78,6 @@ function handleChangeState(e) {
 const MyStack = () => {
   const { auth } = useAuthStore();
 
-
   return (
     <NavigationContainer onStateChange={handleChangeState}>
       <ProfileScreen2 />
@@ -90,6 +89,7 @@ const MyStack = () => {
         />
         <Stack.Screen name="Profile" options={{ headerShown: false }} component={Profile} />
         <Stack.Screen name="MoreCategories" options={{ headerShown: false }} component={MoreCategories} />
+        <Stack.Screen name="Categories" options={{ headerShown: false }} component={MoreCategories} />
 
         <Stack.Screen name="AdminDashboard" options={{ headerShown: false }} component={DashboardHome} />
         <Stack.Screen name="AdminDashboard::ManageHomeCategoryDetail" options={{ headerShown: false }}

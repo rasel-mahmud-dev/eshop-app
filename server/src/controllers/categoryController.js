@@ -111,6 +111,44 @@ class CategoryController {
     }
   };
 
+  updateConfig = async (req, res)=>{
+    try {
+      const checkResult = await pool.query(`SELECT id FROM configs LIMIT 1`);
+
+      const jsonData = JSON.stringify(req.body, null, 2);
+      let result;
+      if (checkResult.rows.length > 0) {
+        result = await pool.query(
+          `UPDATE configs 
+                 SET mobile_category_mapping = $1, updated_at = CURRENT_TIMESTAMP
+                 WHERE id = $2
+                 RETURNING *`,
+          [jsonData, checkResult.rows[0].id]
+        );
+      } else {
+        result = await pool.query(
+          `INSERT INTO configs (mobile_category_mapping) 
+                 VALUES ($1) RETURNING *`,
+          [jsonData]
+        );
+      }
+      res.status(201).json(result.rows[0]);
+    } catch (err) {
+      console.error(err);
+      res.status(500).json({ error: 'Internal Server Error' });
+    }
+  }
+
+  getConfig = async (req, res)=>{
+    try {
+      const checkResult = await pool.query(`SELECT mobile_category_mapping FROM configs LIMIT 1`);
+      res.status(201).json(checkResult.rows[0]);
+    } catch (err) {
+      console.error(err);
+      res.status(500).json({ error: 'Internal Server Error' });
+    }
+  }
+
   getCategories = async (req, res) => {
     try {
       const { rows } = await pool.query(`SELECT *
