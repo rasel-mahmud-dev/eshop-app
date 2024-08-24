@@ -128,6 +128,7 @@ const DashboardHome = () => {
         icon: () => <Entypo name="list" size={24} color="#fff" />,
         itemCount: 15, // Example count, update as necessary
       },
+
       {
         name: "Suppliers",
         route: "Suppliers",
@@ -164,6 +165,13 @@ const DashboardHome = () => {
         backgroundColor: "#FF6347",
         icon: () => <FontAwesome name="tags" size={24} color="#fff" />,
         itemCount: 20, // Example count, update as necessary
+      },
+      {
+        name: "Home Category Group",
+        route: "ManageHomeCategoryDetail",
+        backgroundColor: "#64e6ea",
+        icon: () => <Entypo name="list" size={24} color="#fff" />,
+        itemCount: 15,
       },
       {
         name: "Brands",
@@ -502,11 +510,13 @@ const styles = StyleSheet.create({
     borderRadius: 30,
   },
   cardText: {
+    textAlign: "center",
     color: "#fff",
     fontSize: 18,
     fontWeight: "bold",
   },
   itemCountText: {
+    textAlign: "center",
     color: "#fff",
     fontSize: 14,
     marginTop: 5,

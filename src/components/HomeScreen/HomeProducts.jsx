@@ -1,5 +1,7 @@
 import React, { useEffect, useRef, useState } from "react";
-import {  Animated, TouchableOpacity, View, StyleSheet, Image, Text, Dimensions } from "react-native";
+import { Animated, TouchableOpacity, View, StyleSheet, Image, Text, Dimensions } from "react-native";
+import subStr from "../../utils/subStr"
+
 
 const HomeProducts = ({ onTabChange, products, tab }) => {
   const scrollViewRef = useRef(null);
@@ -11,7 +13,7 @@ const HomeProducts = ({ onTabChange, products, tab }) => {
     <TouchableOpacity style={styles.card}>
       <Image source={{ uri: item.image }} style={styles.image} />
       <View style={styles.details}>
-        <Text style={styles.title}>{item.title}</Text>
+        <Text style={styles.title}>{subStr(item.title, 35)}</Text>
         <Text style={styles.price}>${item.price}</Text>
       </View>
     </TouchableOpacity>
@@ -61,7 +63,7 @@ const HomeProducts = ({ onTabChange, products, tab }) => {
 
 
   const handleScroll = (event) => {
-    if (!scrolling  && !prevScrollIndexRef.current === tab) {
+    if (!scrolling && !prevScrollIndexRef.current === tab) {
       const offsetX = event.nativeEvent.contentOffset.x;
       const newIndex = Math.round(offsetX / width);
       onTabChange(newIndex);
@@ -78,8 +80,8 @@ const HomeProducts = ({ onTabChange, products, tab }) => {
       if (prevScrollIndexRef.current === tab) return;
       prevScrollIndexRef.current = tab;
       let index = 0;
-      if (tab !== 0){
-        index = tab + 1
+      if (tab !== 0) {
+        index = tab + 1;
       }
       scrollViewRef.current.scrollToIndex({
         index,
@@ -113,22 +115,23 @@ const HomeProducts = ({ onTabChange, products, tab }) => {
 
 const styles = StyleSheet.create({
   card: {
+    padding: 10,
     margin: 6,
     flex: 1,
-    marginBottom: 15,
     borderRadius: 12,
     overflow: "hidden",
     backgroundColor: "#fff",
+    maxHeight: 200,
   },
   image: {
-    width: "100%",
-    height: 180,
-    resizeMode: "cover",
+    height: "100%",
+    maxHeight: 100,
+    resizeMode: "contain",
   },
   details: {
-    padding: 15,
-    borderTopWidth: 1,
-    borderTopColor: "#eee",
+    padding: 5,
+    // borderTopWidth: 1,
+    // borderTopColor: "#eee",
   },
   title: {
     fontSize: 16,

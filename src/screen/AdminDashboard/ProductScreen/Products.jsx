@@ -9,6 +9,7 @@ import RsButton from "../../../components/RsButton/RsButton";
 import Entypo from "react-native-vector-icons/Entypo";
 import AntDesign from "react-native-vector-icons/AntDesign";
 import { useNavigation } from "@react-navigation/native";
+import subStr from "../../../utils/subStr";
 
 const ProductList = () => {
   const { error, success } = useToast();
@@ -46,26 +47,36 @@ const ProductList = () => {
 
   const renderItem = ({ item }) => (
     <View style={styles.itemContainer}>
+
       <View style={styles.itemImageContainer}>
         <Image source={{ uri: item.image }} style={styles.productImage} />
       </View>
-      <View style={styles.itemDetails}>
-        <Text style={styles.productName}>{item.name}</Text>
-        <Text style={styles.productPrice}>${item.price}</Text>
-        <Text style={styles.productDescription}>{item.description}</Text>
+
+      <View style={{ flexDirection: "column", flex: 1 }}>
+
+        <View style={styles.itemDetails}>
+          <Text style={styles.productName}>{item.title}</Text>
+          <Text style={styles.productPrice}>${item.price}</Text>
+          <Text style={styles.productDescription}>{subStr(item.description, 150)}</Text>
+        </View>
+
+        <View style={styles.actions}>
+          <RsButton loginButton={styles.loginButton}
+                    onPress={() => navigation.navigate("AdminDashboard::UpdateProduct", { productId: item.id })}
+                    style={styles.actionButton}>
+            <Icon name="pencil-outline" size={14} color="#fff" />
+            <Text style={styles.actionText}>Edit</Text>
+          </RsButton>
+          <RsButton loginButton={styles.loginButton} onPress={() => handleDelete(item.id)} style={styles.actionButton}>
+            <Icon name="trash-outline" size={14} color="#fff" />
+            <Text style={styles.actionText}>Delete</Text>
+          </RsButton>
+        </View>
+
+
       </View>
-      <View style={styles.actions}>
-        <RsButton loginButton={styles.loginButton}
-                  onPress={() => navigation.navigate("AdminDashboard::UpdateProduct", { productId: item.id })}
-                  style={styles.actionButton}>
-          <Icon name="pencil-outline" size={14} color="#fff" />
-          <Text style={styles.actionText}>Edit</Text>
-        </RsButton>
-        <RsButton loginButton={styles.loginButton} onPress={() => handleDelete(item.id)} style={styles.actionButton}>
-          <Icon name="trash-outline" size={14} color="#fff" />
-          <Text style={styles.actionText}>Delete</Text>
-        </RsButton>
-      </View>
+
+
     </View>
   );
 
@@ -135,6 +146,7 @@ const ProductList = () => {
 
 const styles = StyleSheet.create({
   container: {
+
     flex: 1,
   },
   listContainer: {
@@ -153,25 +165,32 @@ const styles = StyleSheet.create({
     color: "#fff",
     fontWeight: "bold",
   },
+
   itemContainer: {
+    flex: 1,
+    paddingVertical: 20,
     flexDirection: "row",
-    alignItems: "center",
+    width: "100%",
+    alignItems: "flex-start",
     borderBottomWidth: 1,
     borderBottomColor: "#E0E0E0",
-    paddingVertical: 10,
+
   },
   itemImageContainer: {
     marginRight: 10,
   },
   productImage: {
+    flex: 1,
     width: 80,
     height: 80,
+    resizeMode: "contain",
     borderRadius: 8,
   },
   itemDetails: {
     flex: 1,
   },
   productName: {
+    color: "#555",
     fontSize: 16,
     fontWeight: "bold",
   },
@@ -182,10 +201,12 @@ const styles = StyleSheet.create({
   productDescription: {
     fontSize: 12,
     color: "#555",
+    writingDirection: "auto",
   },
   actions: {
-    // flexDirection: "row",
-    // alignItems: "center",
+    flexDirection: "row",
+    alignItems: "center",
+    columnGap: 5,
   },
   loginButton: {
     flexDirection: "row",
@@ -194,6 +215,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   actionButton: {
+    marginTop: 10,
     paddingHorizontal: 1,
 
     // borderRadius: 5,
