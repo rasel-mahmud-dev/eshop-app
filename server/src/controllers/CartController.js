@@ -1,10 +1,13 @@
 import pool from "src/database";
+import cartRepo from "src/repo/CartRepo";
 
 class CartController {
   addToCart = async (req, res) => {
     const client = await pool.connect();
+    const userId = req.user.id;
+
     try {
-      const { userId, productId, quantity = 1 } = req.body;
+      const { productId, quantity = 1 } = req.body;
 
       if (!userId || !productId) {
         return res.status(400).json({ error: "userId, productId, and quantity are required" });
@@ -53,16 +56,12 @@ class CartController {
 
   getCart = async (req, res) => {
     try {
-      const { userId } = req.params;
-
+      const userId = req.user.id;
       if (!userId) {
         return res.status(400).json({ error: "userId is required" });
       }
-
-
-
+      const rows = await cartRepo.getItems(userId);
       res.status(200).json({ data: rows });
-
     } catch (error) {
       console.error("Error fetching cart:", error);
       res.status(500).json({ error: "An error occurred while fetching the cart" });
@@ -72,7 +71,8 @@ class CartController {
   removeFromCart = async (req, res) => {
     const client = await pool.connect();
     try {
-      const { userId, productId } = req.body;
+      const userId = req.user.id;
+      const { productId } = req.body;
 
       if (!userId || !productId) {
         return res.status(400).json({ error: "userId and productId are required" });
@@ -102,7 +102,7 @@ class CartController {
   clearCart = async (req, res) => {
     const client = await pool.connect();
     try {
-      const { userId } = req.body;
+      const userId = req.user.id;
 
       if (!userId) {
         return res.status(400).json({ error: "userId is required" });

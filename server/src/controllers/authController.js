@@ -1,12 +1,10 @@
 import User from "../models/User";
-import { compare, makeHash } from "../hash";
+import { compare } from "../hash";
 import jwtService from "../jwt";
-import cartRepo from "src/repo/CartRepo";
 
 
 class AuthController {
 
-// Register a new user
   register = async (req, res) => {
     try {
       let result = await User.registration(req.body);
@@ -22,27 +20,22 @@ class AuthController {
     const { email, password } = req.body;
 
     try {
-      // Find the user by username or email
-
       const user = await User.findByUsernameOrEmail(email);
       if (!user) {
         return res.status(400).json({ message: "Invalid username/email or password" });
       }
 
-      // Compare the password
       const isPasswordValid = await compare(password, user.password);
       if (!isPasswordValid) {
         return res.status(400).json({ message: "Invalid username/email or password" });
       }
 
-      const token = jwtService.createToken({ username: user.username, email: user.email });
-      const cartItems = await cartRepo.getItems(user.id);
+      const token = jwtService.createToken({ id: user.id, username: user.username, email: user.email });
 
       res.status(200).json({
         message: "Login successful", data: {
           token,
           user: user,
-          cartItems,
         },
       });
     } catch (err) {
@@ -50,8 +43,6 @@ class AuthController {
       res.status(500).json({ message: "Error logging in", error: err.message });
     }
   };
-
-// Protect routes
 
   protect = (req, res, next) => {
     const authHeader = req.headers.authorization;
@@ -61,8 +52,7 @@ class AuthController {
 
     const token = authHeader.split(" ")[1];
     try {
-      const decoded = jwtService.verify(token);
-      req.user = decoded;
+      req.user = jwtService.verify(token);
       next();
     } catch (err) {
       return res.status(401).json({ message: "Invalid token" });

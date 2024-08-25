@@ -1,7 +1,6 @@
 import * as React from "react";
 import { NavigationContainer, useNavigation } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
-import { Text } from "react-native";
 import HomePage from "./screen/HomePage";
 import LoginPage from "./screen/auth/Login";
 import { useEffect } from "react";
@@ -19,15 +18,16 @@ import RolesList from "./screen/AdminDashboard/RolesList/RolesList";
 import ManageRoles from "./screen/AdminDashboard/RolesList/ManageRoles";
 import Profile from "./screen/ProfileScreen/Profile";
 import MoreCategories from "./components/HomeScreen/MoreCategories";
-import HomeProducts from "./components/HomeScreen/Sticky";
 import ManageHomeCategoryDetail from "./screen/AdminDashboard/Categories/ManageHomeCategoryDetail";
 import LocalStorage from "./services/LocalStorage";
 import WithAuth from "./ScreenGuard/WithAuth";
 import CartPage from "./screen/CartScreen";
 import CheckoutPage from "./screen/CheckoutPage";
+import ProductDetail from "./screen/ProductDetail";
+import cartsAction from "./store/actions/cartsAction";
 
 const Stack = createNativeStackNavigator();
-const HomeScreen = ({ navigation }) => {
+const HomeScreen = () => {
 
   return (
     <>
@@ -39,13 +39,16 @@ const HomeScreen = ({ navigation }) => {
 
 
 const ProfileScreen2 = () => {
-  const { setAuth, auth } = useAuthStore();
+  const { setAuth, auth, setCarts } = useAuthStore();
 
   async function authFetch() {
     try {
       const auth = await authAction.verifyUser();
       if (auth) {
         setAuth(auth);
+        cartsAction.fetchCarts().then(items=>{
+          setCarts(items)
+        })
       } else {
         setAuth(null);
       }
@@ -58,6 +61,7 @@ const ProfileScreen2 = () => {
 
   useEffect(() => {
     authFetch();
+
   }, []);
 
   const navigation = useNavigation();
@@ -94,6 +98,7 @@ const MyStack = () => {
           options={{ title: "Welcome", headerShown: false }}
         />
         <Stack.Screen name="Profile" options={{ headerShown: false }} component={WithAuth(Profile)} />
+        <Stack.Screen name="ProductDetail" options={{ headerShown: false }} component={ProductDetail} />
         <Stack.Screen name="Cart" options={{ headerShown: false }} component={WithAuth(CartPage)} />
         <Stack.Screen name="Checkout" options={{ headerShown: false }} component={WithAuth(CheckoutPage)} />
         <Stack.Screen name="MoreCategories" options={{ headerShown: false }} component={MoreCategories} />

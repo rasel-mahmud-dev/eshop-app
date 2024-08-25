@@ -13,5 +13,5 @@ export const apis = axios.create({
 
 export async function setAuthorization() {
   const tkn = await localStorage.get("token");
-  apis.defaults.headers.Authorization = tkn;
+  apis.defaults.headers.Authorization = "Bearer " + tkn;
 }

@@ -14,8 +14,8 @@ router.get("/", (req, res) => {
 
 router.use("/api/v1/auth", authRoute)
 router.use("/api/v1/products", productRoute)
-router.use("/api/v1/products", cartRoute)
-router.use("/api/v1/carts", categoryRoute)
+router.use("/api/v1/carts", cartRoute)
+router.use("/api/v1/categories", categoryRoute)
 router.use("/api/v1/admin", adminRoute)
 router.use("/api/v1/files", fileRoute)
 router.use("/api/v1/brands", brandRoute)

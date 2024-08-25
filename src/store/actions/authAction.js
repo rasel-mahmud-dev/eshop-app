@@ -37,6 +37,7 @@ class AuthAction {
     try {
       await localStorage.remove("auth");
       await localStorage.remove("token");
+      await localStorage.remove("cartItems");
       return true;
     } catch (err) {
       throw err;

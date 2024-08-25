@@ -4,9 +4,10 @@ import { useAuthStore } from "../../store";
 import colors from "../../styles/colors";
 import RsButton from "../../components/RsButton/RsButton";
 import Entypo from "react-native-vector-icons/Entypo";
+import authAction from "../../store/actions/authAction";
 
 const Profile = ({ navigation }) => {
-  const { auth } = useAuthStore();
+  const { auth, setAuth } = useAuthStore();
   const {
     username,
     email,
@@ -22,6 +23,13 @@ const Profile = ({ navigation }) => {
     deleted_at,
     role,
   } = auth || {};
+
+
+  function handleSignout() {
+    authAction.logOut().then(r => {
+      setAuth(null);
+    });
+  }
 
   return (
     <>
@@ -91,6 +99,10 @@ const Profile = ({ navigation }) => {
             </View>
           )}
         </View>
+
+        <RsButton onPress={handleSignout} style={styles.editButton}>
+          Signout
+        </RsButton>
       </ScrollView>
     </>
   );

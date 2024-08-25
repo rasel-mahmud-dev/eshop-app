@@ -20,8 +20,7 @@ router.get("/protected", authController.protect, (req, res) => {
 });
 
 router.get("/verify", authController.protect, async (req, res) => {
-  const cartItems = await cartRepo.getItems(req.user.id);
-  res.status(200).json({ message: "Token is valid", data: { user: req.user, cartItems } });
+  res.status(200).json({ message: "Token is valid", data: { user: req.user } });
 });
 
 

@@ -26,8 +26,8 @@ const LoginPage = () => {
       const data = await authAction.login(state.email, state.password);
       if (!data) throw new Error("Please try again later");
       await localStorage.set("token", data.token);
-      await localStorage.set("auth", JSON.stringify(data?.user));
-      setAuth(data?.user);
+      await localStorage.set("auth", JSON.stringify(data));
+      setAuth(data);
       navigation.navigate("Home");
       toast.success("Success");
 

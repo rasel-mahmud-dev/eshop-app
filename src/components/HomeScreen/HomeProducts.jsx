@@ -1,15 +1,25 @@
 import React, { useEffect, useRef, useState } from "react";
 import { Animated, TouchableOpacity, View, StyleSheet, Image, Text, Dimensions } from "react-native";
 import subStr from "../../utils/subStr"
+import { useNavigation } from "@react-navigation/native";
 
 const HomeProducts = ({ onTabChange, products, tab }) => {
   const scrollViewRef = useRef(null);
   const prevScrollIndexRef = useRef(0);
 
+  const navigation = useNavigation()
+
   const width = Dimensions.get("window").width;
   const itemWidth = width / 2;
+
+
+  // Example navigation from a product listing page
+  const handleProductPress = (product) => {
+    navigation.navigate('ProductDetail', { product });
+  };
+
   const renderProduct2 = ({ item = 0 }) => (
-    <TouchableOpacity style={styles.card}>
+    <TouchableOpacity style={styles.card} onPress={()=> handleProductPress(item)}>
       <Image source={{ uri: item.image }} style={styles.image} />
       <View style={styles.details}>
         <Text style={styles.title}>{subStr(item.title, 35)}</Text>

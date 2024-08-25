@@ -82,7 +82,7 @@ const HomePage = () => {
   return (
     <ScrollView
       ref={scrollViewRef}
-      stickyHeaderIndices={[5]}
+      stickyHeaderIndices={[4]}
       scrollEnabled={true}
       style={styles.container}
       scrollEventThrottle={16}
@@ -109,11 +109,7 @@ const HomePage = () => {
           activeTab={activeTab}
           setActiveTab={setActiveTab}
         />
-
-
-
       </View>
-
 
       <HomeProducts
         tab={activeTab}

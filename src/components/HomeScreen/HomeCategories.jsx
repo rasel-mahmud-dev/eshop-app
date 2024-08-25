@@ -10,6 +10,7 @@ const HomeCategories = ({ navigation }) => {
   const [categories, setCategories] = useState([]);
   const toast = useToast();
 
+
   useEffect(() => {
     fetchPopularCategories();
   }, []);

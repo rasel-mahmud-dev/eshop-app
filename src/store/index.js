@@ -8,21 +8,9 @@ export const useAuthStore = create(
       auth: null,
       cartItems: [],
       authLoaded: false,
-      setAuth: (val) => {
-        const cartItems = val?.cartItems || [];
-        const auth = val?.user || [];
-        return set({ auth: auth, cartItems, authLoaded: true });
-      },
-      updateAuth: (val) => set((state) => {
-        const updatedState = { ...state };
-        if (val?.cartItems) {
-          updatedState["cartItems"] = val.cartItems;
-        }
-        if (val?.user) {
-          updatedState["auth"] = { ...updatedState["auth"], ...val.user };
-        }
-        return updatedState;
-      }),
+      setAuth: (val) => set((state) => ({ ...state, auth: val, authLoaded: true })),
+      setCarts: (val) => set((state) => ({ ...state, cartItems: val })),
+      updateAuth: (val) => set((state) => ({ ...state, auth: { ...state.auth, ...val } })),
     }),
     {
       name: "auth-store-storage",

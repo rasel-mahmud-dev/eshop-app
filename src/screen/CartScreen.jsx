@@ -1,58 +1,30 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { View, Text, Image, TouchableOpacity, ScrollView, StyleSheet } from "react-native";
 import Icon from "react-native-vector-icons/MaterialIcons";
 import RsButton from "../components/RsButton/RsButton";
 import Entypo from "react-native-vector-icons/Entypo";
 import { useAuthStore } from "../store";
+import cartsAction from "../store/actions/cartsAction";
 
 const CartPage = ({ navigation }) => {
-  const [cartItems, setCartItems] = useState([
-    {
-      id: 1,
-      image: "https://via.placeholder.com/80",
-      name: "Masculine Solid round neck t shirt for Men - Purple",
-      price: 490,
-      stock: 6,
-      quantity: 1,
-    },
-    {
-      id: 2,
-      image: "https://via.placeholder.com/80",
-      name: "Stripe Round Neck T-Shirt",
-      price: 550,
-      stock: 8,
-      quantity: 1,
-    },
-    {
-      id: 3,
-      image: "https://via.placeholder.com/80",
-      name: "Masculine Cotton Stripe T-shirt - Navy",
-      price: 590,
-      stock: 10,
-      quantity: 1,
-    },
-    {
-      id: 4,
-      image: "https://via.placeholder.com/80",
-      name: "aaSolid V-neck T-shirt - T Shirt For Man",
-      price: 490,
-      stock: 3,
-      quantity: 1,
-    },
-  ]);
 
-  const a = useAuthStore()
 
-  console.log(a);
+  const { setCarts, cartItems } = useAuthStore();
+
+  useEffect(() => {
+    cartsAction.fetchCarts().then(items => {
+      setCarts(items);
+    });
+  }, []);
 
   const handleIncrement = (id) => {
-    setCartItems(prevItems =>
-      prevItems.map(item =>
-        item.id === id && item.quantity < item.stock
-          ? { ...item, quantity: item.quantity + 1 }
-          : item,
-      ),
-    );
+    // setCartItems(prevItems =>
+    //   prevItems.map(item =>
+    //     item.id === id && item.quantity < item.stock
+    //       ? { ...item, quantity: item.quantity + 1 }
+    //       : item,
+    //   ),
+    // );
   };
 
   const handleDecrement = (id) => {
@@ -76,12 +48,12 @@ const CartPage = ({ navigation }) => {
       </View>
 
       <ScrollView style={styles.containerScroll}>
-        {cartItems.map(item => (
+        {cartItems?.map(item => (
           <View key={item.id} style={styles.cartItem}>
             <Image source={{ uri: item.image }} style={styles.cartItemImage} />
             <View style={styles.cartItemDetails}>
-              <Text style={styles.cartItemName}>{item.name}</Text>
-              <Text style={styles.cartItemStock}>Only {item.stock} item(s) in stock</Text>
+              <Text style={styles.cartItemName}>{item.title}</Text>
+              <Text style={styles.cartItemStock}>Only {item?.stock ?? 1} item(s) in stock</Text>
               <Text style={styles.cartItemPrice}>৳ {item.price}</Text>
             </View>
             <View style={styles.cartItemActions}>
@@ -136,6 +108,7 @@ const styles = StyleSheet.create({
   cartItemImage: {
     width: 80,
     height: 80,
+    resizeMode: "contain",
     borderRadius: 5,
   },
   cartItemDetails: {
