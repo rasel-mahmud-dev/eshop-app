@@ -111,48 +111,62 @@ class CategoryController {
     }
   };
 
-  updateConfig = async (req, res)=>{
+  updateConfig = async (req, res) => {
     try {
-      const checkResult = await pool.query(`SELECT id FROM configs LIMIT 1`);
+      const checkResult = await pool.query(`SELECT id
+                                            FROM configs
+                                            LIMIT 1`);
 
       const jsonData = JSON.stringify(req.body, null, 2);
       let result;
       if (checkResult.rows.length > 0) {
         result = await pool.query(
-          `UPDATE configs 
-                 SET mobile_category_mapping = $1, updated_at = CURRENT_TIMESTAMP
-                 WHERE id = $2
-                 RETURNING *`,
-          [jsonData, checkResult.rows[0].id]
+          `UPDATE configs
+           SET mobile_category_mapping = $1,
+               updated_at = CURRENT_TIMESTAMP
+           WHERE id = $2
+           RETURNING *`,
+          [jsonData, checkResult.rows[0].id],
         );
       } else {
         result = await pool.query(
-          `INSERT INTO configs (mobile_category_mapping) 
-                 VALUES ($1) RETURNING *`,
-          [jsonData]
+          `INSERT INTO configs (mobile_category_mapping)
+           VALUES ($1)
+           RETURNING *`,
+          [jsonData],
         );
       }
       res.status(201).json(result.rows[0]);
     } catch (err) {
       console.error(err);
-      res.status(500).json({ error: 'Internal Server Error' });
+      res.status(500).json({ error: "Internal Server Error" });
     }
-  }
+  };
 
-  getConfig = async (req, res)=>{
+  getConfig = async (req, res) => {
     try {
-      const checkResult = await pool.query(`SELECT mobile_category_mapping FROM configs LIMIT 1`);
+      const checkResult = await pool.query(`SELECT mobile_category_mapping
+                                            FROM configs
+                                            LIMIT 1`);
       res.status(201).json(checkResult.rows[0]);
     } catch (err) {
       console.error(err);
-      res.status(500).json({ error: 'Internal Server Error' });
+      res.status(500).json({ error: "Internal Server Error" });
     }
-  }
+  };
 
   getCategories = async (req, res) => {
     try {
-      const { rows } = await pool.query(`SELECT *
+      let rows = [];
+      if (req.query.type === "popular") {
+        const result = await pool.query(`SELECT *  FROM categories  where id in ('986', '667', '926', '8', '126', '67', '992', '993')`);
+        rows = result.rows;
+      } else {
+        const result = await pool.query(`SELECT *
                                          FROM categories`);
+        rows = result.rows;
+      }
+
       res.status(200).json({ data: rows });
     } catch (error) {
       res.status(500).send({ error: "An error occurred while importing categories" });

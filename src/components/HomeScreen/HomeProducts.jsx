@@ -2,7 +2,6 @@ import React, { useEffect, useRef, useState } from "react";
 import { Animated, TouchableOpacity, View, StyleSheet, Image, Text, Dimensions } from "react-native";
 import subStr from "../../utils/subStr"
 
-
 const HomeProducts = ({ onTabChange, products, tab }) => {
   const scrollViewRef = useRef(null);
   const prevScrollIndexRef = useRef(0);
@@ -23,7 +22,6 @@ const HomeProducts = ({ onTabChange, products, tab }) => {
     {
       el: (products) => (
         <View style={{ width: itemWidth }}>
-          {/*<Text>AAAAAAA</Text>*/}
           {products.map(item => renderProduct2({ item }))}
         </View>
       ),
@@ -31,7 +29,6 @@ const HomeProducts = ({ onTabChange, products, tab }) => {
     {
       el: (products) => (
         <View style={{ width: itemWidth }}>
-          {/*<Text>BBBBBB</Text>*/}
           {products.map(item => renderProduct2({ item }))}
         </View>
       ),
@@ -39,7 +36,6 @@ const HomeProducts = ({ onTabChange, products, tab }) => {
     {
       el: (products) => (
         <View style={{ width: itemWidth }}>
-          {/*<Text>CCCCCCCC</Text>*/}
           {products.map(item => renderProduct2({ item }))}
         </View>
       ),
@@ -47,7 +43,6 @@ const HomeProducts = ({ onTabChange, products, tab }) => {
     {
       el: (products) => (
         <View style={{ width: itemWidth }}>
-          {/*<Text>DDDDDDD</Text>*/}
           {products.map(item => renderProduct2({ item }))}
         </View>
       ),
@@ -134,7 +129,7 @@ const styles = StyleSheet.create({
     // borderTopColor: "#eee",
   },
   title: {
-    fontSize: 16,
+    fontSize: 14,
     fontWeight: "bold",
     color: "#333",
   },

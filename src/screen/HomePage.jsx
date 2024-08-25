@@ -98,9 +98,6 @@ const HomePage = () => {
       }>
       <Header auth={auth} />
       <Category />
-
-      <Text>{auth?.email}</Text>
-
       <HeroSlider />
       <HomeCategories navigation={navigation} />
 

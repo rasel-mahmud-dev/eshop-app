@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 
-import { View, Text, FlatList, TouchableOpacity, StyleSheet, Image } from "react-native";
+import { View, Text, FlatList, TouchableOpacity, StyleSheet, Image, Dimensions } from "react-native";
 import { useToast } from "../../lib/ToastService";
 import { apis } from "../../apis";
 import Icon from "react-native-vector-icons/FontAwesome";
@@ -16,7 +16,7 @@ const HomeCategories = ({ navigation }) => {
 
   async function fetchPopularCategories() {
     try {
-      const { data } = await apis.get("/categories");
+      const { data } = await apis.get("/categories?type=popular");
       if (data.data) {
         setCategories(data.data);
       }
@@ -25,12 +25,17 @@ const HomeCategories = ({ navigation }) => {
     }
   }
 
+  const width = Dimensions.get("window").width;
+  const itemWidth = width / 3;
   const renderCategory = ({ item }) => (
-    <TouchableOpacity style={styles.card}>
-      <Image source={{ uri: item.image }} style={styles.image} />
-      <Text style={styles.title}>{item.name}</Text>
-    </TouchableOpacity>
+    <View style={{width: itemWidth}}>
+      <TouchableOpacity style={{...styles.card,}}>
+        <Image source={{ uri: item.logo }} style={styles.image} />
+        <Text style={styles.title}>{item.name}</Text>
+      </TouchableOpacity>
+    </View>
   );
+
 
   return (
     <View style={styles.container}>
@@ -44,7 +49,7 @@ const HomeCategories = ({ navigation }) => {
       <FlatList
         numColumns={3}
         style={{ marginHorizontal: 2 }}
-        data={categories.slice(0, 6)}
+        data={categories}
         renderItem={renderCategory}
         keyExtractor={(item) => item.id.toString()}
         showsHorizontalScrollIndicator={false}
@@ -67,6 +72,7 @@ const styles = StyleSheet.create({
     fontSize: 18,
     fontWeight: "bold",
     marginBottom: 10,
+    color: "rgba(66,69,72,0.98)"
   },
   showMoreButton: {
     padding: 5,
@@ -81,22 +87,28 @@ const styles = StyleSheet.create({
   },
   card: {
     flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+    // marginLeft: 6,
     margin: 6,
+    padding: 10,
     borderRadius: 8,
     overflow: "hidden",
-    backgroundColor: colors["white"],
+    backgroundColor: "rgba(111,169,218,0.07)",
   },
   image: {
-    width: "100%",
-    height: 80,
-    resizeMode: "cover",
+    width: 70,
+    height: 70,
+    backgroundColor: "rgba(84,109,129,0.21)",
+    borderRadius: 80,
+    resizeMode: "contain"
   },
   title: {
-    padding: 10,
-    fontSize: 14,
-    fontWeight: "400",
+    paddingTop: 10,
+    fontSize: 12,
+    fontWeight: "500",
     textAlign: "center",
-    color: colors["gray-14"]
+    color: colors["gray-16"]
   },
 });
 

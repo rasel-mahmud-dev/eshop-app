@@ -19,16 +19,13 @@ const BottomNav = () => {
   // Add Admin Dashboard if the user is an admin
   // if (userRole === "admin") {
 
-    navItems.push({ name: "Admin", icon: "dashboard", path: "AdminDashboard" });
+    // navItems.push({ name: "Admin", icon: "dashboard", path: "AdminDashboard" });
   //
   const location = route.name;
 
   return (
     <View style={styles.wrapper}>
-      <View
-
-
-        style={styles.gradient}
+      <View style={styles.gradient}
       >
         <View style={styles.navContainer}>
           {navItems.map((item) => (

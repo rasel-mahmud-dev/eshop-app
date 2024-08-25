@@ -147,15 +147,12 @@ const ManageHomeCategoryDetail = () => {
                       alignItems: "center",
                       justifyContent: "space-between",
                     }}>
-
-
                       <>
                         <Text style={styles.subCategoryText}>{item.name}</Text>
                         <TouchableOpacity onPress={() => handleSelectCategory("sub_category", item)}>
-                          <Icon style={styles.chevronIcon} name="chevron-down" size={18} color={colors["gray-18"]} />
+                          {/*<Icon style={styles.chevronIcon} name="chevron-down" size={18} color={colors["gray-18"]} />*/}
                         </TouchableOpacity>
                       </>
-
                   </View>
 
                   {/* drop down absolute */}

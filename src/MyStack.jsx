@@ -22,6 +22,9 @@ import MoreCategories from "./components/HomeScreen/MoreCategories";
 import HomeProducts from "./components/HomeScreen/Sticky";
 import ManageHomeCategoryDetail from "./screen/AdminDashboard/Categories/ManageHomeCategoryDetail";
 import LocalStorage from "./services/LocalStorage";
+import WithAuth from "./ScreenGuard/WithAuth";
+import CartPage from "./screen/CartScreen";
+import CheckoutPage from "./screen/CheckoutPage";
 
 const Stack = createNativeStackNavigator();
 const HomeScreen = ({ navigation }) => {
@@ -38,29 +41,31 @@ const HomeScreen = ({ navigation }) => {
 const ProfileScreen2 = () => {
   const { setAuth, auth } = useAuthStore();
 
-  async function Click() {
+  async function authFetch() {
     try {
       const auth = await authAction.verifyUser();
       if (auth) {
         setAuth(auth);
+      } else {
+        setAuth(null);
       }
+
     } catch (ex) {
+      setAuth(null);
       console.log(ex);
     }
   }
 
-
   useEffect(() => {
-    Click();
+    authFetch();
   }, []);
 
   const navigation = useNavigation();
 
   useEffect(() => {
-    LocalStorage.get("screen").then(name=>{
-      navigation.navigate(name)
-    })
-
+    LocalStorage.get("screen").then(name => {
+      navigation.navigate(name);
+    });
   }, []);
 
   return null;
@@ -71,7 +76,8 @@ function handleChangeState(e) {
   const routes = e.routes.slice(e.routes.length - 1);
   const name = routes?.[0]?.name;
   if (name) {
-      LocalStorage.set("screen", name).then(r => {})
+    LocalStorage.set("screen", name).then(r => {
+    });
   }
 }
 
@@ -87,7 +93,9 @@ const MyStack = () => {
           component={HomeScreen}
           options={{ title: "Welcome", headerShown: false }}
         />
-        <Stack.Screen name="Profile" options={{ headerShown: false }} component={Profile} />
+        <Stack.Screen name="Profile" options={{ headerShown: false }} component={WithAuth(Profile)} />
+        <Stack.Screen name="Cart" options={{ headerShown: false }} component={WithAuth(CartPage)} />
+        <Stack.Screen name="Checkout" options={{ headerShown: false }} component={WithAuth(CheckoutPage)} />
         <Stack.Screen name="MoreCategories" options={{ headerShown: false }} component={MoreCategories} />
         <Stack.Screen name="Categories" options={{ headerShown: false }} component={MoreCategories} />
 
