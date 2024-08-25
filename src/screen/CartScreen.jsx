@@ -3,8 +3,9 @@ import { View, Text, Image, TouchableOpacity, ScrollView, StyleSheet } from "rea
 import Icon from "react-native-vector-icons/MaterialIcons";
 import RsButton from "../components/RsButton/RsButton";
 import Entypo from "react-native-vector-icons/Entypo";
+import { useAuthStore } from "../store";
 
-const CartPage = ({navigation}) => {
+const CartPage = ({ navigation }) => {
   const [cartItems, setCartItems] = useState([
     {
       id: 1,
@@ -40,6 +41,10 @@ const CartPage = ({navigation}) => {
     },
   ]);
 
+  const a = useAuthStore()
+
+  console.log(a);
+
   const handleIncrement = (id) => {
     setCartItems(prevItems =>
       prevItems.map(item =>
@@ -70,7 +75,6 @@ const CartPage = ({navigation}) => {
         <Text style={{ fontSize: 20, fontWeight: "bold", color: "#1c1c1c" }}>My Cart</Text>
       </View>
 
-
       <ScrollView style={styles.containerScroll}>
         {cartItems.map(item => (
           <View key={item.id} style={styles.cartItem}>
@@ -81,28 +85,26 @@ const CartPage = ({navigation}) => {
               <Text style={styles.cartItemPrice}>৳ {item.price}</Text>
             </View>
             <View style={styles.cartItemActions}>
-              <RsButton style={styles.actionBtn} loginButton={{paddingVertical: 0, paddingHorizontal: 1}} onPress={() => handleIncrement(item.id)}>
+              <RsButton style={styles.actionBtn} loginButton={{ paddingVertical: 0, paddingHorizontal: 1 }}
+                        onPress={() => handleIncrement(item.id)}>
                 <Icon name="add" size={16} color="#fff" />
               </RsButton>
               <Text style={styles.cartItemQuantity}>{item.quantity}</Text>
-              <RsButton style={styles.actionBtn} loginButton={{paddingVertical: 0, paddingHorizontal: 1}} onPress={() => handleDecrement(item.id)}>
+              <RsButton style={styles.actionBtn} loginButton={{ paddingVertical: 0, paddingHorizontal: 1 }}
+                        onPress={() => handleDecrement(item.id)}>
                 <Icon name="remove" size={16} color="#fff" />
               </RsButton>
-
-
             </View>
           </View>
         ))}
 
-
       </ScrollView>
-
-        <View style={styles.checkoutContainer}>
-        <Text style={{fontSize: 16, fontWeight: "600", color: "#2a2a2a"}}>Total: 1231.23</Text>
-          <RsButton loginButton={{paddingHorizontal: 50}} onPress={() => navigation.navigate('Checkout', { cartItems })} style={styles.checkoutButton}>
-            <Text style={styles.checkoutButtonText}>Check Out</Text>
-          </RsButton>
-
+      <View style={styles.checkoutContainer}>
+        <Text style={{ fontSize: 16, fontWeight: "600", color: "#2a2a2a" }}>Total: 1231.23</Text>
+        <RsButton loginButton={{ paddingHorizontal: 50 }} onPress={() => navigation.navigate("Checkout", { cartItems })}
+                  style={styles.checkoutButton}>
+          <Text style={styles.checkoutButtonText}>Check Out</Text>
+        </RsButton>
       </View>
     </View>
   );

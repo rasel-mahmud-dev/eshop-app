@@ -1,6 +1,7 @@
 import User from "../models/User";
 import { compare, makeHash } from "../hash";
 import jwtService from "../jwt";
+import cartRepo from "src/repo/CartRepo";
 
 
 class AuthController {
@@ -35,10 +36,13 @@ class AuthController {
       }
 
       const token = jwtService.createToken({ username: user.username, email: user.email });
+      const cartItems = await cartRepo.getItems(user.id);
+
       res.status(200).json({
         message: "Login successful", data: {
           token,
           user: user,
+          cartItems,
         },
       });
     } catch (err) {

@@ -6,9 +6,23 @@ export const useAuthStore = create(
   persist(
     (set, get) => ({
       auth: null,
+      cartItems: [],
       authLoaded: false,
-      setAuth: (val) => set({ auth: val, authLoaded: true }),
-      updateAuth: (val) => set((state) => ({ ...state, auth: { ...state.auth, ...val } })),
+      setAuth: (val) => {
+        const cartItems = val?.cartItems || [];
+        const auth = val?.user || [];
+        return set({ auth: auth, cartItems, authLoaded: true });
+      },
+      updateAuth: (val) => set((state) => {
+        const updatedState = { ...state };
+        if (val?.cartItems) {
+          updatedState["cartItems"] = val.cartItems;
+        }
+        if (val?.user) {
+          updatedState["auth"] = { ...updatedState["auth"], ...val.user };
+        }
+        return updatedState;
+      }),
     }),
     {
       name: "auth-store-storage",

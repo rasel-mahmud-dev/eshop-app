@@ -3,6 +3,7 @@ import authController from "../controllers/authController";
 // import {imageKitAuthenticationParameters} from "src/services/ImageKitUpload";
 
 import express from "express";
+import cartRepo from "src/repo/CartRepo";
 
 const router = express.Router();
 
@@ -18,15 +19,10 @@ router.get("/protected", authController.protect, (req, res) => {
   res.send(`Hello, ${req.user.username}. You have access to this protected route.`);
 });
 
-// Route to verify token and get user info
-router.get("/verify", authController.protect, (req, res) => {
-  res.status(200).json({ message: "Token is valid", data: { user: req.user } });
+router.get("/verify", authController.protect, async (req, res) => {
+  const cartItems = await cartRepo.getItems(req.user.id);
+  res.status(200).json({ message: "Token is valid", data: { user: req.user, cartItems } });
 });
 
-
-// router.get("/imagekit-authenticationEndpoint", auth, (req, res)=>{
-//     let result = imageKitAuthenticationParameters()
-//     res.status(200).send(result)
-// })
 
 export default router;
