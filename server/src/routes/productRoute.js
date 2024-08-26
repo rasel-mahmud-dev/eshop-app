@@ -24,4 +24,7 @@ router.delete("/:id", productController.deleteItem);
 // Update a specific product by ID
 router.patch("/:id", productController.updateItem);
 
+// Search suggestion
+router.get("/search/:searchText", productController.getSearchProduct);
+
 export default router;

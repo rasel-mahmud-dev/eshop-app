@@ -15,6 +15,7 @@ const colors = {
     "gray-700": "#494949",
     "gray-800": "#353535",
     "gray-900": "#202020",
+    "gray-0": "#ffffff",
     "gray-1": "#f9f9f9", // Very light gray
     "gray-2": "#f2f2f2",
     "gray-3": "#e9e9e9",

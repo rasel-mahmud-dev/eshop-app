@@ -1,5 +1,6 @@
 import pool from "src/database";
 import slugify from "src/utils/slugify";
+import searchRepo from "src/repo/SearchRepo";
 
 
 class ProductController {
@@ -11,7 +12,7 @@ class ProductController {
       await client.query("BEGIN");
 
       for (let product of products) {
-        const { title, description, price, category, brand, image} = product;
+        const { title, description, price, category, brand, image } = product;
         const slug = slugify(title, { lower: true });
 
         let brandIdToUse = null;
@@ -224,6 +225,67 @@ class ProductController {
       res.status(200).json({ message: "Success", data: result.rows[0] });
     } catch (error) {
       console.error("Error updating product:", error);
+      res.status(500).send({ error: "An error occurred while updating the product" });
+    } finally {
+      client.release();
+    }
+  };
+
+  getSearchProduct = async (req, res) => {
+    const client = await pool.connect();
+    try {
+      const { searchText } = req.params;
+      const { page = 1 } = req.query;
+      let limit = 20;
+
+      const offset = (page - 1) * limit;
+
+      const productQuery = `
+          SELECT 'product' as type, id, title as name
+          FROM products
+          WHERE title ILIKE '%' || $1 || '%'
+      `;
+
+      const categoryQuery = `
+          SELECT 'category' as type, id, name
+          FROM categories
+          WHERE name ILIKE '%' || $1 || '%'
+      `;
+
+      const brandQuery = `
+          SELECT 'brand' as type, id, name
+          FROM brands
+          WHERE name ILIKE '%' || $1 || '%'
+      `;
+
+      const combinedQuery = `
+      ${productQuery}
+      UNION ALL
+      ${categoryQuery}
+      UNION ALL
+      ${brandQuery}
+      LIMIT $2 OFFSET $3
+    `;
+
+      const totalCountQuery = `
+          SELECT COUNT(*)
+          FROM (
+                   ${productQuery} UNION ALL ${categoryQuery}
+                       UNION ALL
+                       ${brandQuery}
+                   ) as total
+      `;
+
+      const result = await client.query(combinedQuery, [searchText, limit, offset]);
+
+      const totalCountResult = await client.query(totalCountQuery, [searchText]);
+
+      const total = parseInt(totalCountResult.rows?.[0]?.count, 10);
+
+      res.status(200).json({ message: "Success", data: { items: result.rows, total } });
+
+    } catch (error) {
+      console.log(error);
       res.status(500).send({ error: "An error occurred while updating the product" });
     } finally {
       client.release();

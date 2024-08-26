@@ -47,7 +47,6 @@ const styles = StyleSheet.create({
   searchBar: {
     flex: 1,
     marginLeft: 10,
-    backgroundColor: "#fff",
     paddingHorizontal: 10,
     flexDirection: "row",
     alignItems: "center",
@@ -56,11 +55,16 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: colors["primary-400"],
     height: 40,
+    backgroundColor: "transparent",
+    color: colors["gray-14"],
+    fontWeight: "500",
+    width: "100%",
     overflow: "hidden",
+    paddingVertical: 6,
   },
   searchBarText: {
     fontWeight: "500",
-    color: colors["gray-14"],
+    color: colors["gray-8"],
   },
   searchBarIconWrapper: {
     position: "absolute",

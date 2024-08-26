@@ -152,3 +152,14 @@ CREATE TABLE carts (
     FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
     FOREIGN KEY (product_id) REFERENCES products(id) ON DELETE CASCADE
 );
+
+
+CREATE TABLE searches (
+  id SERIAL PRIMARY KEY,
+  search_criteria TEXT NOT NULL,
+  slug TEXT NOT NULL,
+  user_id INTEGER NOT NULL references users(id),
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  UNIQUE(slug, user_id)
+);
