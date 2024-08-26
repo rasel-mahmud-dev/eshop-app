@@ -1,12 +1,33 @@
 import React, { useState, useEffect, useRef } from "react";
-import { StyleSheet, Text, TouchableOpacity, View, TextInput, ScrollView, FlatList } from "react-native";
+import {
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
+  TextInput,
+  ScrollView,
+  FlatList,
+
+} from "react-native";
 import AntDesign from "react-native-vector-icons/AntDesign";
 import colors from "../styles/colors";
 import { apis, setAuthorization } from "../apis";
+import useReducer from "../hooks/useReducer";
+import SearchResultModal from "../components/SearchResultModal";
+import useDebounce from "../hooks/useDebounce";
 
 function SearchSuggestion({ navigation }) {
   const [searchCriteria, setSearchCriteria] = useState("");
   const [savedSearches, setSavedSearches] = useState([]);
+  const [modalVisible, setModalVisible] = useState(true);
+
+  const [resultResult, setResultResult] = useReducer({
+    items: [{ name: "sdfsdrfsdf", id: 1 }],
+    total: 0,
+  });
+
+
+  const debounchedFn = useDebounce(handleSearchProduct, 500);
 
   const searchCriteriaRef = useRef();
 
@@ -24,9 +45,28 @@ function SearchSuggestion({ navigation }) {
 
   function handleSearch() {
     // setSavedSearches(prevState => ([...prevState, savedSearches]));
-    handleSaveSearch();
-
+    // handleSaveSearch();
+    setModalVisible(false);
+    setSearchCriteria("");
   }
+
+  function handleChangeSearchText(value) {
+    setSearchCriteria(value);
+    debounchedFn(value);
+  }
+
+  async function handleSearchProduct(text) {
+    try {
+      const { data } = await apis.get(`/products/search/${text}`);
+      const result = data?.data;
+      setModalVisible(true);
+      result && setResultResult(result);
+
+    } catch (ex) {
+      console.log(ex);
+    }
+  };
+
 
   const handleSaveSearch = async () => {
     const newSearch = { searchCriteria };
@@ -47,40 +87,75 @@ function SearchSuggestion({ navigation }) {
   );
 
   return (
-    <View style={styles.container}>
-      <ScrollView style={styles.containerScroll}>
+    <>
 
-        <View style={styles.searchBar}>
-          <TextInput
-            ref={searchCriteriaRef}
-            placeholderTextColor={colors["gray-8"]}
-            style={styles.searchBarInput}
-            placeholder="Enter search criteria..."
-            value={searchCriteria}
-            onChangeText={setSearchCriteria}
+      <SearchResultModal visible={modalVisible} items={resultResult.items} />
+      <View style={styles.container}>
+
+        <ScrollView style={styles.containerScroll}>
+
+          <View style={styles.searchBar}>
+            <TextInput
+              ref={searchCriteriaRef}
+              placeholderTextColor={colors["gray-8"]}
+              style={styles.searchBarInput}
+              placeholder="Enter search criteria..."
+              value={searchCriteria}
+              onChangeText={handleChangeSearchText}
+            />
+            <TouchableOpacity onPress={handleSearch} style={styles.searchBarIconWrapper}>
+              <AntDesign name={"close"} style={styles.searchBarIcon} />
+            </TouchableOpacity>
+          </View>
+
+          {/*<TouchableOpacity onPress={handleSaveSearch} style={styles.saveButton}>*/}
+          {/*  <Text style={styles.saveButtonText}>Save Search</Text>*/}
+          {/*</TouchableOpacity>*/}
+
+          <Text style={styles.savedSearchesTitle}>Search history</Text>
+
+          <FlatList
+            data={savedSearches}
+            renderItem={renderSavedSearch}
+            keyExtractor={(item) => item?.id?.toString()}
           />
-          <TouchableOpacity onPress={handleSearch} style={styles.searchBarIconWrapper}>
-            <AntDesign name={"search1"} style={styles.searchBarIcon} />
-          </TouchableOpacity>
-        </View>
+        </ScrollView>
 
-        {/*<TouchableOpacity onPress={handleSaveSearch} style={styles.saveButton}>*/}
-        {/*  <Text style={styles.saveButtonText}>Save Search</Text>*/}
-        {/*</TouchableOpacity>*/}
-
-        <Text style={styles.savedSearchesTitle}>Search history</Text>
-
-        <FlatList
-          data={savedSearches}
-          renderItem={renderSavedSearch}
-          keyExtractor={(item) => item?.id?.toString()}
-        />
-      </ScrollView>
-    </View>
+      </View>
+    </>
   );
 }
 
 
+const modalStyle = StyleSheet.create({
+  centeredView: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+    marginTop: 22,
+    position: "absolute",
+    top: 10,
+  },
+  modal: {
+
+    backgroundColor: "#f14040",
+  },
+  modalOverlay: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+    backgroundColor: "rgba(0, 0, 0, 0.5)",
+  },
+  modalContainer: {},
+  item: {
+    // backgroundColor: "red",
+    paddingVertical: 6,
+  },
+  itemText: {
+    color: "#1a1a1a",
+  },
+
+});
 
 const styles = StyleSheet.create({
   container: {
@@ -122,10 +197,10 @@ const styles = StyleSheet.create({
     width: 50,
     alignItems: "center",
     justifyContent: "center",
-    backgroundColor: colors["primary-400"],
+    // backgroundColor: colors["primary-400"],
   },
   searchBarIcon: {
-    color: colors["gray-0"],
+    color: colors["gray-20"],
     fontSize: 20,
   },
 
