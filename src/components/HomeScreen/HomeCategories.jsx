@@ -29,7 +29,7 @@ const HomeCategories = ({ navigation }) => {
   const width = Dimensions.get("window").width;
   const itemWidth = width / 3;
   const renderCategory = ({ item }) => (
-    <View style={{width: itemWidth}}>
+    <View key={item.id} style={{width: itemWidth}}>
       <TouchableOpacity style={{...styles.card,}}>
         <Image source={{ uri: item.logo }} style={styles.image} />
         <Text style={styles.title}>{item.name}</Text>
@@ -78,13 +78,17 @@ const styles = StyleSheet.create({
   showMoreButton: {
     padding: 5,
     flexDirection: "row",
-    columnGap: 5,
+    columnGap: 10,
     alignItems: "center",
     justifyContent: "space-between",
   },
   showMoreText: {
     fontSize: 14,
-    color: "#1E90FF",
+    fontWeight: "600",
+    color: colors["primary-500"],
+  },
+  icon: {
+    color: colors["primary-500"]
   },
   card: {
     flex: 1,

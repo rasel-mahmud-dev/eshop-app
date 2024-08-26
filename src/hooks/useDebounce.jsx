@@ -1,4 +1,4 @@
-import {useState} from "react";
+import { useState } from "react";
 
 function useDebounce(callback, delay = 300) {
   const [timer, setTimer] = useState();
@@ -13,4 +13,4 @@ function useDebounce(callback, delay = 300) {
   };
 }
 
-export default useDebounce
+export default useDebounce;

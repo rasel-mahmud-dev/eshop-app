@@ -241,19 +241,19 @@ class ProductController {
       const offset = (page - 1) * limit;
 
       const productQuery = `
-          SELECT 'product' as type, id, title as name
+          SELECT 'product' as type, id, title as name, image as image
           FROM products
           WHERE title ILIKE '%' || $1 || '%'
       `;
 
       const categoryQuery = `
-          SELECT 'category' as type, id, name
+          SELECT 'category' as type, id, name, logo as image
           FROM categories
           WHERE name ILIKE '%' || $1 || '%'
       `;
 
       const brandQuery = `
-          SELECT 'brand' as type, id, name
+          SELECT 'brand' as type, id, name, logo as image
           FROM brands
           WHERE name ILIKE '%' || $1 || '%'
       `;

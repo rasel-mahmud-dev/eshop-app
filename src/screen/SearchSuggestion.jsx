@@ -15,15 +15,17 @@ import { apis, setAuthorization } from "../apis";
 import useReducer from "../hooks/useReducer";
 import SearchResultModal from "../components/SearchResultModal";
 import useDebounce from "../hooks/useDebounce";
+import Feather from "react-native-vector-icons/Feather";
 
 function SearchSuggestion({ navigation }) {
-  const [searchCriteria, setSearchCriteria] = useState("");
   const [savedSearches, setSavedSearches] = useState([]);
-  const [modalVisible, setModalVisible] = useState(true);
 
   const [resultResult, setResultResult] = useReducer({
-    items: [{ name: "sdfsdrfsdf", id: 1 }],
+    items: [],
     total: 0,
+    isLoading: false,
+    isOpen: false,
+    searchText: "",
   });
 
 
@@ -46,50 +48,71 @@ function SearchSuggestion({ navigation }) {
   function handleSearch() {
     // setSavedSearches(prevState => ([...prevState, savedSearches]));
     // handleSaveSearch();
-    setModalVisible(false);
-    setSearchCriteria("");
+    setResultResult({
+      searchText: "",
+      isLoading: false,
+      isOpen: false,
+    });
   }
 
   function handleChangeSearchText(value) {
-    setSearchCriteria(value);
-    debounchedFn(value);
+    const searchState = { searchText: value };
+    if (!value) {
+      searchState["isLoading"] = false;
+      searchState["isOpen"] = false;
+      searchState["searchText"] = "";
+      searchState["items"] = [];
+      setResultResult(searchState);
+    } else {
+      searchState["isOpen"] = true;
+      searchState["isLoading"] = true;
+      setResultResult(searchState);
+      debounchedFn(value);
+    }
   }
 
   async function handleSearchProduct(text) {
     try {
       const { data } = await apis.get(`/products/search/${text}`);
       const result = data?.data;
-      setModalVisible(true);
       result && setResultResult(result);
 
     } catch (ex) {
       console.log(ex);
+    } finally {
+      setResultResult({ isLoading: false });
     }
-  };
+  }
 
+  async function handleSearchFromRecentSearch(item) {
+    try {
+      const searchText = item.search_criteria;
+      if (searchText) {
+        const searchState = { searchText };
+        searchState["isOpen"] = true;
+        searchState["isLoading"] = true;
+        setResultResult(searchState);
+        handleSearchProduct(searchText);
+      }
 
-  const handleSaveSearch = async () => {
-    const newSearch = { searchCriteria };
-    await apis.post("/search", newSearch);
-    fetchSavedSearches();
-  };
+    } catch (ex) {
 
-  const handleDeleteSearch = async (searchId) => {
-    await setAuthorization();
-    await apis.delete(`/search/${searchId}`);
-  };
+    }
+  }
 
   const renderSavedSearch = ({ item }) => (
-    <TouchableOpacity style={styles.savedSearchItem}>
-      <AntDesign name="search1" style={styles.searchButton} />
-      <Text style={styles.searchText}>{item.search_criteria}</Text>
+    <TouchableOpacity onPress={() => handleSearchFromRecentSearch(item)} style={styles.savedSearchItem}>
+      <View style={{ alignItems: "center", flexDirection: "row" }}>
+        <AntDesign name="search1" style={styles.searchButton} />
+        <Text style={styles.searchText}>{item.search_criteria}</Text>
+      </View>
+      <Feather style={styles.arrow} name="arrow-up-left" size={16} />
     </TouchableOpacity>
   );
 
   return (
     <>
-
-      <SearchResultModal visible={modalVisible} items={resultResult.items} />
+      <SearchResultModal visible={resultResult.isOpen} isLoading={resultResult.isLoading} items={resultResult.items} />
       <View style={styles.container}>
 
         <ScrollView style={styles.containerScroll}>
@@ -100,17 +123,14 @@ function SearchSuggestion({ navigation }) {
               placeholderTextColor={colors["gray-8"]}
               style={styles.searchBarInput}
               placeholder="Enter search criteria..."
-              value={searchCriteria}
+              value={resultResult?.searchText}
               onChangeText={handleChangeSearchText}
             />
             <TouchableOpacity onPress={handleSearch} style={styles.searchBarIconWrapper}>
-              <AntDesign name={"close"} style={styles.searchBarIcon} />
+              {resultResult.searchText ? <AntDesign name={"close"} style={styles.searchBarIcon} /> :
+                <AntDesign name={"search1"} style={styles.searchBarIcon} />}
             </TouchableOpacity>
           </View>
-
-          {/*<TouchableOpacity onPress={handleSaveSearch} style={styles.saveButton}>*/}
-          {/*  <Text style={styles.saveButtonText}>Save Search</Text>*/}
-          {/*</TouchableOpacity>*/}
 
           <Text style={styles.savedSearchesTitle}>Search history</Text>
 
@@ -125,37 +145,6 @@ function SearchSuggestion({ navigation }) {
     </>
   );
 }
-
-
-const modalStyle = StyleSheet.create({
-  centeredView: {
-    flex: 1,
-    justifyContent: "center",
-    alignItems: "center",
-    marginTop: 22,
-    position: "absolute",
-    top: 10,
-  },
-  modal: {
-
-    backgroundColor: "#f14040",
-  },
-  modalOverlay: {
-    flex: 1,
-    justifyContent: "center",
-    alignItems: "center",
-    backgroundColor: "rgba(0, 0, 0, 0.5)",
-  },
-  modalContainer: {},
-  item: {
-    // backgroundColor: "red",
-    paddingVertical: 6,
-  },
-  itemText: {
-    color: "#1a1a1a",
-  },
-
-});
 
 const styles = StyleSheet.create({
   container: {
@@ -236,11 +225,16 @@ const styles = StyleSheet.create({
     marginBottom: 4,
     backgroundColor: "rgba(199,199,199,0.07)",
     borderRadius: 6,
+    justifyContent: "space-between",
   },
   searchText: {
     fontSize: 14,
     fontWeight: "500",
     color: "#505050",
+  },
+  arrow: {
+    color: colors["gray-9"],
+    fontSize: 14,
   },
   searchButton: {
     color: "#9f9f9f",
@@ -248,7 +242,6 @@ const styles = StyleSheet.create({
     padding: 5,
     borderRadius: 5,
   },
-
 });
 
 export default SearchSuggestion;
