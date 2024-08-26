@@ -7,11 +7,12 @@ import { apis, setAuthorization } from "../apis";
 import catchAxiosError from "../utils/catchAxiosError";
 import { useToast } from "../lib/ToastService";
 import { useAuthStore } from "../store";
+import cartAction from "../store/actions/cartsAction";
 
 const ProductDetailScreen = ({ route }) => {
   const { product } = route?.params || {};
   const navigation = useNavigation();
-  const { auth, cartItems } = useAuthStore();
+  const { auth, cartItems, setCarts } = useAuthStore();
 
   const toast = useToast();
 
@@ -25,13 +26,17 @@ const ProductDetailScreen = ({ route }) => {
         return;
       }
 
-      await setAuthorization()
-      const response = await apis.post("/carts/add", {
+      await setAuthorization();
+      const { status, data } = await apis.post("/carts/add", {
         productId: product?.id,
         quantity,
       });
-      console.log(response);
-      toast.success("Added to cart");
+      if (status === 201 && data?.data) {
+        const result = await cartAction.appendNew(data?.data);
+        setCarts(result);
+        toast.success("Added to cart");
+      }
+
     } catch (ex) {
       toast.error(catchAxiosError(ex));
     }

@@ -11,9 +11,14 @@ import RsButton from "../../components/RsButton/RsButton";
 import { useToast } from "../../lib/ToastService";
 import { useAuthStore } from "../../store";
 
-const LoginPage = () => {
+const LoginPage = ({ route }) => {
+  const params = route.params;
   const navigation = useNavigation();
   const { setAuth } = useAuthStore();
+
+  console.log(params);
+
+
   const toast = useToast();
   const [state, setState] = useState({
     email: "rasel.mahmud.dev@gmail.com",
@@ -24,10 +29,10 @@ const LoginPage = () => {
   async function handleSubmit() {
     try {
       const data = await authAction.login(state.email, state.password);
-      if (!data) throw new Error("Please try again later");
+      if (!data && !data?.user) throw new Error("Please try again later");
       await localStorage.set("token", data.token);
-      await localStorage.set("auth", JSON.stringify(data));
-      setAuth(data);
+      await localStorage.set("auth", JSON.stringify(data?.user));
+      setAuth(data.user);
       navigation.navigate("Home");
       toast.success("Success");
 

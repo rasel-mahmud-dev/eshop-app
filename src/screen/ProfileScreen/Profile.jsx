@@ -1,13 +1,14 @@
 import React from "react";
 import { View, Text, StyleSheet, ScrollView, Image, TouchableOpacity } from "react-native";
-import { useAuthStore } from "../../store";
+import { useAuthStore, useCartStore } from "../../store";
 import colors from "../../styles/colors";
 import RsButton from "../../components/RsButton/RsButton";
 import Entypo from "react-native-vector-icons/Entypo";
 import authAction from "../../store/actions/authAction";
 
 const Profile = ({ navigation }) => {
-  const { auth, setAuth } = useAuthStore();
+  const { auth, setAuth, logout } = useAuthStore();
+  const { setCarts } = useCartStore();
   const {
     username,
     email,
@@ -27,7 +28,8 @@ const Profile = ({ navigation }) => {
 
   function handleSignout() {
     authAction.logOut().then(r => {
-      setAuth(null);
+      logout(null);
+      setCarts([]);
     });
   }
 

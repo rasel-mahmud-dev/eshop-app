@@ -2,9 +2,9 @@ const colors = {
     "text-primary": "#715ca8",
     "primary": "#6750A4",
 
-    "primary-300": "#715ca8",
-    "primary-400": "#6750A4",
-    "primary-500": "#6b4fb5",
+    "primary-300": "#60ce66",
+    "primary-400": "#61b966",
+    "primary-500": "#60ce66",
     "gray-100": "#ececec",
     "gray-200/10": "rgba(236,236,236,0.46)",
     "gray-200": "#dddddd",

@@ -9,11 +9,25 @@ export const useAuthStore = create(
       cartItems: [],
       authLoaded: false,
       setAuth: (val) => set((state) => ({ ...state, auth: val, authLoaded: true })),
+      logout: (val) => set({ auth: null, authLoaded: true }),
       setCarts: (val) => set((state) => ({ ...state, cartItems: val })),
       updateAuth: (val) => set((state) => ({ ...state, auth: { ...state.auth, ...val } })),
     }),
     {
       name: "auth-store-storage",
+      storage: createJSONStorage(() => AsyncStorage),
+    },
+  ),
+);
+
+export const useCartStore = create(
+  persist(
+    (set, get) => ({
+      cartItems: [],
+      setCarts: (val) => set((state) => ({ ...state, cartItems: val })),
+    }),
+    {
+      name: "cart-store-storage",
       storage: createJSONStorage(() => AsyncStorage),
     },
   ),

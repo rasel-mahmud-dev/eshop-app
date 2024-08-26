@@ -5,8 +5,7 @@ import HomePage from "./screen/HomePage";
 import LoginPage from "./screen/auth/Login";
 import { useEffect } from "react";
 import authAction from "./store/actions/authAction";
-import { useAuthStore } from "./store";
-import BottomNav from "./components/BottomNav";
+import { useAuthStore, useCartStore } from "./store";
 import DashboardHome from "./screen/AdminDashboard/DashboardHome";
 import CategoryListScreen from "./screen/AdminDashboard/Categories/Categories";
 import BrandListScreen from "./screen/AdminDashboard/BrandListScreen/BrandListScreen";
@@ -25,30 +24,25 @@ import CartPage from "./screen/CartScreen";
 import CheckoutPage from "./screen/CheckoutPage";
 import ProductDetail from "./screen/ProductDetail";
 import cartsAction from "./store/actions/cartsAction";
+import HomeLayout from "./components/Layout/HomeLayout";
+import SearchSuggestion from "./screen/SearchSuggestion";
 
 const Stack = createNativeStackNavigator();
-const HomeScreen = () => {
-
-  return (
-    <>
-      <HomePage />
-      <BottomNav />
-    </>
-  );
-};
 
 
 const ProfileScreen2 = () => {
-  const { setAuth, auth, setCarts } = useAuthStore();
+  const { setAuth, auth } = useAuthStore();
+  const { setCarts } = useCartStore();
 
   async function authFetch() {
     try {
       const auth = await authAction.verifyUser();
       if (auth) {
         setAuth(auth);
-        cartsAction.fetchCarts().then(items=>{
-          setCarts(items)
-        })
+        cartsAction.fetchCarts()
+          .then(items => {
+          setCarts(items);
+        });
       } else {
         setAuth(null);
       }
@@ -61,7 +55,6 @@ const ProfileScreen2 = () => {
 
   useEffect(() => {
     authFetch();
-
   }, []);
 
   const navigation = useNavigation();
@@ -94,12 +87,13 @@ const MyStack = () => {
       <Stack.Navigator initialRouteName="Home">
         <Stack.Screen
           name="Home"
-          component={HomeScreen}
+          component={HomeLayout(HomePage)}
           options={{ title: "Welcome", headerShown: false }}
         />
-        <Stack.Screen name="Profile" options={{ headerShown: false }} component={WithAuth(Profile)} />
+        <Stack.Screen name="Profile" options={{ headerShown: false }} component={HomeLayout(WithAuth(Profile))} />
+        <Stack.Screen name="SearchSuggestion" options={{ headerShown: false }} component={SearchSuggestion} />
         <Stack.Screen name="ProductDetail" options={{ headerShown: false }} component={ProductDetail} />
-        <Stack.Screen name="Cart" options={{ headerShown: false }} component={WithAuth(CartPage)} />
+        <Stack.Screen name="Cart" options={{ headerShown: false }} component={HomeLayout(WithAuth(CartPage))} />
         <Stack.Screen name="Checkout" options={{ headerShown: false }} component={WithAuth(CheckoutPage)} />
         <Stack.Screen name="MoreCategories" options={{ headerShown: false }} component={MoreCategories} />
         <Stack.Screen name="Categories" options={{ headerShown: false }} component={MoreCategories} />

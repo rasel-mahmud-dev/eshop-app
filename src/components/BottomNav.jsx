@@ -9,6 +9,7 @@ import { useAuthStore } from "../store";
 const BottomNav = () => {
   const navigation = useNavigation();
   const route = useRoute();
+  const {auth} = useAuthStore()
 
   const { cartItems } = useAuthStore();
 
@@ -17,7 +18,7 @@ const BottomNav = () => {
     { name: "Categories", icon: "category", path: "Categories" },
     { name: "Cart", icon: "shopping-cart", path: "Cart" },
     { name: "Orders", icon: "receipt", path: "Orders" },
-    { name: "Profile", icon: "person", path: "Profile" },
+    { name: "Account", icon: "account-circle", path: "Profile" },
   ];
   // Add Admin Dashboard if the user is an admin
   // if (userRole === "admin") {
@@ -25,7 +26,6 @@ const BottomNav = () => {
   // navItems.push({ name: "Admin", icon: "dashboard", path: "AdminDashboard" });
   //
   const location = route.name;
-
 
 
   return (
@@ -40,18 +40,18 @@ const BottomNav = () => {
               onPress={() => navigation.navigate(item.path, JSON.stringify({ prevRoute: route.name }))}
             >
               <View>
-                {item.name === "Cart" && <Text style={styles.cartCount}>{cartItems?.length}</Text>}
+                {auth?.id && item.name === "Cart" && <Text style={styles.cartCount}>{cartItems?.length}</Text>}
                 <Icon
                   name={item.icon}
-                  size={22}
+                  size={28}
                   color={location === item.path ? colors["primary-500"] : colors["gray-10"]}
                 />
               </View>
               <Text
                 style={{
-                  fontSize: 12,
-                  fontWeight: location === item.path ? 600 : 300,
-                  color: location === item.path ? colors["primary-500"] : colors["gray-10"],
+                  fontSize: 11,
+                  fontWeight: location === item.path ? 600 : 200,
+                  color: location === item.path ? colors["primary-500"] : colors["gray-20"],
                 }}
               >
                 {item.name}

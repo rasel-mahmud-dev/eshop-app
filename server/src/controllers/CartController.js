@@ -32,18 +32,22 @@ class CartController {
                                                  WHERE user_id = $1
                                                    AND product_id = $2`, [userId, productId]);
 
+      let insertResult;
       if (cartItemResult.rows.length > 0) {
         const newQuantity = cartItemResult.rows[0].quantity + quantity;
-        await client.query(`UPDATE carts
+        insertResult = await client.query(`UPDATE carts
                             SET quantity = $1
-                            WHERE id = $2`, [newQuantity, cartItemResult.rows[0].id]);
+                            WHERE id = $2 returning id`, [newQuantity, cartItemResult.rows[0].id]);
       } else {
-        await client.query(`INSERT INTO carts(user_id, product_id, quantity)
-                            VALUES ($1, $2, $3)`, [userId, productId, quantity]);
+        insertResult = await client.query(`INSERT INTO carts(user_id, product_id, quantity)
+                            VALUES ($1, $2, $3) returning id`, [userId, productId, quantity]);
       }
 
+
+      const detail = await cartRepo.getDetail(client, insertResult.rows?.[0]?.id)
+
       await client.query("COMMIT");
-      res.status(201).json({ message: "Product added to cart successfully" });
+      res.status(201).json({ data: detail, message: "Product added to cart successfully" });
 
     } catch (error) {
       await client.query("ROLLBACK");
